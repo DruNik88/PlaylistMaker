@@ -2,11 +2,12 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cornflower_blue"
     android:orientation="vertical"
-    android:paddingHorizontal="16dp" >
+    android:paddingHorizontal="16dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -39,8 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="16dp"
-
+        android:layout_marginTop="@dimen/margin_button"
 
         android:backgroundTint="@color/white"
         android:text="@string/media_library"
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/margin_button"
         android:layout_marginBottom="24dp"
 
         android:backgroundTint="@color/white"
