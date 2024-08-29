@@ -20,6 +20,7 @@
         android:textSize="@dimen/title_size" />
 
     <Button
+        android:id="@+id/button_search"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -37,6 +38,7 @@
         app:cornerRadius="@dimen/radius_big_button"/>
 
     <Button
+        android:id="@+id/button_media_library"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -54,6 +56,7 @@
         app:cornerRadius="@dimen/radius_big_button" />
 
     <Button
+        android:id="@+id/button_options"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
