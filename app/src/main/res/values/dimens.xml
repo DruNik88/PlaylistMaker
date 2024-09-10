@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="title_size">22sp</dimen>
+    <dimen name="size_text_in_main_button">22sp</dimen>
+    <dimen name="radius_big_button">16dp</dimen>
+    <dimen name="distance_icon_text">8dp</dimen>
+    <dimen name="size_text_in_setting_activity">16sp</dimen>
+    <dimen name="margin_button">16dp</dimen>
+    <dimen name="settings_frame_layout_height">62dp</dimen>
+</resources>
