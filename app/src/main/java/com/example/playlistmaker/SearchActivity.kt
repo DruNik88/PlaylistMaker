@@ -11,8 +11,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 
 class SearchActivity : AppCompatActivity() {
+
+    private var inputValue: String = DEFAULT_VALUE
+
     @SuppressLint("ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +26,10 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val inputEditText = findViewById<EditText>(R.id.inputEditText)
 
+        if(inputValue.isNotEmpty()){inputEditText.setText(inputValue)}
+
         clearButton.setOnClickListener {
-            inputEditText.setText("")
+            inputEditText.setText(DEFAULT_VALUE)
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
@@ -32,6 +38,7 @@ class SearchActivity : AppCompatActivity() {
         backButtonSearch.setOnClickListener {
             val displayIntent = Intent(this, MainActivity::class.java)
             startActivity(displayIntent)
+//            finish()
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -40,7 +47,13 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
+                if(s.isNullOrEmpty()){
+                    clearButton.visibility = View.GONE
+                } else{
+                    inputValue = s.toString()
+                    clearButton.visibility = View.VISIBLE
+                }
+
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -51,11 +64,18 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+    companion object {
+        const val SAVE_VALUE = "SAVE_VALUE"
+        const val DEFAULT_VALUE = ""
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVE_VALUE, inputValue)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        inputValue = savedInstanceState.getString(SAVE_VALUE, DEFAULT_VALUE)
     }
 }
