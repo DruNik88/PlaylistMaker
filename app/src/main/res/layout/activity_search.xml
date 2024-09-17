@@ -14,6 +14,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/back_button_search"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_margin="4dp"
@@ -52,6 +53,7 @@
             android:src="@drawable/vector_loupe_14_14"/>
 
         <EditText
+            android:id="@+id/inputEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -64,6 +66,7 @@
             android:background="@drawable/search_background_edit_view"/>
 
         <ImageView
+           android:id="@+id/clearIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_margin="12dp"
