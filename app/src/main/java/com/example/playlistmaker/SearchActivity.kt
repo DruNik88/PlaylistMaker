@@ -2,7 +2,6 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,9 +10,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 
 class SearchActivity : AppCompatActivity() {
+
+    companion object {
+        const val SAVE_VALUE = "SAVE_VALUE"
+        const val DEFAULT_VALUE = ""
+    }
 
     private var inputValue: String = DEFAULT_VALUE
 
@@ -26,7 +29,9 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val inputEditText = findViewById<EditText>(R.id.inputEditText)
 
-        if(inputValue.isNotEmpty()){inputEditText.setText(inputValue)}
+        if (inputValue.isNotEmpty()) {
+            inputEditText.setText(inputValue)
+        }
 
         clearButton.setOnClickListener {
             inputEditText.setText(DEFAULT_VALUE)
@@ -36,37 +41,29 @@ class SearchActivity : AppCompatActivity() {
         }
 
         backButtonSearch.setOnClickListener {
-            val displayIntent = Intent(this, MainActivity::class.java)
-            startActivity(displayIntent)
-//            finish()
+            finish()
         }
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(s.isNullOrEmpty()){
+                if (s.isNullOrEmpty()) {
                     clearButton.visibility = View.GONE
-                } else{
+                } else {
                     inputValue = s.toString()
                     clearButton.visibility = View.VISIBLE
                 }
-
             }
 
             override fun afterTextChanged(s: Editable?) {
-                // empty
+
             }
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
 
-    }
-
-    companion object {
-        const val SAVE_VALUE = "SAVE_VALUE"
-        const val DEFAULT_VALUE = ""
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

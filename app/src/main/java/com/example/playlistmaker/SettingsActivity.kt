@@ -13,31 +13,33 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val backButton = findViewById<ImageView>(R.id.back_button_settings)
+        backButton.setOnClickListener {
+            finish()
+        }
+
         val imageShare = findViewById<ImageView>(R.id.image_share)
         imageShare.setOnClickListener {
-            val message = "https://practicum.yandex.ru/android-developer/?from=catalog"
             val shareIntent = Intent(Intent.ACTION_SEND).apply { type = "text/plain" }
-            shareIntent.putExtra(Intent.EXTRA_TEXT, message)
-            startActivity(Intent.createChooser(shareIntent, "Выберите приложение"))
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.message_share_settings))
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.select_app)))
         }
 
         val imageSupport = findViewById<ImageView>(R.id.image_support)
         imageSupport.setOnClickListener {
-            val message = "Спасибо разработчикам и разработчицам за крутое приложение!"
-            val theme = "Сообщение разработчикам и разработчицам приложения Playlist Maker"
             val shareIntent = Intent(Intent.ACTION_SENDTO).apply { type = "text/plain" }
-            shareIntent.setData(Uri.parse("mailto:diyavolik007@yandex.ru"))
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, theme)
-            shareIntent.putExtra(Intent.EXTRA_TEXT, message)
+            shareIntent.setData(Uri.parse(getString(R.string.uri_support_setting)))
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.theme_support_settings))
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.message_support_settings))
             startActivity(shareIntent)
         }
 
         val imageUserAgreement = findViewById<ImageView>(R.id.image_user_agreement)
         imageUserAgreement.setOnClickListener {
-            val url: Uri = Uri.parse("https://yandex.ru/legal/practicum_offer/")
+            val url: Uri = Uri.parse(getString(R.string.uri_agreement_setting))
             val openLink = Intent(Intent.ACTION_VIEW, url)
             startActivity(openLink)
         }
-        }
     }
+}
 
