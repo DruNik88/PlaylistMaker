@@ -1,90 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
-    style="@style/LinearLayout">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
-        style="@style/LinearLayoutHeader"
-        tools:ignore="UseCompoundDrawables">
-
-        <ImageView
-            android:id="@+id/back_button_settings"
-            style="@style/BackButton"
-            android:src="@drawable/vector_arrow_back"
-            android:contentDescription="@null"/>
-
-        <TextView
-            style="@style/TextHeaderActivity"
-            android:text="@string/options"/>
-
-    </LinearLayout>
-
-    <FrameLayout
-        style="@style/FrameLayoutActivitySettings"
-        android:layout_marginTop="24dp">
-
-        <TextView
-            style="@style/TextActivitySettings"
-            android:text="@string/dark_team"/>
-
-        <Switch
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginEnd="12dp"
-
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-    </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameLayoutActivitySettings">
-
-        <TextView
-            style="@style/TextActivitySettings"
-            android:text="@string/share_the_app"/>
-
-        <ImageView
-            android:id="@+id/image_share"
-            style="@style/ImageActivitySettings"
-            android:layout_marginEnd="20dp"
-            android:src="@drawable/vector_share"
-            android:contentDescription="@null"/>
-
-    </FrameLayout>
-
-    <FrameLayout
-        style="@style/FrameLayoutActivitySettings">
-
-        <TextView
-            style="@style/TextActivitySettings"
-            android:text="@string/write_to_support"/>
-
-        <ImageView
-            android:id="@+id/image_support"
-            style="@style/ImageActivitySettings"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/vector_support"
-            android:contentDescription="@null"/>
-
-    </FrameLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_settings"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:title="@string/options"
+        app:titleTextAppearance="@style/TextHeaderActivity"/>
 
 
-    <FrameLayout
-        style="@style/FrameLayoutActivitySettings">
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/settings_frame_layout_height"
+        android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="16dp"
 
-        <TextView
-            style="@style/TextActivitySettings"
-            android:text="@string/user_agreement"/>
+        style="@style/TextActivitySettings"
+        android:text="@string/dark_team"/>
 
-        <ImageView
-            android:id="@+id/image_user_agreement"
-            style="@style/ImageActivitySettings"
-            android:layout_marginEnd="24dp"
-            android:src="@drawable/vector_arrow_forward"
-            android:contentDescription="@null"/>
+    <TextView
+        android:id="@+id/share_the_app"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/settings_frame_layout_height"
+        android:layout_marginHorizontal="16dp"
 
-    </FrameLayout>
+        style="@style/TextActivitySettings"
+        android:text="@string/share_the_app"
+        android:gravity="center|start"
+
+        app:drawableEndCompat="@drawable/vector_share"/>
+
+    <TextView
+        android:id="@+id/write_to_support"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/settings_frame_layout_height"
+        android:layout_marginHorizontal="16dp"
+
+        style="@style/TextActivitySettings"
+        android:text="@string/write_to_support"
+        android:gravity="center|start"
+
+        app:drawableEndCompat="@drawable/vector_support"/>
+
+    <TextView
+        android:id="@+id/user_agreement"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/settings_frame_layout_height"
+        android:layout_marginHorizontal="16dp"
+
+        style="@style/TextActivitySettings"
+        android:text="@string/user_agreement"
+        android:gravity="center|start"
+
+        app:drawableEndCompat="@drawable/vector_arrow_forward"/>
+
 
 </LinearLayout>

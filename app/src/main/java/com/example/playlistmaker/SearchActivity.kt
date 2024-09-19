@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 class SearchActivity : AppCompatActivity() {
 
@@ -25,9 +26,16 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val backButtonSearch = findViewById<ImageView>(R.id.back_button_search)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         val inputEditText = findViewById<EditText>(R.id.inputEditText)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar_search)
+        setSupportActionBar(toolbar)
+
+        toolbar.setNavigationIcon(R.drawable.vector_arrow_back)
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
 
         if (inputValue.isNotEmpty()) {
             inputEditText.setText(inputValue)
@@ -38,10 +46,6 @@ class SearchActivity : AppCompatActivity() {
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
-        }
-
-        backButtonSearch.setOnClickListener {
-            finish()
         }
 
         val simpleTextWatcher = object : TextWatcher {
