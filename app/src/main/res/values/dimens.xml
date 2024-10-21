@@ -7,4 +7,8 @@
     <dimen name="size_text_in_setting_activity">16sp</dimen>
     <dimen name="margin_button">16dp</dimen>
     <dimen name="settings_frame_layout_height">62dp</dimen>
+    <dimen name="track_view_image_view_artwork_width">45dp</dimen>
+    <dimen name="track_view_image_view_artwork_height">45dp</dimen>
+    <dimen name="track_view_image_view_arrow_forward_width">24dp</dimen>
+    <dimen name="track_view_image_view_arrow_forward_height">24dp</dimen>
 </resources>
