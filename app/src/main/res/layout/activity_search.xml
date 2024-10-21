@@ -43,7 +43,10 @@
             style="@style/EditTextStyle"
 
             android:autofillHints="no"
-            android:hint="@string/search" />
+            android:hint="@string/search"
+
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
         <ImageView
             android:id="@+id/clearIcon"
@@ -58,12 +61,57 @@
 
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerTrackView"
-        android:layout_marginTop="16dp"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        />
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerTrackView"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+
+    <LinearLayout
+        android:id="@+id/layoutSearchError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/errorImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="104dp"
+
+            android:contentDescription="@null"
+            tools:srcCompat="@drawable/connection_problems"/>
+
+        <TextView
+            android:id="@+id/errorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+
+            style="@style/TextError"
+             tools:text = "@string/error_search_connection_problems"/>
+        <Button
+            android:id="@+id/buttonUpdateErrorSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+
+            style="@style/ButtonUpdateErrorSearch"
+            tools:text="Обновить"/>
 
 </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>
+
