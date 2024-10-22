@@ -67,7 +67,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerTrackView"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/activity_search_recycler_text_error_margin_top"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -83,8 +83,8 @@
 
         <ImageView
             android:id="@+id/errorImage"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/activity_search_image_view_error_width"
+            android:layout_height="@dimen/activity_search_image_view_error_height"
             android:layout_gravity="center"
             android:layout_marginTop="104dp"
 
@@ -96,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/activity_search_recycler_text_error_margin_top"
 
             style="@style/TextError"
              tools:text = "@string/error_search_connection_problems"/>

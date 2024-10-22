@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -15,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
@@ -67,9 +67,10 @@ class SearchActivity : AppCompatActivity() {
             ) {
                 if (response.code() == 200) {
                     if ((response.body()?.resultCount ?: 0) > 0) {
+                        val trackList = response.body()?.results ?: mutableListOf()
                         searchProblems(ErrorSearch.INVISIBLE)
                         adapter.tracks.clear()
-                        adapter.tracks.addAll(response.body()?.results!!)
+                        adapter.tracks.addAll(trackList)
                         adapter.notifyDataSetChanged()
                     } else {
                         searchProblems(ErrorSearch.NOT_FOUND)
@@ -93,20 +94,20 @@ class SearchActivity : AppCompatActivity() {
         }
         when (errorSearch) {
             ErrorSearch.NOT_FOUND -> {
-                layoutSearchError.visibility = View.VISIBLE
+                layoutSearchError.isVisible = true
                 errorImage.setImageResource(R.drawable.nothing_found)
                 errorMessage.text = getString(R.string.error_search_nothing_found)
-                buttonUpdateErrorSearch.visibility = View.GONE
+                buttonUpdateErrorSearch.isVisible = false
             }
 
             ErrorSearch.CONNECTION_PROBLEMS -> {
-                layoutSearchError.visibility = View.VISIBLE
+                layoutSearchError.isVisible = true
                 errorImage.setImageResource(R.drawable.connection_problems)
                 errorMessage.text = getString(R.string.error_search_connection_problems)
-                buttonUpdateErrorSearch.visibility = View.VISIBLE
+                buttonUpdateErrorSearch.isVisible = true
             }
 
-            else -> layoutSearchError.visibility = View.GONE
+            else -> layoutSearchError.isVisible = false
         }
     }
 
@@ -140,9 +141,11 @@ class SearchActivity : AppCompatActivity() {
             val inputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+            layoutSearchError.isVisible = false
             adapter.tracks.clear()
             adapter.notifyDataSetChanged()
         }
+
 
         buttonUpdateErrorSearch.setOnClickListener {
             requestTrack(inputEditText.text.toString())
@@ -155,10 +158,13 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.isNullOrEmpty()) {
-                    clearButton.visibility = View.GONE
+                    clearButton.isVisible = false
+                    layoutSearchError.isVisible = false
+                    adapter.tracks.clear()
+                    adapter.notifyDataSetChanged()
                 } else {
                     inputValue = s.toString()
-                    clearButton.visibility = View.VISIBLE
+                    clearButton.isVisible = true
                 }
             }
 
