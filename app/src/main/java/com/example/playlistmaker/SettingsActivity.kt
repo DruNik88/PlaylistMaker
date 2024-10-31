@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     @SuppressLint("IntentReset")
@@ -43,6 +44,13 @@ class SettingsActivity : AppCompatActivity() {
             val url: Uri = Uri.parse(getString(R.string.uri_agreement_setting))
             val openLink = Intent(Intent.ACTION_VIEW, url)
             startActivity(openLink)
+        }
+
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        themeSwitcher.isChecked = (applicationContext as App).currentSwitchTheme()
+
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            (applicationContext as App).switchTheme(checked)
         }
     }
 }
