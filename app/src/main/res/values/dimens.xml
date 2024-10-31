@@ -11,4 +11,7 @@
     <dimen name="track_view_image_view_artwork_height">45dp</dimen>
     <dimen name="track_view_image_view_arrow_forward_width">24dp</dimen>
     <dimen name="track_view_image_view_arrow_forward_height">24dp</dimen>
+    <dimen name="activity_search_image_view_error_width">120dp</dimen>
+    <dimen name="activity_search_image_view_error_height">120dp</dimen>
+    <dimen name="activity_search_recycler_text_error_margin_top">16dp</dimen>
 </resources>

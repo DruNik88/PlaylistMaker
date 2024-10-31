@@ -14,4 +14,9 @@
     <string name="theme_support_settings">"Сообщение разработчикам и разработчицам приложения Playlist Maker"</string>
     <string name="uri_support_setting">mailto:diyavolik007@yandex.ru</string>
     <string name="uri_agreement_setting">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="nothing_found">Ничего не найдено</string>
+    <string name="something_went_wrong">Что то пошло не так</string>
+    <string name="error_search_connection_problems">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="error_search_nothing_found">Ничего не найдено</string>
+    <string name="update">Обновить</string>
 </resources>
