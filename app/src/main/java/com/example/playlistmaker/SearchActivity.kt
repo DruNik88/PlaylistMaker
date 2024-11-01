@@ -74,6 +74,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handlerTap(track: Track) {
         userHistory.addTrackListHistory(track)
+        Log.d("tap", "list: ${userHistory.getListHistory()}")
     }
 
     private fun definitionState() {
@@ -84,35 +85,25 @@ class SearchActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun displayedList(list: State) {
-        when (list) {
+    private fun displayedList(stateList: State) {
+        when (stateList) {
             State.TRACK_HISTORY_LIST -> {
                 trackListHistory = userHistory.getListHistory()
+                Log.d("list1","listHistory: $trackListHistory")
                 if (trackListHistory.isEmpty()) {
-                    headHistoryViews.isVisible = false
-                    buttonClearHistory.isVisible = false
+                    hideViewHistory()
                 } else {
-                    headHistoryViews.isVisible = true
-                    buttonClearHistory.isVisible = true
+                    showViewHistory()
                     adapter.tracks.clear()
                     adapter.tracks.addAll(trackListHistory)
-                    Log.d("History", "List History: $trackListHistory")
+                    Log.d("list2","listHistory: $trackListHistory")
                     adapter.notifyDataSetChanged()
-                    Log.d("New", "new: ${adapter.notifyDataSetChanged()}")
-                    userHistory.saveSharedPrefs(userHistory.getListHistory())
-                    buttonClearHistory.setOnClickListener {
-                        userHistory.clearHistory()
-                        adapter.tracks.clear()
-                        adapter.notifyDataSetChanged()
-                    }
-
-
+                    clearButtonHistory()
                 }
             }
 
             State.TRACK_LIST -> {
-                headHistoryViews.isVisible = false
-                buttonClearHistory.isVisible = false
+                hideViewHistory()
                 inputEditText.setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         if (inputEditText.text.isNotEmpty()) {
@@ -122,6 +113,28 @@ class SearchActivity : AppCompatActivity() {
                     }
                     false
                 }
+            }
+        }
+    }
+
+    private fun showViewHistory() {
+        headHistoryViews.isVisible = true
+        buttonClearHistory.isVisible = true
+    }
+
+    private fun hideViewHistory() {
+        headHistoryViews.isVisible = false
+        buttonClearHistory.isVisible = false
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun clearButtonHistory() {
+        buttonClearHistory.setOnClickListener {
+            userHistory.clearHistory()
+            adapter.tracks.clear()
+            adapter.notifyDataSetChanged()
+            if (trackListHistory.isEmpty()) {
+                hideViewHistory()
             }
         }
     }
@@ -140,12 +153,14 @@ class SearchActivity : AppCompatActivity() {
                         val trackList = response.body()?.results ?: arrayListOf()
                         if (trackList.isNotEmpty()) {
                             trackListResponse = trackList
+
                             Log.d("track", "List History: $trackListResponse")
+
                             searchProblems(ErrorSearch.INVISIBLE)
                             adapter.tracks.clear()
                             adapter.tracks.addAll(trackList)
-                            Log.d("tracks", "tracksList: $trackListHistory")
                             adapter.notifyDataSetChanged()
+
                             Log.d("tracksNew", "tracksNew: ${adapter.notifyDataSetChanged()}")
                         }
                     } else {
@@ -225,6 +240,7 @@ class SearchActivity : AppCompatActivity() {
             layoutSearchError.isVisible = false
             adapter.tracks.clear()
             adapter.notifyDataSetChanged()
+            displayedList(State.TRACK_HISTORY_LIST)
         }
 
 
@@ -251,10 +267,16 @@ class SearchActivity : AppCompatActivity() {
                     if (adapter.tracks.isNotEmpty()) {
                         adapter.tracks.clear()
                         adapter.notifyDataSetChanged()
+                        displayedList(State.TRACK_HISTORY_LIST)
                     }
                 } else {
                     inputValue = s.toString()
                     clearButton.isVisible = true
+                    if (adapter.tracks.isNotEmpty()) {
+                        adapter.tracks.clear()
+                        adapter.notifyDataSetChanged()
+                        displayedList(State.TRACK_LIST)
+                    }
                 }
             }
 
@@ -269,6 +291,11 @@ class SearchActivity : AppCompatActivity() {
         definitionState()
 
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        userHistory.saveSharedPrefs(trackListHistory)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

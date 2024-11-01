@@ -15,20 +15,20 @@ class App : Application() {
     private var darkTheme = false
     private lateinit var sharedPrefs: SharedPreferences
 
+
     override fun onCreate() {
         super.onCreate()
 
         sharedPrefs = getSharedPreferences(SHARED_PREFERENCES_PLAYLIST_MAKER, MODE_PRIVATE)
         val themeSetting = sharedPrefs.getBoolean(KEY_EDIT_THEME, currentSwitchTheme())
-
         switchTheme(themeSetting)
-    }
+       }
 
     private fun currentDeviceTheme(): Boolean = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
     fun currentSwitchTheme() = sharedPrefs.getBoolean(KEY_EDIT_THEME, currentDeviceTheme())
 
-    fun saveDefaultTheme() {
+    fun saveTheme() {
         sharedPrefs.edit()
             .putBoolean(KEY_EDIT_THEME, darkTheme)
             .apply()

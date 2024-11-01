@@ -15,6 +15,8 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val appInstance = (applicationContext as App)
+
         val toolbar: Toolbar = findViewById(R.id.toolbar_settings)
         setSupportActionBar(toolbar)
 
@@ -47,11 +49,13 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        themeSwitcher.isChecked = (applicationContext as App).currentSwitchTheme()
+        themeSwitcher.isChecked = appInstance.currentSwitchTheme()
 
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            (applicationContext as App).switchTheme(checked)
+            appInstance.switchTheme(checked)
         }
+
+        appInstance.saveTheme()
     }
 }
 
