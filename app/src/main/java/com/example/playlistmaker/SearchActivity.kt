@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -42,6 +41,7 @@ class SearchActivity : AppCompatActivity() {
         const val SAVE_VALUE = "SAVE_VALUE"
         const val DEFAULT_VALUE = ""
         const val BASEURL = "https://itunes.apple.com"
+        const val ZERO = 0
     }
 
     private var inputValue: String = DEFAULT_VALUE
@@ -74,7 +74,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handlerTap(track: Track) {
         userHistory.addTrackListHistory(track)
-        Log.d("tap", "list: ${userHistory.getListHistory()}")
     }
 
     private fun definitionState() {
@@ -89,14 +88,12 @@ class SearchActivity : AppCompatActivity() {
         when (stateList) {
             State.TRACK_HISTORY_LIST -> {
                 trackListHistory = userHistory.getListHistory()
-                Log.d("list1","listHistory: $trackListHistory")
                 if (trackListHistory.isEmpty()) {
                     hideViewHistory()
                 } else {
                     showViewHistory()
                     adapter.tracks.clear()
                     adapter.tracks.addAll(trackListHistory)
-                    Log.d("list2","listHistory: $trackListHistory")
                     adapter.notifyDataSetChanged()
                     clearButtonHistory()
                 }
@@ -139,7 +136,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-
     private fun requestTrack(searchInput: String) {
         itunesService.search(searchInput).enqueue(object :
             Callback<ItunesResponse> {
@@ -152,16 +148,23 @@ class SearchActivity : AppCompatActivity() {
                     if ((response.body()?.resultCount ?: 0) > 0) {
                         val trackList = response.body()?.results ?: arrayListOf()
                         if (trackList.isNotEmpty()) {
+
                             trackListResponse = trackList
 
-                            Log.d("track", "List History: $trackListResponse")
+
+                            val filterTrackList: List<Track> = trackListResponse
+                                .filter{ track ->
+                                    !track.trackName.isNullOrEmpty() &&
+                                    !track.artistName.isNullOrEmpty() &&
+                                    track.trackTimeMillis > ZERO
+                            }
 
                             searchProblems(ErrorSearch.INVISIBLE)
                             adapter.tracks.clear()
-                            adapter.tracks.addAll(trackList)
+
+                            adapter.tracks.addAll(filterTrackList)
                             adapter.notifyDataSetChanged()
 
-                            Log.d("tracksNew", "tracksNew: ${adapter.notifyDataSetChanged()}")
                         }
                     } else {
                         searchProblems(ErrorSearch.NOT_FOUND)
