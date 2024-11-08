@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutTrack"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -40,11 +41,12 @@
 
             <TextView
                 android:id="@+id/artistName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
 
                 app:drawableEndCompat="@drawable/ic_ellipse"
-                tools:text="The Beatles"
+                tools:text="The Beatles The Beatles The Beatles The Beatles The Beatles The Beatles"
 
                 style="@style/TextViewArtistName" />
 
