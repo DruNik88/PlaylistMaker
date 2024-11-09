@@ -1,7 +1,5 @@
 package com.example.playlistmaker
 
-import android.content.Context
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -35,12 +33,6 @@ class TrackViewHolder (
         sourceArtistName.text= model.artistName
         sourceTrackTime.text= SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
         sourceArtistName.requestLayout()
-    }
-    private fun dpToPx(dp: Float, context: Context): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp,
-            context.resources.displayMetrics).toInt()
     }
 
     companion object{
