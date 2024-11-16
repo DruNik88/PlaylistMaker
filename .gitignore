@@ -1,10 +1,36 @@
-*.iml
-.gradle
-/local.properties
-.idea
+# Системные файлы ОС
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+Thumbs.db
+
+# Файлы IDE
+.idea/
+*.iml
+
+# Локальные настройки Android Studio
+.gradle/
+caches/
 local.properties
+.Daemon/
+.Jdks/
+.Kotlin-profile/
+native/
+build/
+
+# Файлы сборки
+*.apk
+*.aab
+
+# Логи
+*.log
+
+# Кэш-папки
+/caches/
+/outputs/
+
+# Файлы настроек JVM/IDE
+*.vmoptions
+*.jks
+
+# Локальные файлы пользовательских путей
+*.keystore
+*.properties

@@ -16,6 +16,18 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     companion object {
         const val RADIUS_IMAGE = 8.0F
+        const val KEY_TRACK = "track"
+    }
+
+    enum class TrackApi {
+        TRACK_NAME,
+        ARTIST_NAME,
+        TRACK_TIME,
+        ART_WORK_URL,
+        COLLECTION_NAME,
+        RELEASE_DATE,
+        GENRE,
+        COUNTRY
     }
 
     private lateinit var trackNameApiAudioPlayer: TextView
@@ -41,32 +53,59 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun dataAudioPlayerActivity(track: Track) {
-        trackNameApiAudioPlayer.text = track.trackName
-        artistNameApiAudioPlayer.text = track.artistName
-        trackTimeApiAudioPlayer.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        playbackProgress.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        releaseDateApiAudioPlayer.text = getYear(track)
-        primaryGenreNameApiAudioPlayer.text = track.primaryGenreName
-        countryApiAudioPlayer.text = track.country
+        trackNameApiAudioPlayer.text = audioPlayerApi(track, TrackApi.TRACK_NAME).toString()
+        artistNameApiAudioPlayer.text = audioPlayerApi(track, TrackApi.ARTIST_NAME).toString()
+        trackTimeApiAudioPlayer.text = audioPlayerApi(track, TrackApi.TRACK_TIME).toString()
+        playbackProgress.text = audioPlayerApi(track, TrackApi.TRACK_TIME).toString()
+        audioPlayerApi(track, TrackApi.RELEASE_DATE)
+        audioPlayerApi(track, TrackApi.GENRE)
+        audioPlayerApi(track, TrackApi.COUNTRY)
+        audioPlayerApi(track, TrackApi.ART_WORK_URL)
+        audioPlayerApi(track, TrackApi.COLLECTION_NAME)
     }
 
-    private fun getCollectionName(track: Track) {
-        if (track.collectionName.isNullOrEmpty()) {
-            collectionNameGroup.visibility = View.GONE
-        } else {
-            collectionNameApiAudioPlayer.text = track.collectionName
+    private fun audioPlayerApi(track: Track, api: TrackApi) {
+        when (api) {
+            TrackApi.TRACK_NAME -> track.trackName
+            TrackApi.ARTIST_NAME -> track.artistName
+            TrackApi.TRACK_TIME -> SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+            TrackApi.ART_WORK_URL -> {
+                val imageUrl = getCoverArtwork(track)
+                Glide.with(applicationContext)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_placeholder_512)
+                    .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, applicationContext)))
+                    .into(artworkApiAudioPlayer)
+            }
+            TrackApi.COLLECTION_NAME -> {
+                if (track.collectionName.isNullOrEmpty()) {
+                    collectionNameGroup.visibility = View.GONE
+                } else {
+                    collectionNameApiAudioPlayer.text = track.collectionName
+                }
+            }
+            TrackApi.RELEASE_DATE -> {
+                if (track.releaseDate.isNullOrEmpty()) {
+                    releaseDateApiAudioPlayer.text = getString(R.string.something_went_wrong)
+                } else {
+                    releaseDateApiAudioPlayer.text = getYear(track)
+                }
+            }
+            TrackApi.GENRE -> {
+                if (track.primaryGenreName.isNullOrEmpty()) {
+                    primaryGenreNameApiAudioPlayer.text = getString(R.string.something_went_wrong)
+                } else {
+                    primaryGenreNameApiAudioPlayer.text = track.primaryGenreName
+                }
+            }
+            TrackApi.COUNTRY -> {
+                if (track.country.isNullOrEmpty()) {
+                    countryApiAudioPlayer.text = getString(R.string.something_went_wrong)
+                } else {
+                    countryApiAudioPlayer.text = track.country
+                }
+            }
         }
-    }
-
-    private fun getArtworkUrl512(track: Track) {
-        val imageUrl = getCoverArtwork(track)
-        Glide.with(applicationContext)
-            .load(imageUrl)
-            .placeholder(R.drawable.ic_placeholder_512)
-            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, applicationContext)))
-            .into(artworkApiAudioPlayer)
     }
 
     private fun getCoverArtwork(track: Track) =
@@ -78,7 +117,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_player)
 
-        val track = intent.getParcelableExtra<Track>("track")
+        val track = intent.getParcelableExtra<Track>(KEY_TRACK)
 
         trackNameApiAudioPlayer = findViewById(R.id.track_name_api_audio_player)
         collectionNameGroup = findViewById(R.id.collection_name_group)
@@ -93,13 +132,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         toolBar()
 
-        if (track != null) {
-            dataAudioPlayerActivity(track)
-            getArtworkUrl512(track)
-            getCollectionName(track)
-        }
-
+        if (track != null) dataAudioPlayerActivity(track)
 
     }
 }
-

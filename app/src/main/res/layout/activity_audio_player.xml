@@ -231,7 +231,7 @@
         app:layout_constraintTop_toTopOf="@id/add_playlist"
 
         android:src="@drawable/ic_playback_control"
-        android:background="@color/white"
+        style="@style/PlaybackControlBackgroundAudioPlayer"
         />
 
     <ImageButton

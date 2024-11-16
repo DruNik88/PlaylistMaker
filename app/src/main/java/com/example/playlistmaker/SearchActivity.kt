@@ -79,7 +79,7 @@ class SearchActivity : AppCompatActivity() {
         dataAudioPlayerActivity(track)
     }
 
-    private fun dataAudioPlayerActivity(track: Track){
+    private fun dataAudioPlayerActivity(track: Track) {
         intent = Intent(this, AudioPlayerActivity::class.java)
         intent.putExtra("track", track)
         val t = intent.getParcelableExtra<Track>("track")
@@ -183,15 +183,12 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
-    private fun filterTrackList(tracList: MutableList<Track>):List<Track>{
+    private fun filterTrackList(tracList: MutableList<Track>): List<Track> {
         val filterTrackList: List<Track> = tracList
             .filter { track ->
                 !track.trackName.isNullOrEmpty() &&
                         !track.artistName.isNullOrEmpty() &&
-                        track.trackTimeMillis > ZERO &&
-                        !track.releaseDate.isNullOrEmpty() &&
-                        !track.primaryGenreName.isNullOrEmpty() &&
-                        !track.country.isNullOrEmpty()
+                        track.trackTimeMillis > ZERO
             }
         return filterTrackList
     }
