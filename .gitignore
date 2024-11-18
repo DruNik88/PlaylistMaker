@@ -5,16 +5,19 @@ Thumbs.db
 # Файлы IDE
 .idea/
 *.iml
+.tmp/
 
 # Локальные настройки Android Studio
 .gradle/
 caches/
 local.properties
-.Daemon/
-.Jdks/
-.Kotlin-profile/
+daemon/
+jdks/
+kotlin-profile/
 native/
 build/
+
+
 
 # Файлы сборки
 *.apk
@@ -34,3 +37,4 @@ build/
 # Локальные файлы пользовательских путей
 *.keystore
 *.properties
+

@@ -19,17 +19,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         const val KEY_TRACK = "track"
     }
 
-    enum class TrackApi {
-        TRACK_NAME,
-        ARTIST_NAME,
-        TRACK_TIME,
-        ART_WORK_URL,
-        COLLECTION_NAME,
-        RELEASE_DATE,
-        GENRE,
-        COUNTRY
-    }
-
     private lateinit var trackNameApiAudioPlayer: TextView
     private lateinit var artistNameApiAudioPlayer: TextView
     private lateinit var trackTimeApiAudioPlayer: TextView
@@ -53,65 +42,28 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun dataAudioPlayerActivity(track: Track) {
-        trackNameApiAudioPlayer.text = audioPlayerApi(track, TrackApi.TRACK_NAME).toString()
-        artistNameApiAudioPlayer.text = audioPlayerApi(track, TrackApi.ARTIST_NAME).toString()
-        trackTimeApiAudioPlayer.text = audioPlayerApi(track, TrackApi.TRACK_TIME).toString()
-        playbackProgress.text = audioPlayerApi(track, TrackApi.TRACK_TIME).toString()
-        audioPlayerApi(track, TrackApi.RELEASE_DATE)
-        audioPlayerApi(track, TrackApi.GENRE)
-        audioPlayerApi(track, TrackApi.COUNTRY)
-        audioPlayerApi(track, TrackApi.ART_WORK_URL)
-        audioPlayerApi(track, TrackApi.COLLECTION_NAME)
-    }
-
-    private fun audioPlayerApi(track: Track, api: TrackApi) {
-        when (api) {
-            TrackApi.TRACK_NAME -> track.trackName
-            TrackApi.ARTIST_NAME -> track.artistName
-            TrackApi.TRACK_TIME -> SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-            TrackApi.ART_WORK_URL -> {
-                val imageUrl = getCoverArtwork(track)
-                Glide.with(applicationContext)
-                    .load(imageUrl)
-                    .placeholder(R.drawable.ic_placeholder_512)
-                    .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, applicationContext)))
-                    .into(artworkApiAudioPlayer)
-            }
-            TrackApi.COLLECTION_NAME -> {
-                if (track.collectionName.isNullOrEmpty()) {
-                    collectionNameGroup.visibility = View.GONE
-                } else {
-                    collectionNameApiAudioPlayer.text = track.collectionName
-                }
-            }
-            TrackApi.RELEASE_DATE -> {
-                if (track.releaseDate.isNullOrEmpty()) {
-                    releaseDateApiAudioPlayer.text = getString(R.string.something_went_wrong)
-                } else {
-                    releaseDateApiAudioPlayer.text = getYear(track)
-                }
-            }
-            TrackApi.GENRE -> {
-                if (track.primaryGenreName.isNullOrEmpty()) {
-                    primaryGenreNameApiAudioPlayer.text = getString(R.string.something_went_wrong)
-                } else {
-                    primaryGenreNameApiAudioPlayer.text = track.primaryGenreName
-                }
-            }
-            TrackApi.COUNTRY -> {
-                if (track.country.isNullOrEmpty()) {
-                    countryApiAudioPlayer.text = getString(R.string.something_went_wrong)
-                } else {
-                    countryApiAudioPlayer.text = track.country
-                }
-            }
-        }
+        val imageUrl = getCoverArtwork(track)
+        Glide.with(applicationContext)
+            .load(imageUrl)
+            .placeholder(R.drawable.ic_placeholder_512)
+            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, applicationContext)))
+            .into(artworkApiAudioPlayer)
+        trackNameApiAudioPlayer.text = track.trackName
+        artistNameApiAudioPlayer.text = track.artistName
+        playbackProgress.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        trackTimeApiAudioPlayer.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        track.collectionName?.let{collectionNameApiAudioPlayer.text = it}
+            ?: run{collectionNameGroup.visibility = View.GONE}
+        track.releaseDate?.let{releaseDateApiAudioPlayer.text = it.substringBefore("-")}
+            ?: run{getString(R.string.something_went_wrong)}
+        track.primaryGenreName?.let{primaryGenreNameApiAudioPlayer.text = it}
+            ?: run{primaryGenreNameApiAudioPlayer.text = getString(R.string.something_went_wrong)}
+        track.country?.let{ countryApiAudioPlayer.text = it}
+            ?: run{countryApiAudioPlayer.text = getString(R.string.something_went_wrong)}
     }
 
     private fun getCoverArtwork(track: Track) =
         track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
-
-    private fun getYear(track: Track) = track.releaseDate?.substringBefore("-")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
