@@ -14,4 +14,14 @@
     <dimen name="activity_search_image_view_error_width">120dp</dimen>
     <dimen name="activity_search_image_view_error_height">120dp</dimen>
     <dimen name="activity_search_recycler_text_error_margin_top">16dp</dimen>
+    <dimen name="text_height_characteristic_tack_audio_player">32dp</dimen>
+    <dimen name="text_height_characteristic_api_tack_audio_player">32dp</dimen>
+    <dimen name="text_indent_start_characteristic_api_tack_audio_player">16dp</dimen>
+    <dimen name="constraint_guide_16">16dp</dimen>
+    <dimen name="constraint_bottom_characteristic">24dp</dimen>
+    <dimen name="size_button_playlist_favourite_width_height">48dp</dimen>
+    <dimen name="size_button_playback_width_height">100dp</dimen>
+    <dimen name="constraint_guide_24">24dp</dimen>
+    <dimen name="margin_top_bot_artwork">24dp</dimen>
+    <dimen name="margin_start_end_button_playlist_favourite">24dp</dimen>
 </resources>

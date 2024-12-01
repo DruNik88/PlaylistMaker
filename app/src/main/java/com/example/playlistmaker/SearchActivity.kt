@@ -2,9 +2,11 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -74,6 +76,15 @@ class SearchActivity : AppCompatActivity() {
 
     private fun handlerTap(track: Track) {
         userHistory.addTrackListHistory(track)
+        dataAudioPlayerActivity(track)
+    }
+
+    private fun dataAudioPlayerActivity(track: Track) {
+        intent = Intent(this, AudioPlayerActivity::class.java)
+        intent.putExtra("track", track)
+        val t = intent.getParcelableExtra<Track>("track")
+        Log.d("t", "crash = $t")
+        startActivity(intent)
     }
 
     private fun definitionState() {
@@ -151,18 +162,10 @@ class SearchActivity : AppCompatActivity() {
 
                             trackListResponse = trackList
 
-
-                            val filterTrackList: List<Track> = trackListResponse
-                                .filter{ track ->
-                                    !track.trackName.isNullOrEmpty() &&
-                                    !track.artistName.isNullOrEmpty() &&
-                                    track.trackTimeMillis > ZERO
-                            }
-
                             searchProblems(ErrorSearch.INVISIBLE)
                             adapter.tracks.clear()
 
-                            adapter.tracks.addAll(filterTrackList)
+                            adapter.tracks.addAll(filterTrackList(trackList))
                             adapter.notifyDataSetChanged()
 
                         }
@@ -179,6 +182,17 @@ class SearchActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun filterTrackList(tracList: MutableList<Track>): List<Track> {
+        val filterTrackList: List<Track> = tracList
+            .filter { track ->
+                !track.trackName.isNullOrEmpty() &&
+                        !track.artistName.isNullOrEmpty() &&
+                        track.trackTimeMillis > ZERO
+            }
+        return filterTrackList
+    }
+
 
     @SuppressLint("NotifyDataSetChanged")
     private fun searchProblems(errorSearch: ErrorSearch) {
