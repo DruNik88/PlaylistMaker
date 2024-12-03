@@ -24,4 +24,5 @@
     <dimen name="constraint_guide_24">24dp</dimen>
     <dimen name="margin_top_bot_artwork">24dp</dimen>
     <dimen name="margin_start_end_button_playlist_favourite">24dp</dimen>
+    <dimen name="search_progress_bar_layout_width_height">44dp</dimen>
 </resources>

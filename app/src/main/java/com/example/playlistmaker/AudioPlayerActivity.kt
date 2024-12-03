@@ -1,6 +1,11 @@
 package com.example.playlistmaker
 
+import android.annotation.SuppressLint
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,9 +20,20 @@ import java.util.Locale
 class AudioPlayerActivity : AppCompatActivity() {
 
     companion object {
-        const val RADIUS_IMAGE = 8.0F
-        const val KEY_TRACK = "track"
+        private const val RADIUS_IMAGE = 8.0F
+        private const val KEY_TRACK = "track"
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val DELAY = 1000L
+        private const val AVAILABLE_TIME = 30000L
+
     }
+
+    private var playerState = STATE_DEFAULT
+    private var mediaPlayer = MediaPlayer()
+    private var mainThreadHandler: Handler? = null
 
     private lateinit var trackNameApiAudioPlayer: TextView
     private lateinit var artistNameApiAudioPlayer: TextView
@@ -29,6 +45,98 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var collectionNameGroup: Group
     private lateinit var artworkApiAudioPlayer: ImageView
     private lateinit var playbackProgress: TextView
+    private lateinit var playbackControl: ImageView
+
+    private fun preparePlayer(track: Track) {
+        mediaPlayer.setDataSource(track.previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playbackControl.isEnabled = true
+            playerState = STATE_PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            playerState = STATE_PREPARED
+        }
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playbackControl.setImageDrawable(
+            getResources().getDrawable(
+                R.drawable.ic_pause_control,
+                null
+            )
+        )
+        playerState = STATE_PLAYING
+        mainThreadHandler?.post(createUpdateTimerAudioPlayer())
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun pausePlayer() {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.pause()
+            playbackControl.setImageDrawable(
+                getResources().getDrawable(
+                    R.drawable.ic_playback_control,
+                    null
+                )
+            )
+            playerState = STATE_PAUSED
+            mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
+        } else {
+            playbackControl.setImageDrawable(
+                getResources().getDrawable(
+                    R.drawable.ic_playback_control,
+                    null
+                )
+            )
+        }
+
+    }
+
+
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+            }
+        }
+    }
+
+
+    private fun createUpdateTimerAudioPlayer(): Runnable {
+        return object : Runnable {
+            @SuppressLint("UseCompatLoadingForDrawables")
+            override fun run() {
+                if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
+                    val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
+
+                    if (reverseTimer >= 0) {
+                        playbackProgress.text =
+                            SimpleDateFormat("mm:ss", Locale.getDefault()).format(reverseTimer)
+                        mainThreadHandler?.postDelayed(this, DELAY)
+                    } else {
+                        mainThreadHandler?.removeCallbacks(this)
+                        playbackControl.setImageDrawable(
+                            getResources().getDrawable(
+                                R.drawable.ic_playback_control,
+                                null
+                            )
+                        )
+                    }
+
+                } else {
+                    mainThreadHandler?.removeCallbacks(this)
+                }
+            }
+
+        }
+    }
 
     private fun toolBar() {
         val toolbar: Toolbar = findViewById(R.id.toolbar_audio_player)
@@ -50,16 +158,20 @@ class AudioPlayerActivity : AppCompatActivity() {
             .into(artworkApiAudioPlayer)
         trackNameApiAudioPlayer.text = track.trackName
         artistNameApiAudioPlayer.text = track.artistName
-        playbackProgress.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        trackTimeApiAudioPlayer.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        track.collectionName?.let{collectionNameApiAudioPlayer.text = it}
-            ?: run{collectionNameGroup.visibility = View.GONE}
-        track.releaseDate?.let{releaseDateApiAudioPlayer.text = it.substringBefore("-")}
-            ?: run{getString(R.string.something_went_wrong)}
-        track.primaryGenreName?.let{primaryGenreNameApiAudioPlayer.text = it}
-            ?: run{primaryGenreNameApiAudioPlayer.text = getString(R.string.something_went_wrong)}
-        track.country?.let{ countryApiAudioPlayer.text = it}
-            ?: run{countryApiAudioPlayer.text = getString(R.string.something_went_wrong)}
+//        playbackProgress.text =
+//            SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+        trackTimeApiAudioPlayer.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        track.collectionName?.let { collectionNameApiAudioPlayer.text = it }
+            ?: run { collectionNameGroup.visibility = View.GONE }
+        track.releaseDate?.let { releaseDateApiAudioPlayer.text = it.substringBefore("-") }
+            ?: run { getString(R.string.something_went_wrong) }
+        track.primaryGenreName?.let { primaryGenreNameApiAudioPlayer.text = it }
+            ?: run {
+                primaryGenreNameApiAudioPlayer.text = getString(R.string.something_went_wrong)
+            }
+        track.country?.let { countryApiAudioPlayer.text = it }
+            ?: run { countryApiAudioPlayer.text = getString(R.string.something_went_wrong) }
     }
 
     private fun getCoverArtwork(track: Track) =
@@ -68,6 +180,8 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_player)
+
+        mainThreadHandler = Handler(Looper.getMainLooper())
 
         val track = intent.getParcelableExtra<Track>(KEY_TRACK)
 
@@ -81,10 +195,33 @@ class AudioPlayerActivity : AppCompatActivity() {
         artworkApiAudioPlayer = findViewById(R.id.artwork_api_audio_player)
         collectionNameApiAudioPlayer = findViewById(R.id.collection_name_api_audio_player)
         playbackProgress = findViewById(R.id.playback_progress)
+        playbackControl = findViewById(R.id.playback_control)
 
         toolBar()
 
-        if (track != null) dataAudioPlayerActivity(track)
+        track?.let { dataAudioPlayerActivity(track) }
 
+        track?.let { preparePlayer(track) }
+
+        playbackControl.setOnClickListener {
+            playbackControl()
+        }
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (playerState == STATE_PLAYING) {
+            pausePlayer()
+        }
+        mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
+//        mainThreadHandler?.removeCallbacks(timerRunnable)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
+//        mainThreadHandler?.removeCallbacks(timerRunnable)
+        mediaPlayer.release()
     }
 }

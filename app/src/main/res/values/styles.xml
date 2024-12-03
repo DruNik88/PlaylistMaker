@@ -169,5 +169,6 @@
 
     <style name="PlaybackControlBackgroundAudioPlayer">
         <item name="android:background">@color/white</item>
+        <item name="android:enabled">false</item>
     </style>
 </resources>
