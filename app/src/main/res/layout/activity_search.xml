@@ -93,15 +93,13 @@
                 tools:text="@string/you_find" />
 
             <androidx.recyclerview.widget.RecyclerView
-
-                android:visibility="visible"
-
                 android:id="@+id/recyclerTrackView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/activity_search_recycler_text_error_margin_top"
                 android:layout_weight="1"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:visibility="visible"
                 tools:itemCount="3"
                 tools:listitem="@layout/track_view" />
 

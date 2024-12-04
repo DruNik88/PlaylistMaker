@@ -28,7 +28,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val STATE_PAUSED = 3
         private const val DELAY = 1000L
         private const val AVAILABLE_TIME = 30000L
-
     }
 
     private var playerState = STATE_DEFAULT
@@ -74,25 +73,15 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun pausePlayer() {
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-            playbackControl.setImageDrawable(
-                getResources().getDrawable(
-                    R.drawable.ic_playback_control,
-                    null
-                )
+        mediaPlayer.pause()
+        playbackControl.setImageDrawable(
+            getResources().getDrawable(
+                R.drawable.ic_playback_control,
+                null
             )
-            playerState = STATE_PAUSED
-            mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
-        } else {
-            playbackControl.setImageDrawable(
-                getResources().getDrawable(
-                    R.drawable.ic_playback_control,
-                    null
-                )
-            )
-        }
-
+        )
+        playerState = STATE_PAUSED
+        mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
     }
 
 
@@ -134,7 +123,6 @@ class AudioPlayerActivity : AppCompatActivity() {
                     mainThreadHandler?.removeCallbacks(this)
                 }
             }
-
         }
     }
 
@@ -158,8 +146,6 @@ class AudioPlayerActivity : AppCompatActivity() {
             .into(artworkApiAudioPlayer)
         trackNameApiAudioPlayer.text = track.trackName
         artistNameApiAudioPlayer.text = track.artistName
-//        playbackProgress.text =
-//            SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
         trackTimeApiAudioPlayer.text =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
         track.collectionName?.let { collectionNameApiAudioPlayer.text = it }
@@ -215,13 +201,11 @@ class AudioPlayerActivity : AppCompatActivity() {
             pausePlayer()
         }
         mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
-//        mainThreadHandler?.removeCallbacks(timerRunnable)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
-//        mainThreadHandler?.removeCallbacks(timerRunnable)
         mediaPlayer.release()
     }
 }
