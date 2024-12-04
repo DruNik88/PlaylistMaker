@@ -84,7 +84,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
     }
 
-
     private fun playbackControl() {
         when (playerState) {
             STATE_PLAYING -> {
@@ -109,18 +108,16 @@ class AudioPlayerActivity : AppCompatActivity() {
                         playbackProgress.text =
                             SimpleDateFormat("mm:ss", Locale.getDefault()).format(reverseTimer)
                         mainThreadHandler?.postDelayed(this, DELAY)
-                    } else {
-                        mainThreadHandler?.removeCallbacks(this)
-                        playbackControl.setImageDrawable(
-                            getResources().getDrawable(
-                                R.drawable.ic_playback_control,
-                                null
-                            )
-                        )
                     }
 
                 } else {
                     mainThreadHandler?.removeCallbacks(this)
+                    playbackControl.setImageDrawable(
+                        getResources().getDrawable(
+                            R.drawable.ic_playback_control,
+                            null
+                        )
+                    )
                 }
             }
         }
