@@ -71,6 +71,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="@dimen/search_progress_bar_layout_width_height"
+                android:layout_height="@dimen/search_progress_bar_layout_width_height"
+                android:indeterminate="true"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:layout_marginTop="148dp"
+                app:indicatorColor="@color/bright_blue"/>
+
             <TextView
                 android:id="@+id/headHistoryViews"
                 style="@style/TextHeadHistoryFind"
@@ -89,6 +99,7 @@
                 android:layout_marginTop="@dimen/activity_search_recycler_text_error_margin_top"
                 android:layout_weight="1"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:visibility="visible"
                 tools:itemCount="3"
                 tools:listitem="@layout/track_view" />
 
