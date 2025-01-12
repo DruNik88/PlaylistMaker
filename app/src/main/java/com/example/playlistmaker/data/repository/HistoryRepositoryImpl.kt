@@ -1,13 +1,16 @@
 package com.example.playlistmaker.data.repository
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.data.model.TrackData
+import com.example.playlistmaker.data.mapper.TrackOrListMapper
 import com.example.playlistmaker.data.model.TrackListHistory
+import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.domain.model.TrackList
+import com.example.playlistmaker.domain.repository.HistoryRepository
 import com.google.gson.Gson
 
-class TrackRepositoryImpl(
+class HistoryRepositoryImpl(
     val sharedPrefs: SharedPreferences,
-) : TrackRepository {
+) : HistoryRepository {
     companion object {
         const val COUNT_ITEMS = 10
         const val KEY_HISTORY_LIST = "track_list_history"
@@ -29,18 +32,20 @@ class TrackRepositoryImpl(
         }
     }
 
-    override fun addTrackListHistory(track: TrackData) {
-        if (trackListHistory.list.contains(track)) {
-            trackListHistory.list.remove(track)
+    override fun addTrackListHistory(track: Track) {
+        val trackData = TrackOrListMapper.trackDomainToTrackData(track)
+        if (trackListHistory.list.contains(trackData)) {
+            trackListHistory.list.remove(trackData)
         }
-        trackListHistory.list.add(0, track)
+        trackListHistory.list.add(0, trackData)
         if (trackListHistory.list.size > COUNT_ITEMS) {
             trackListHistory.list.removeAt(trackListHistory.list.lastIndex)
         }
     }
 
-    override fun getListHistory(): TrackListHistory {
-        return trackListHistory
+    override fun getListHistory(): TrackList {
+        val listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
+        return listDomain
     }
 
     override fun clearHistory() {

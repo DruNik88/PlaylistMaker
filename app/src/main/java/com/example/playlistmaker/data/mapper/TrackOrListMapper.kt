@@ -1,14 +1,14 @@
 package com.example.playlistmaker.data.mapper
 
-import com.example.playlistmaker.data.model.TrackData
+import com.example.playlistmaker.data.model.TrackHistory
 import com.example.playlistmaker.data.model.TrackListHistory
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.model.TrackList
 
 object TrackOrListMapper {
 
-    fun trackDomainToTrackData(track: Track): TrackData {
-        return TrackData(
+    fun trackDomainToTrackData(track: Track): TrackHistory {
+        return TrackHistory(
             trackId = track.trackId,
             trackName = track.trackName, // Название композиции
             artistName = track.artistName, // Имя исполнителя

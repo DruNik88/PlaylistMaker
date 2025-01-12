@@ -2,9 +2,9 @@ package com.example.playlistmaker.domain.interactor
 
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.model.TrackList
-import com.example.playlistmaker.domain.repository.TrackManager
+import com.example.playlistmaker.domain.repository.HistoryRepository
 
-class TrackManagerInteractorImpl(private val trackManager: TrackManager): TrackManagerInteractor {
+class HistoryInteractorImpl(private val trackManager: HistoryRepository): HistoryInteractor {
     override fun addTrackListHistory(track: Track) {
         trackManager.addTrackListHistory(track)
     }

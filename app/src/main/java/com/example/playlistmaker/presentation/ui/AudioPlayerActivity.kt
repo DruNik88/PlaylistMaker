@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui
+package com.example.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.domain.interactor.AudioPlayerManagerInteractor
+import com.example.playlistmaker.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.domain.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -47,7 +47,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var artworkApiAudioPlayer: ImageView
     private lateinit var playbackProgress: TextView
     private lateinit var playbackControl: ImageView
-    private lateinit var audioPlayerManager: AudioPlayerManagerInteractor
+    private lateinit var audioPlayerManager: AudioPlayerInteractor
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun startPlayer() {

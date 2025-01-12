@@ -3,7 +3,6 @@ package com.example.playlistmaker.data.network
 import android.util.Log
 import com.example.playlistmaker.data.model.ItunesRequest
 import com.example.playlistmaker.data.model.NetworkResponse
-import com.example.playlistmaker.data.repository.TrackNetworkClient
 
 class ItunesRetrofitNetworkClient : TrackNetworkClient {
     override fun doRequest(request: ItunesRequest): NetworkResponse {

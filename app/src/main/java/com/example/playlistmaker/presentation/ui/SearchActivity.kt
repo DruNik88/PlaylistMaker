@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui
+package com.example.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -24,7 +24,7 @@ import com.example.playlistmaker.R
 
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.domain.interactor.TrackListInteractor
-import com.example.playlistmaker.domain.interactor.TrackManagerInteractor
+import com.example.playlistmaker.domain.interactor.HistoryInteractor
 import com.example.playlistmaker.domain.model.Resource
 import com.example.playlistmaker.domain.model.Track
 import com.example.playlistmaker.domain.model.TrackList
@@ -66,9 +66,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var headHistoryViews: TextView
     private lateinit var buttonClearHistory: Button
     private lateinit var progressBar: ProgressBar
-    private lateinit var getUserHistory: TrackManagerInteractor
+    private lateinit var getUserHistory: HistoryInteractor
 
-    private var trackListResponse = listOf<Track>()
+    private var trackListResponse = TrackList(list = mutableListOf())
     private var trackListHistory = TrackList(list = mutableListOf())
 
     private fun clickDebounce(): Boolean {
@@ -105,16 +105,13 @@ class SearchActivity : AppCompatActivity() {
         when (stateList) {
             State.TRACK_HISTORY_LIST -> {
                 searchDebounce(State.TRACK_HISTORY_LIST)
-                adapter.tracks.clear()
-                adapter.notifyDataSetChanged()
+                adapter.clearOrUpdateTracks()
                 trackListHistory = getUserHistory.getListHistory()
                 if (trackListHistory.list.isEmpty()) {
                     hideViewHistory()
                 } else {
                     showViewHistory()
-                    adapter.tracks.clear()
-                    adapter.tracks.addAll(trackListHistory.list)
-                    adapter.notifyDataSetChanged()
+                    adapter.allUpdateTracks(trackListHistory)
                     clearButtonHistory()
                 }
             }
@@ -141,8 +138,7 @@ class SearchActivity : AppCompatActivity() {
     private fun clearButtonHistory() {
         buttonClearHistory.setOnClickListener {
             getUserHistory.clearHistory()
-            adapter.tracks.clear()
-            adapter.notifyDataSetChanged()
+            adapter.clearOrUpdateTracks()
             trackListHistory.list.clear()
             if (trackListHistory.list.isEmpty()) {
                 hideViewHistory()
@@ -182,13 +178,11 @@ class SearchActivity : AppCompatActivity() {
                                 recyclerView.isVisible = true
                                 progressBar.isVisible = false
 
-                                trackListResponse = trackList.data
+                                trackListResponse = TrackList(list = trackList.data.toMutableList())
 
                                 searchProblems(ErrorSearch.INVISIBLE)
 
-                                adapter.tracks.clear()
-                                adapter.tracks.addAll(trackList.data)
-                                adapter.notifyDataSetChanged()
+                                adapter.allUpdateTracks(trackListResponse)
                             }
 
                             is Resource.Error -> {
@@ -216,8 +210,7 @@ class SearchActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun searchProblems(errorSearch: ErrorSearch) {
         if (adapter.tracks.isNotEmpty()) {
-            adapter.tracks.clear()
-            adapter.notifyDataSetChanged()
+            adapter.clearOrUpdateTracks()
         }
         when (errorSearch) {
             ErrorSearch.NOT_FOUND -> {
@@ -259,9 +252,7 @@ class SearchActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-//        userHistory = TrackListHistory(applicationContext)
-
-        getUserHistory = Creator.provideGetTrackManagerInteractor()
+        getUserHistory = Creator.provideGetHistoryInteractor()
 
         toolbar.setNavigationIcon(R.drawable.vector_arrow_back)
         toolbar.setNavigationOnClickListener {
@@ -301,16 +292,14 @@ class SearchActivity : AppCompatActivity() {
                     clearButton.isVisible = false
                     layoutSearchError.isVisible = false
                     if (adapter.tracks.isNotEmpty()) {
-                        adapter.tracks.clear()
-                        adapter.notifyDataSetChanged()
+                        adapter.clearOrUpdateTracks()
                         displayedList(State.TRACK_HISTORY_LIST)
                     }
                 } else {
                     inputValue = s.toString()
                     clearButton.isVisible = true
                     if (adapter.tracks.isNotEmpty()) {
-                        adapter.tracks.clear()
-                        adapter.notifyDataSetChanged()
+                        adapter.clearOrUpdateTracks()
                         displayedList(State.TRACK_LIST)
                     }
                 }
@@ -325,8 +314,6 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         definitionState()
-
-
     }
 
     override fun onStop() {

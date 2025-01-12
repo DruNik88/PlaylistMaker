@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.repository
+package com.example.playlistmaker.data.network
 
 import com.example.playlistmaker.data.model.ItunesRequest
 import com.example.playlistmaker.data.model.NetworkResponse

@@ -1,6 +1,6 @@
 package com.example.playlistmaker.data.model
 
-data class TrackData (
+data class TrackHistory (
     val trackId: Long,
     val trackName: String?, // Название композиции
     val artistName: String?, // Имя исполнителя

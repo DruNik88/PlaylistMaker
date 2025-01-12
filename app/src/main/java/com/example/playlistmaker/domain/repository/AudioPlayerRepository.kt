@@ -4,8 +4,8 @@ import com.example.playlistmaker.domain.model.CurrentPositionAudioPlayer
 import com.example.playlistmaker.domain.model.StateAudioPlayer
 import com.example.playlistmaker.domain.model.Track
 
-interface AudioPlayerManager {
-    fun preparePlayer (track: Track, state: (StateAudioPlayer) -> Unit)
+interface AudioPlayerRepository {
+    fun preparePlayer (track: Track, state:(StateAudioPlayer) -> Unit)
     fun startPlayer()
     fun pausePlayer()
     fun release()
