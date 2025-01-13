@@ -1,6 +1,7 @@
 package com.example.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -37,8 +38,8 @@ class SettingsActivity : AppCompatActivity() {
 
         val imageSupport = findViewById<TextView>(R.id.write_to_support)
         imageSupport.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
+            val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.uri_support_setting)))
                 putExtra(
                     Intent.EXTRA_SUBJECT,
@@ -49,10 +50,12 @@ class SettingsActivity : AppCompatActivity() {
                     getString(R.string.message_support_settings)
                 )
             }
-            if (shareIntent.resolveActivity(packageManager) != null) {
-                startActivity(Intent.createChooser(shareIntent,getString(R.string.select_app)))
-            } else {
-                Toast.makeText(this, R.string.not_found_email_application, Toast.LENGTH_SHORT).show()
+
+            try {
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.select_app)))
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(this, R.string.not_found_email_application, Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
