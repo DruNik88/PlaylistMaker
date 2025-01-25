@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,8 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.playlistmaker.R
+import com.example.playlistmaker.application.dpToPx
+import com.example.playlistmaker.domain.model.Track
 
 
 class TrackViewHolder (
@@ -31,7 +32,7 @@ class TrackViewHolder (
             .into(sourceArtwork)
         sourceTrackName.text= model.trackName
         sourceArtistName.text= model.artistName
-        sourceTrackTime.text= SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
+        sourceTrackTime.text= model.trackTimeMillis
         sourceArtistName.requestLayout()
     }
 

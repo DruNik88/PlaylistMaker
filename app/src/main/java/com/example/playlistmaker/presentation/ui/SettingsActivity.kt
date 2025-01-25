@@ -1,16 +1,20 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.playlistmaker.R
+import com.example.playlistmaker.application.App
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
-    @SuppressLint("IntentReset")
+    @SuppressLint("IntentReset", "QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -34,11 +38,25 @@ class SettingsActivity : AppCompatActivity() {
 
         val imageSupport = findViewById<TextView>(R.id.write_to_support)
         imageSupport.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SENDTO).apply { type = "text/plain" }
-            shareIntent.setData(Uri.parse(getString(R.string.uri_support_setting)))
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.theme_support_settings))
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.message_support_settings))
-            startActivity(shareIntent)
+            val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.uri_support_setting)))
+                putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    getString(R.string.theme_support_settings)
+                )
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    getString(R.string.message_support_settings)
+                )
+            }
+
+            try {
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.select_app)))
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(this, R.string.not_found_email_application, Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
 
         val imageUserAgreement = findViewById<TextView>(R.id.user_agreement)

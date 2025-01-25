@@ -1,11 +1,9 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,6 +12,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.Group
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.R
+import com.example.playlistmaker.application.dpToPx
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.interactor.AudioPlayerInteractor
+import com.example.playlistmaker.domain.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -31,7 +34,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private var playerState = STATE_DEFAULT
-    private var mediaPlayer = MediaPlayer()
     private var mainThreadHandler: Handler? = null
 
     private lateinit var trackNameApiAudioPlayer: TextView
@@ -45,22 +47,11 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var artworkApiAudioPlayer: ImageView
     private lateinit var playbackProgress: TextView
     private lateinit var playbackControl: ImageView
-
-    private fun preparePlayer(track: Track) {
-        mediaPlayer.setDataSource(track.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playbackControl.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerState = STATE_PREPARED
-        }
-    }
+    private lateinit var audioPlayerManager: AudioPlayerInteractor
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun startPlayer() {
-        mediaPlayer.start()
+        audioPlayerManager.startPlayer()
         playbackControl.setImageDrawable(
             getResources().getDrawable(
                 R.drawable.ic_pause_control,
@@ -73,7 +64,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun pausePlayer() {
-        mediaPlayer.pause()
+        audioPlayerManager.pausePlayer()
         playbackControl.setImageDrawable(
             getResources().getDrawable(
                 R.drawable.ic_playback_control,
@@ -96,13 +87,13 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-
     private fun createUpdateTimerAudioPlayer(): Runnable {
         return object : Runnable {
             @SuppressLint("UseCompatLoadingForDrawables")
             override fun run() {
-                if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
-                    val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
+                if (playerState == STATE_PLAYING) {
+                    val reverseTimer =
+                        AVAILABLE_TIME - audioPlayerManager.getCurrentPosition().currentPosition
 
                     if (reverseTimer >= 0) {
                         playbackProgress.text =
@@ -143,8 +134,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             .into(artworkApiAudioPlayer)
         trackNameApiAudioPlayer.text = track.trackName
         artistNameApiAudioPlayer.text = track.artistName
-        trackTimeApiAudioPlayer.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        trackTimeApiAudioPlayer.text = track.trackTimeMillis
         track.collectionName?.let { collectionNameApiAudioPlayer.text = it }
             ?: run { collectionNameGroup.visibility = View.GONE }
         track.releaseDate?.let { releaseDateApiAudioPlayer.text = it.substringBefore("-") }
@@ -158,7 +148,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun getCoverArtwork(track: Track) =
-        track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
+        track.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -180,16 +170,19 @@ class AudioPlayerActivity : AppCompatActivity() {
         playbackProgress = findViewById(R.id.playback_progress)
         playbackControl = findViewById(R.id.playback_control)
 
+        audioPlayerManager = Creator.provideGetAudioPlayerManagerInteractor()
+
         toolBar()
 
         track?.let { dataAudioPlayerActivity(track) }
 
-        track?.let { preparePlayer(track) }
+        track?.let {
+            audioPlayerManager.preparePlayer(track) { state -> playerState = state.state }
+        }
 
         playbackControl.setOnClickListener {
             playbackControl()
         }
-
     }
 
     override fun onPause() {
@@ -203,6 +196,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
-        mediaPlayer.release()
+        audioPlayerManager.release()
     }
 }

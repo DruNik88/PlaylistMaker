@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -19,13 +20,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.api.ItunesApi
-import com.example.playlistmaker.api.ItunesResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.playlistmaker.R
+
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.domain.interactor.TrackListInteractor
+import com.example.playlistmaker.domain.interactor.HistoryInteractor
+import com.example.playlistmaker.domain.model.Resource
+import com.example.playlistmaker.domain.model.Track
+import com.example.playlistmaker.domain.model.TrackList
 
 class SearchActivity : AppCompatActivity() {
 
@@ -41,24 +43,17 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val NOT_FOUND = 1
         const val SAVE_VALUE = "SAVE_VALUE"
         const val DEFAULT_VALUE = ""
-        const val BASEURL = "https://itunes.apple.com"
-        const val ZERO = 0
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
+    private val getTrackList = Creator.provideGetTrackListInteractor()
+
     private var inputValue: String = DEFAULT_VALUE
     private var isClickAllowed = true
-
-    private val iTunesBaseUrl = BASEURL
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val itunesService = retrofit.create(ItunesApi::class.java)
 
     private lateinit var clearButton: ImageView
     private lateinit var inputEditText: EditText
@@ -69,13 +64,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var errorMessage: TextView
     private lateinit var buttonUpdateErrorSearch: Button
     private lateinit var headHistoryViews: TextView
-    private lateinit var userHistory: TrackListHistory
     private lateinit var buttonClearHistory: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var getUserHistory: HistoryInteractor
 
-
-    private var trackListResponse = mutableListOf<Track>()
-    private var trackListHistory = mutableListOf<Track>()
+    private var trackListResponse = TrackList(list = mutableListOf())
+    private var trackListHistory = TrackList(list = mutableListOf())
 
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
@@ -89,7 +83,7 @@ class SearchActivity : AppCompatActivity() {
     private val adapter = TrackAdapter { track -> if (clickDebounce()) handlerTap(track) }
 
     private fun handlerTap(track: Track) {
-        userHistory.addTrackListHistory(track)
+        getUserHistory.addTrackListHistory(track)
         dataAudioPlayerActivity(track)
     }
 
@@ -111,14 +105,13 @@ class SearchActivity : AppCompatActivity() {
         when (stateList) {
             State.TRACK_HISTORY_LIST -> {
                 searchDebounce(State.TRACK_HISTORY_LIST)
-                trackListHistory = userHistory.getListHistory()
-                if (trackListHistory.isEmpty()) {
+                adapter.clearOrUpdateTracks()
+                trackListHistory = getUserHistory.getListHistory()
+                if (trackListHistory.list.isEmpty()) {
                     hideViewHistory()
                 } else {
                     showViewHistory()
-                    adapter.tracks.clear()
-                    adapter.tracks.addAll(trackListHistory)
-                    adapter.notifyDataSetChanged()
+                    adapter.allUpdateTracks(trackListHistory)
                     clearButtonHistory()
                 }
             }
@@ -132,6 +125,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showViewHistory() {
         headHistoryViews.isVisible = true
+        recyclerView.isVisible = true
         buttonClearHistory.isVisible = true
     }
 
@@ -143,10 +137,10 @@ class SearchActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun clearButtonHistory() {
         buttonClearHistory.setOnClickListener {
-            userHistory.clearHistory()
-            adapter.tracks.clear()
-            adapter.notifyDataSetChanged()
-            if (trackListHistory.isEmpty()) {
+            getUserHistory.clearHistory()
+            adapter.clearOrUpdateTracks()
+            trackListHistory.list.clear()
+            if (trackListHistory.list.isEmpty()) {
                 hideViewHistory()
             }
         }
@@ -154,7 +148,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val searchRunnable = Runnable { requestTrack(inputEditText.text.toString()) }
+    private val searchRunnable = Runnable { requestTrack() }
 
     private fun searchDebounce(stateList: State) {
         when (stateList) {
@@ -167,68 +161,56 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestTrack(searchInput: String) {
+    private fun requestTrack() {
 
         recyclerView.isVisible = false
         progressBar.isVisible = true
 
-        itunesService.search(searchInput).enqueue(object :
-            Callback<ItunesResponse> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(
-                call: Call<ItunesResponse>,
-                response: Response<ItunesResponse>
-            ) {
-                if (response.code() == 200) {
+        getTrackList.searchTrackList(
+            expression = inputEditText.text.toString(),
+            consumer = object : TrackListInteractor.TrackListConsumer {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun consume(trackList: Resource<List<Track>>) {
+                    handler.post {
+                        when (trackList) {
+                            is Resource.Success -> {
 
-                    recyclerView.isVisible = true
-                    progressBar.isVisible = false
+                                recyclerView.isVisible = true
+                                progressBar.isVisible = false
 
-                    if ((response.body()?.resultCount ?: 0) > 0) {
-                        val trackList = response.body()?.results ?: arrayListOf()
-                        if (trackList.isNotEmpty()) {
+                                trackListResponse = TrackList(list = trackList.data.toMutableList())
 
-                            trackListResponse = trackList
+                                searchProblems(ErrorSearch.INVISIBLE)
 
-                            searchProblems(ErrorSearch.INVISIBLE)
-                            adapter.tracks.clear()
+                                adapter.allUpdateTracks(trackListResponse)
+                            }
 
-                            adapter.tracks.addAll(filterTrackList(trackList))
-                            adapter.notifyDataSetChanged()
+                            is Resource.Error -> {
+                                if (trackList.message == NOT_FOUND) {
 
+                                    progressBar.isVisible = false
+
+                                    Log.d("trackList.message", "${trackList.message}")
+                                    searchProblems(ErrorSearch.NOT_FOUND)
+                                } else {
+
+                                    progressBar.isVisible = false
+
+                                    Log.d("trackList.message", "${trackList.message}")
+                                    searchProblems(ErrorSearch.CONNECTION_PROBLEMS)
+                                }
+                            }
                         }
-                    } else {
-                        searchProblems(ErrorSearch.NOT_FOUND)
                     }
-                } else {
-                    searchProblems(ErrorSearch.NOT_FOUND)
                 }
             }
-
-            override fun onFailure(call: Call<ItunesResponse>, t: Throwable) {
-                progressBar.isVisible = false
-                searchProblems(ErrorSearch.CONNECTION_PROBLEMS)
-            }
-        })
+        )
     }
-
-    private fun filterTrackList(tracList: MutableList<Track>): List<Track> {
-        val filterTrackList: List<Track> = tracList
-            .filter { track ->
-                !track.trackName.isNullOrEmpty() &&
-                        !track.artistName.isNullOrEmpty() &&
-                        track.trackTimeMillis > ZERO &&
-                        !track.previewUrl.isNullOrEmpty()
-            }
-        return filterTrackList
-    }
-
 
     @SuppressLint("NotifyDataSetChanged")
     private fun searchProblems(errorSearch: ErrorSearch) {
         if (adapter.tracks.isNotEmpty()) {
-            adapter.tracks.clear()
-            adapter.notifyDataSetChanged()
+            adapter.clearOrUpdateTracks()
         }
         when (errorSearch) {
             ErrorSearch.NOT_FOUND -> {
@@ -239,6 +221,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             ErrorSearch.CONNECTION_PROBLEMS -> {
+                progressBar.isVisible = false
                 layoutSearchError.isVisible = true
                 errorImage.setImageResource(R.drawable.connection_problems)
                 errorMessage.text = getString(R.string.error_search_connection_problems)
@@ -269,7 +252,7 @@ class SearchActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-        userHistory = TrackListHistory(applicationContext)
+        getUserHistory = Creator.provideGetHistoryInteractor()
 
         toolbar.setNavigationIcon(R.drawable.vector_arrow_back)
         toolbar.setNavigationOnClickListener {
@@ -286,19 +269,15 @@ class SearchActivity : AppCompatActivity() {
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             layoutSearchError.isVisible = false
-            adapter.tracks.clear()
-            adapter.notifyDataSetChanged()
-            displayedList(State.TRACK_HISTORY_LIST)
+            definitionState()
         }
 
-
         buttonUpdateErrorSearch.setOnClickListener {
-            requestTrack(inputEditText.text.toString())
+            requestTrack()
         }
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -313,16 +292,14 @@ class SearchActivity : AppCompatActivity() {
                     clearButton.isVisible = false
                     layoutSearchError.isVisible = false
                     if (adapter.tracks.isNotEmpty()) {
-                        adapter.tracks.clear()
-                        adapter.notifyDataSetChanged()
+                        adapter.clearOrUpdateTracks()
                         displayedList(State.TRACK_HISTORY_LIST)
                     }
                 } else {
                     inputValue = s.toString()
                     clearButton.isVisible = true
                     if (adapter.tracks.isNotEmpty()) {
-                        adapter.tracks.clear()
-                        adapter.notifyDataSetChanged()
+                        adapter.clearOrUpdateTracks()
                         displayedList(State.TRACK_LIST)
                     }
                 }
@@ -337,13 +314,11 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         definitionState()
-
-
     }
 
     override fun onStop() {
         super.onStop()
-        userHistory.saveSharedPrefs(trackListHistory)
+        getUserHistory.saveSharedPrefs()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -355,5 +330,4 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         inputValue = savedInstanceState.getString(SAVE_VALUE, DEFAULT_VALUE)
     }
-
 }
