@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.domain.interactor.ThemeModeInteractor
+import com.example.playlistmaker.settings.domain.interactor.ThemeModeInteractor
 
 class App : Application() {
 
