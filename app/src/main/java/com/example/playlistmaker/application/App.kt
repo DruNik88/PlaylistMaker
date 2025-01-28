@@ -4,13 +4,13 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.settings.domain.interactor.ThemeModeInteractor
+import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
 
 class App : Application() {
 
     private var darkTheme = false
     private lateinit var sharedPrefs: SharedPreferences
-    private lateinit var getTheme: ThemeModeInteractor
+    private lateinit var getTheme: SettingsInteractor
 
 
     override fun onCreate() {
@@ -25,7 +25,7 @@ class App : Application() {
         switchTheme(themeSetting)
        }
 
-    fun currentSwitchTheme() = getTheme.getCurrentTheme()
+    fun currentSwitchTheme() = getTheme.getSettingTheme()
 
     fun saveTheme() = getTheme.saveTheme(themeMode = darkTheme)
 

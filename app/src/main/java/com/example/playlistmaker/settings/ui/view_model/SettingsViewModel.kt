@@ -1,12 +1,39 @@
 package com.example.playlistmaker.settings.ui.view_model
 
-import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
-import com.example.playlistmaker.sharing.domain.interactor.SharingInteractor
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
+import com.example.playlistmaker.application.App
+import com.example.playlistmaker.creator.Creator
 
 class SettingsViewModel(
-    private val sharingInteractor: SharingInteractor,
-    private val settingsInteractor: SettingsInteractor,
-) : ViewModel() {
-    // Основной код
+    application: Application,
+) : AndroidViewModel(application) {
+
+    private val shareButton = Creator.provideShareButton()
+
+    fun shareApp(appInstance: Context) {
+        shareButton.shareApp(appInstance)
+    }
+
+    fun openTerms(appInstance: Context) {
+        shareButton.openTerms(appInstance)
+    }
+
+    fun openSupport(appInstance: Context) {
+        shareButton.openSupport(appInstance)
+    }
+
+
+    fun getTheme(): Boolean {
+        return getApplication<App>().currentSwitchTheme()
+    }
+
+    fun getSwitchTheme(checked: Boolean) {
+        getApplication<App>().switchTheme(checked)
+    }
+
+    fun saveTheme() {
+        getApplication<App>().saveTheme()
+    }
 }

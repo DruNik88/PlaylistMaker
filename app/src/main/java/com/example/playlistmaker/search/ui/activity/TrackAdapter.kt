@@ -1,9 +1,9 @@
-package com.example.playlistmaker.search.ui
+package com.example.playlistmaker.search.ui.activity
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.player.domain.model.Track
+import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.model.TrackList
 
 

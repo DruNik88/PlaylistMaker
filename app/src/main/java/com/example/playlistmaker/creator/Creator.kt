@@ -11,8 +11,8 @@ import com.example.playlistmaker.search.data.repository.impl.TrackListRepository
 import com.example.playlistmaker.search.data.network.TrackNetworkClient
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.interactor.impl.AudioPlayerInteractorImpl
-import com.example.playlistmaker.settings.domain.interactor.ThemeModeInteractor
-import com.example.playlistmaker.settings.domain.interactor.impl.ThemeModeInteractorImpl
+import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
+import com.example.playlistmaker.settings.domain.interactor.impl.SettingsInteractorImpl
 import com.example.playlistmaker.search.domain.interactor.TrackListInteractor
 import com.example.playlistmaker.search.domain.interactor.impl.TrackListInteractorImpl
 import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
@@ -21,6 +21,10 @@ import com.example.playlistmaker.player.data.repository.AudioPlayerRepository
 import com.example.playlistmaker.search.data.repository.HistoryRepository
 import com.example.playlistmaker.settings.data.repository.SettingsRepository
 import com.example.playlistmaker.search.data.repository.TrackListRepository
+import com.example.playlistmaker.sharing.data.ExternalNavigator
+import com.example.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
+import com.example.playlistmaker.sharing.domain.interactor.SharingInteractor
+import com.example.playlistmaker.sharing.domain.interactor.impl.SharingInteractorImpl
 
 private const val SHARED_PREFERENCES_PLAYLIST_MAKER = "shared_preferences_playlist_maker"
 
@@ -45,8 +49,8 @@ object Creator {
         )
     }
 
-    fun provideGetThemeModeInteractor(applicationContext: Context): ThemeModeInteractor {
-        return ThemeModeInteractorImpl(
+    fun provideGetThemeModeInteractor(applicationContext: Context): SettingsInteractor {
+        return SettingsInteractorImpl(
             themeModeRepository = provideGetThemeModeRepository(
                 applicationContext
             )
@@ -81,6 +85,14 @@ object Creator {
 
     fun provideGetAudioPlayerManagerInteractor(): AudioPlayerInteractor {
         return AudioPlayerInteractorImpl(provideGetAudioPlayerRepository())
+    }
+
+    private fun provideExternalNavigator(): ExternalNavigator{
+        return ExternalNavigatorImpl()
+    }
+
+    fun provideShareButton(): SharingInteractor{
+        return SharingInteractorImpl(provideExternalNavigator())
     }
 }
 

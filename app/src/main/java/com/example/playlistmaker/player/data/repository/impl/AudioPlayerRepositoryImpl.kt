@@ -2,13 +2,13 @@ package com.example.playlistmaker.player.data.repository.impl
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.player.data.mapper.StateAudioPlayerMapper
-import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
-import com.example.playlistmaker.settings.data.model.CurrentPositionAudioPlayerData
+import com.example.playlistmaker.player.data.model.CurrentPositionAudioPlayerData
 import com.example.playlistmaker.player.data.model.StateAudioPlayerData
-import com.example.playlistmaker.domain.model.CurrentPositionAudioPlayer
+import com.example.playlistmaker.player.domain.model.CurrentPositionAudioPlayer
 import com.example.playlistmaker.player.domain.model.StateAudioPlayer
-import com.example.playlistmaker.player.domain.model.Track
 import com.example.playlistmaker.player.data.repository.AudioPlayerRepository
+import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
+import com.example.playlistmaker.search.domain.model.Track
 
 class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 

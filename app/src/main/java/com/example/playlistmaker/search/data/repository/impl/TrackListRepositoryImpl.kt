@@ -5,8 +5,8 @@ import com.example.playlistmaker.search.data.model.ItunesRequest
 import com.example.playlistmaker.search.data.model.ItunesResponse
 import com.example.playlistmaker.search.data.network.TrackNetworkClient
 import com.example.playlistmaker.search.domain.model.Resource
-import com.example.playlistmaker.player.domain.model.Track
 import com.example.playlistmaker.search.data.repository.TrackListRepository
+import com.example.playlistmaker.search.domain.model.Track
 
 class TrackListRepositoryImpl(private val trackNetworkClient: TrackNetworkClient) :
     TrackListRepository {

@@ -1,8 +1,8 @@
 package com.example.playlistmaker.player.data.repository
 
-import com.example.playlistmaker.domain.model.CurrentPositionAudioPlayer
+import com.example.playlistmaker.player.domain.model.CurrentPositionAudioPlayer
 import com.example.playlistmaker.player.domain.model.StateAudioPlayer
-import com.example.playlistmaker.player.domain.model.Track
+import com.example.playlistmaker.search.domain.model.Track
 
 interface AudioPlayerRepository {
     fun preparePlayer (track: Track, state:(StateAudioPlayer) -> Unit)

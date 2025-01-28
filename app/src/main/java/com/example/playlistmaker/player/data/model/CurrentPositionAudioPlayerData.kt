@@ -1,3 +1,3 @@
-package com.example.playlistmaker.settings.data.model
+package com.example.playlistmaker.player.data.model
 
 class CurrentPositionAudioPlayerData (val currentPosition: Int )

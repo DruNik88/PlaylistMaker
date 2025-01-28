@@ -2,7 +2,7 @@ package com.example.playlistmaker.search.data.mapper
 
 
 import com.example.playlistmaker.search.data.model.TrackApi
-import com.example.playlistmaker.player.domain.model.Track
+import com.example.playlistmaker.search.domain.model.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 

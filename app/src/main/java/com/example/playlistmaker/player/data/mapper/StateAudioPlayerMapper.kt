@@ -1,8 +1,8 @@
 package com.example.playlistmaker.player.data.mapper
 
-import com.example.playlistmaker.settings.data.model.CurrentPositionAudioPlayerData
+import com.example.playlistmaker.player.data.model.CurrentPositionAudioPlayerData
 import com.example.playlistmaker.player.data.model.StateAudioPlayerData
-import com.example.playlistmaker.domain.model.CurrentPositionAudioPlayer
+import com.example.playlistmaker.player.domain.model.CurrentPositionAudioPlayer
 import com.example.playlistmaker.player.domain.model.StateAudioPlayer
 
 object StateAudioPlayerMapper {

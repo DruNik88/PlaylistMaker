@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui
+package com.example.playlistmaker.search.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,12 +23,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.search.domain.interactor.TrackListInteractor
+import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
+import com.example.playlistmaker.search.domain.interactor.TrackListInteractor
 import com.example.playlistmaker.search.domain.model.Resource
-import com.example.playlistmaker.player.domain.model.Track
+import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.model.TrackList
-import com.example.playlistmaker.player.ui.AudioPlayerActivity
+
 
 class SearchActivity : AppCompatActivity() {
 

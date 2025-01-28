@@ -1,7 +1,7 @@
 package com.example.playlistmaker.settings.data.mapper
 
 import com.example.playlistmaker.settings.data.model.ThemeModeData
-import com.example.playlistmaker.domain.model.ThemeMode
+import com.example.playlistmaker.settings.domain.model.ThemeMode
 
 object ThemeMapper {
     fun currentTheme(currentTheme: ThemeModeData): ThemeMode {

@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import com.example.playlistmaker.settings.data.mapper.ThemeMapper
 import com.example.playlistmaker.settings.data.model.ThemeModeData
-import com.example.playlistmaker.domain.model.ThemeMode
+import com.example.playlistmaker.settings.domain.model.ThemeMode
 import com.example.playlistmaker.settings.data.repository.SettingsRepository
 
 

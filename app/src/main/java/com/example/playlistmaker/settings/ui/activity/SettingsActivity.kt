@@ -1,79 +1,55 @@
 package com.example.playlistmaker.settings.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.TextView
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.App
-import com.google.android.material.switchmaterial.SwitchMaterial
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
     @SuppressLint("IntentReset", "QueryPermissionsNeeded")
+
+    private lateinit var binding: ActivitySettingsBinding
+
+    private val viewModel: SettingsViewModel by viewModels<SettingsViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val appInstance = (applicationContext as App)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val toolbar: Toolbar = findViewById(R.id.toolbar_settings)
-        setSupportActionBar(toolbar)
-
-        toolbar.setNavigationIcon(R.drawable.vector_arrow_back)
-        toolbar.setNavigationOnClickListener {
+        setSupportActionBar(binding.toolbarSettings)
+        binding.toolbarSettings.setNavigationIcon(R.drawable.vector_arrow_back)
+        binding.toolbarSettings.setNavigationOnClickListener {
             finish()
         }
 
-        val imageShare = findViewById<TextView>(R.id.share_the_app)
-        imageShare.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND).apply { type = "text/plain" }
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.message_share_settings))
-            startActivity(Intent.createChooser(shareIntent, getString(R.string.select_app)))
+        binding.shareTheApp.setOnClickListener{
+            viewModel.shareApp(this)
         }
 
-        val imageSupport = findViewById<TextView>(R.id.write_to_support)
-        imageSupport.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.uri_support_setting)))
-                putExtra(
-                    Intent.EXTRA_SUBJECT,
-                    getString(R.string.theme_support_settings)
-                )
-                putExtra(
-                    Intent.EXTRA_TEXT,
-                    getString(R.string.message_support_settings)
-                )
-            }
-
-            try {
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.select_app)))
-            } catch (e: ActivityNotFoundException) {
-                Toast.makeText(this, R.string.not_found_email_application, Toast.LENGTH_SHORT)
-                    .show()
-            }
+        binding.writeToSupport.setOnClickListener{
+            viewModel.openSupport(this)
         }
 
-        val imageUserAgreement = findViewById<TextView>(R.id.user_agreement)
-        imageUserAgreement.setOnClickListener {
-            val url: Uri = Uri.parse(getString(R.string.uri_agreement_setting))
-            val openLink = Intent(Intent.ACTION_VIEW, url)
-            startActivity(openLink)
+        binding.userAgreement.setOnClickListener{
+            viewModel.openTerms(this)
         }
 
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        themeSwitcher.isChecked = appInstance.currentSwitchTheme()
+        binding.themeSwitcher.isChecked = viewModel.getTheme()
 
-        themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            appInstance.switchTheme(checked)
+        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            viewModel.getSwitchTheme(checked)
         }
 
-        appInstance.saveTheme()
+        viewModel.saveTheme()
+
+
     }
 }
 

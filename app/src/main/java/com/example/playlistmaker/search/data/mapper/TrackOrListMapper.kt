@@ -2,7 +2,7 @@ package com.example.playlistmaker.search.data.mapper
 
 import com.example.playlistmaker.search.data.model.TrackHistory
 import com.example.playlistmaker.search.data.model.TrackListHistory
-import com.example.playlistmaker.player.domain.model.Track
+import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.model.TrackList
 
 object TrackOrListMapper {

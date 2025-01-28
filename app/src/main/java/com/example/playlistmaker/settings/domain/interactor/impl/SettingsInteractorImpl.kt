@@ -1,13 +1,13 @@
 package com.example.playlistmaker.settings.domain.interactor.impl
 
-import com.example.playlistmaker.settings.domain.interactor.ThemeModeInteractor
-import com.example.playlistmaker.domain.model.ThemeMode
+import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
+import com.example.playlistmaker.settings.domain.model.ThemeMode
 import com.example.playlistmaker.settings.data.repository.SettingsRepository
 
 
-class ThemeModeInteractorImpl(
+class SettingsInteractorImpl(
     private val themeModeRepository: SettingsRepository,
-) : ThemeModeInteractor {
+) : SettingsInteractor {
     override fun getCurrentTheme(): Boolean {
         return themeModeRepository.getCurrentTheme().themeMode
     }
