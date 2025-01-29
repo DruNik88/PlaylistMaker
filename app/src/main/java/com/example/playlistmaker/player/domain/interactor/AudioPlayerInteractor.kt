@@ -1,14 +1,19 @@
 package com.example.playlistmaker.player.domain.interactor
 
-import com.example.playlistmaker.player.domain.model.CurrentPositionAudioPlayer
-import com.example.playlistmaker.player.domain.model.StateAudioPlayer
-import com.example.playlistmaker.player.domain.model.TrackPlayer
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
 interface AudioPlayerInteractor {
-    fun preparePlayer (trackPlayer: TrackPlayer, state: (StateAudioPlayer) -> Unit)
+    fun preparePlayer (track: TrackPlayerDomain, playerObserver: AudioPlayerObserver)
     fun startPlayer()
     fun pausePlayer()
     fun release()
-    fun getCurrentPosition(): CurrentPositionAudioPlayer
+    fun playbackControl()
+
+    interface AudioPlayerObserver {
+        fun onProgress(progress: Long)
+        fun onComplete()
+        fun onPause()
+        fun onPlay()
+        fun onLoad()
+    }
 }

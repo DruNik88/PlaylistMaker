@@ -1,12 +1,11 @@
-package com.example.playlistmaker.player.domain.mapper
+package com.example.playlistmaker.player.data.mapper
 
-import com.example.playlistmaker.player.domain.model.TrackPlayer
-import com.example.playlistmaker.search.data.model.TrackHistory
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.player.data.model.TrackPlayerData
+import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
-object TrackSearchInToTrackPlayer {
-    fun trackSearchInToTrackPlayer(track: Track): TrackPlayer {
-        return TrackPlayer(
+object TrackPlayerDomainInToTrackPlayerData {
+    fun trackPlayerDomainInToTrackPlayerData(track: TrackPlayerDomain): TrackPlayerData {
+        return TrackPlayerData(
             trackId = track.trackId,
             trackName = track.trackName, // Название композиции
             artistName = track.artistName, // Имя исполнителя
@@ -20,7 +19,7 @@ object TrackSearchInToTrackPlayer {
         )
     }
 
-    private fun getCoverArtwork(track: Track) =
+    private fun getCoverArtwork(track: TrackPlayerDomain) =
         track.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
 
 }

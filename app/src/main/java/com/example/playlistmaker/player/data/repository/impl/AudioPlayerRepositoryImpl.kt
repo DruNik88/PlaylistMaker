@@ -1,62 +1,103 @@
 package com.example.playlistmaker.player.data.repository.impl
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
-import com.example.playlistmaker.player.data.mapper.StateAudioPlayerMapper
-import com.example.playlistmaker.player.data.model.CurrentPositionAudioPlayerData
-import com.example.playlistmaker.player.data.model.StateAudioPlayerData
-import com.example.playlistmaker.player.domain.model.CurrentPositionAudioPlayer
-import com.example.playlistmaker.player.domain.model.StateAudioPlayer
+import android.os.Handler
+import android.os.Looper
+import com.example.playlistmaker.player.data.mapper.TrackPlayerDomainInToTrackPlayerData
 import com.example.playlistmaker.player.data.repository.AudioPlayerRepository
-import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
+import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
 class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 
     companion object {
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val DELAY = 1000L
+        private const val AVAILABLE_TIME = 30000L
     }
 
-    private var playerState = StateAudioPlayerData(state = STATE_DEFAULT)
+    private lateinit var innerPlayerObserver: AudioPlayerInteractor.AudioPlayerObserver
 
-    private val mediaPlayer = MediaPlayer()
+    private var playerState = STATE_DEFAULT
+    private var mediaPlayer = MediaPlayer()
+    private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
-    override fun preparePlayer(track: Track, state: (StateAudioPlayer) -> Unit) {
-        val trackData = TrackOrListMapper.trackDomaInToTrackData(track)
-        mediaPlayer.setDataSource(trackData.previewUrl)
+
+    private fun createUpdateTimerAudioPlayer(): Runnable {
+        return object : Runnable {
+            @SuppressLint("UseCompatLoadingForDrawables")
+            override fun run() {
+                if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
+                    val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
+                    innerPlayerObserver.onProgress(progress = reverseTimer)
+                    mainThreadHandler.postDelayed(this,DELAY)
+                }
+            }
+
+        }
+    }
+
+    override fun preparePlayer(
+        track: TrackPlayerDomain,
+        playerObserver: AudioPlayerInteractor.AudioPlayerObserver) {
+
+        val trackPlayerData= TrackPlayerDomainInToTrackPlayerData.trackPlayerDomainInToTrackPlayerData(track)
+
+        innerPlayerObserver = playerObserver
+
+        mediaPlayer.setDataSource(trackPlayerData.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            playerState.state = STATE_PREPARED
-            val mapper = StateAudioPlayerMapper.stateAudioPlayer(playerState)
-            state(mapper)
+            playerState = STATE_PREPARED
+            playerObserver.onComplete()
+            playerObserver.onLoad()
         }
         mediaPlayer.setOnCompletionListener {
-            playerState.state = STATE_PREPARED
-            val mapper = StateAudioPlayerMapper.stateAudioPlayer(playerState)
-            state(mapper)
+            playerState = STATE_PREPARED
+            playerObserver.onPause()
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun startPlayer() {
         mediaPlayer.start()
+
+        playerState = STATE_PLAYING
+
+        innerPlayerObserver.onPlay()
+
+        mainThreadHandler.post(createUpdateTimerAudioPlayer())
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun pausePlayer() {
-        mediaPlayer.pause()
+            mediaPlayer.pause()
+
+            playerState = STATE_PAUSED
+
+        innerPlayerObserver.onPause()
+
+        mainThreadHandler.removeCallbacks(createUpdateTimerAudioPlayer())
     }
 
     override fun release() {
         mediaPlayer.release()
     }
 
-    override fun getCurrentPosition(): CurrentPositionAudioPlayer {
-        val currentPositionAudioPlayerData = CurrentPositionAudioPlayerData(currentPosition = mediaPlayer.currentPosition)
-        val currentPositionAudioPlayer =
-            StateAudioPlayerMapper.currentPositionAudioPlayer(
-                currentPositionAudioPlayerData = currentPositionAudioPlayerData
-            )
-        return currentPositionAudioPlayer
+
+    override fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            STATE_PREPARED, STATE_PAUSED -> {
+                startPlayer()
+            }
+        }
     }
-
-
 }

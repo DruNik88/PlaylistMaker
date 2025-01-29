@@ -2,12 +2,12 @@ package com.example.playlistmaker.search.data.mapper
 
 import com.example.playlistmaker.search.data.model.TrackHistory
 import com.example.playlistmaker.search.data.model.TrackListHistory
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.domain.model.TrackList
 
 object TrackOrListMapper {
 
-    fun trackDomaInToTrackData(track: Track): TrackHistory {
+    fun trackDomaInToTrackData(track: TrackSearchDomain): TrackHistory {
         return TrackHistory(
             trackId = track.trackId,
             trackName = track.trackName, // Название композиции
@@ -24,7 +24,7 @@ object TrackOrListMapper {
 
     fun listDataToListDomain(list: TrackListHistory): TrackList {
         return TrackList(list = list.list.map {
-            Track(
+            TrackSearchDomain(
                 trackId = it.trackId,
                 trackName = it.trackName, // Название композиции
                 artistName = it.artistName, // Имя исполнителя

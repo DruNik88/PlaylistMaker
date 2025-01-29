@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class TrackPlayer(
+class TrackPlayerDomain(
     val trackId: Long,
     val trackName: String?, // Название композиции
     val artistName: String?, // Имя исполнителя

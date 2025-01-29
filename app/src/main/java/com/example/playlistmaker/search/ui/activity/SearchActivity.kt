@@ -27,7 +27,7 @@ import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
 import com.example.playlistmaker.search.domain.interactor.TrackListInteractor
 import com.example.playlistmaker.search.domain.model.Resource
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.domain.model.TrackList
 
 
@@ -84,12 +84,12 @@ class SearchActivity : AppCompatActivity() {
 
     private val adapter = TrackAdapter { track -> if (clickDebounce()) handlerTap(track) }
 
-    private fun handlerTap(track: Track) {
+    private fun handlerTap(track: TrackSearchDomain) {
         getUserHistory.addTrackListHistory(track)
         dataAudioPlayerActivity(track)
     }
 
-    private fun dataAudioPlayerActivity(track: Track) {
+    private fun dataAudioPlayerActivity(track: TrackSearchDomain) {
         intent = Intent(this, AudioPlayerActivity::class.java)
         intent.putExtra("track", track)
         startActivity(intent)
@@ -172,7 +172,7 @@ class SearchActivity : AppCompatActivity() {
             expression = inputEditText.text.toString(),
             consumer = object : TrackListInteractor.TrackListConsumer {
                 @SuppressLint("NotifyDataSetChanged")
-                override fun consume(trackList: Resource<List<Track>>) {
+                override fun consume(trackList: Resource<List<TrackSearchDomain>>) {
                     handler.post {
                         when (trackList) {
                             is Resource.Success -> {

@@ -3,15 +3,15 @@ package com.example.playlistmaker.search.ui.activity
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.domain.model.TrackList
 
 
 class TrackAdapter(
-    private val onItemClickListener: ((Track) -> Unit)? = null
+    private val onItemClickListener: ((TrackSearchDomain) -> Unit)? = null
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
-    val tracks: MutableList<Track> = mutableListOf()
+    val tracks: MutableList<TrackSearchDomain> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
         TrackViewHolder(parent)

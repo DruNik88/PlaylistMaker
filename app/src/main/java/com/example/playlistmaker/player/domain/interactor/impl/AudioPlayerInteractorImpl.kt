@@ -1,17 +1,21 @@
 package com.example.playlistmaker.player.domain.interactor.impl
 
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
-import com.example.playlistmaker.player.domain.model.CurrentPositionAudioPlayer
-import com.example.playlistmaker.player.domain.model.StateAudioPlayer
 import com.example.playlistmaker.player.data.repository.AudioPlayerRepository
-import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
-class AudioPlayerInteractorImpl (private val audioPlayerRepository: AudioPlayerRepository, ) :
-    AudioPlayerInteractor {
-    override fun preparePlayer(track: Track, state: (StateAudioPlayer) -> Unit){
-        audioPlayerRepository.preparePlayer(track) {
-                playerState -> state(playerState)
-        }
+class AudioPlayerInteractorImpl(
+    private val audioPlayerRepository: AudioPlayerRepository
+) : AudioPlayerInteractor {
+    
+    override fun preparePlayer(
+        track: TrackPlayerDomain,
+        playerObserver: AudioPlayerInteractor.AudioPlayerObserver
+    ) {
+        audioPlayerRepository.preparePlayer(
+            track = track,
+            playerObserver = playerObserver
+        )
     }
 
     override fun startPlayer() {
@@ -21,11 +25,12 @@ class AudioPlayerInteractorImpl (private val audioPlayerRepository: AudioPlayerR
     override fun pausePlayer() {
         audioPlayerRepository.pausePlayer()
     }
-    override fun release(){
+
+    override fun release() {
         audioPlayerRepository.release()
     }
 
-    override fun getCurrentPosition(): CurrentPositionAudioPlayer {
-        return audioPlayerRepository.getCurrentPosition()
+    override fun playbackControl() {
+        audioPlayerRepository.playbackControl()
     }
 }
