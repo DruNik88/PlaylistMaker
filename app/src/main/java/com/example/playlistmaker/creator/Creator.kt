@@ -42,16 +42,16 @@ object Creator {
         )
     }
 
-    private fun provideGetThemeModeRepository(applicationContext: Context): SettingsRepository {
+    private fun provideGetSettingsRepository(applicationContext: Context): SettingsRepository {
         return SettingsRepositoryImpl(
             sharedPrefs = provideSharedPreferences(),
             context = applicationContext
         )
     }
 
-    fun provideGetThemeModeInteractor(applicationContext: Context): SettingsInteractor {
+    fun provideGetSettingsInteractor(applicationContext: Context): SettingsInteractor {
         return SettingsInteractorImpl(
-            themeModeRepository = provideGetThemeModeRepository(
+            themeModeRepository = provideGetSettingsRepository(
                 applicationContext
             )
         )
@@ -87,12 +87,14 @@ object Creator {
         return AudioPlayerInteractorImpl(provideGetAudioPlayerRepository())
     }
 
-    private fun provideExternalNavigator(): ExternalNavigator{
-        return ExternalNavigatorImpl()
+    private fun provideExternalNavigator(applicationContext: Context): ExternalNavigator{
+        return ExternalNavigatorImpl(
+            applicationContext = applicationContext
+        )
     }
 
-    fun provideShareButton(): SharingInteractor{
-        return SharingInteractorImpl(provideExternalNavigator())
+    fun provideShareButton(applicationContext: Context): SharingInteractor{
+        return SharingInteractorImpl(provideExternalNavigator(applicationContext))
     }
 }
 

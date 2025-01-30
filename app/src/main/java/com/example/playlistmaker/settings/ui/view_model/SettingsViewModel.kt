@@ -1,39 +1,63 @@
 package com.example.playlistmaker.settings.ui.view_model
 
-import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
-import com.example.playlistmaker.application.App
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
+import com.example.playlistmaker.sharing.domain.interactor.SharingInteractor
 
 class SettingsViewModel(
-    application: Application,
-) : AndroidViewModel(application) {
+    private val sharingInteractor: SharingInteractor,
+    private val settingsInteractor: SettingsInteractor,
+) : ViewModel() {
 
-    private val shareButton = Creator.provideShareButton()
 
-    fun shareApp(appInstance: Context) {
-        shareButton.shareApp(appInstance)
+    fun shareApp() {
+        sharingInteractor.shareApp()
     }
 
-    fun openTerms(appInstance: Context) {
-        shareButton.openTerms(appInstance)
+    fun openTerms() {
+        sharingInteractor.openTerms()
     }
 
-    fun openSupport(appInstance: Context) {
-        shareButton.openSupport(appInstance)
+    fun openSupport() {
+        sharingInteractor.openSupport()
     }
 
 
     fun getTheme(): Boolean {
-        return getApplication<App>().currentSwitchTheme()
+        return settingsInteractor.getSettingTheme()
     }
 
     fun getSwitchTheme(checked: Boolean) {
-        getApplication<App>().switchTheme(checked)
+        settingsInteractor.switchTheme(checked)
     }
 
-    fun saveTheme() {
-        getApplication<App>().saveTheme()
+//    fun saveTheme() {
+//        settingsInteractor.saveTheme()
+//        Log.d("saveTheme","вызвали")
+//    }
+
+    companion object {
+        fun getViewModelFactory(applicationContext: Context): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+
+                    val sharing =
+                        Creator.provideShareButton(applicationContext = applicationContext)
+                    val setting =
+                        Creator.provideGetSettingsInteractor(applicationContext = applicationContext)
+
+                    SettingsViewModel(
+                        sharingInteractor = sharing,
+                        settingsInteractor = setting,
+                    )
+                }
+            }
     }
 }
+

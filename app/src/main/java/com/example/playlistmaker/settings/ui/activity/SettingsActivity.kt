@@ -2,6 +2,7 @@ package com.example.playlistmaker.settings.ui.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
@@ -14,7 +15,9 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
 
-    private val viewModel: SettingsViewModel by viewModels<SettingsViewModel>()
+    private val viewModel: SettingsViewModel by viewModels {
+        SettingsViewModel.getViewModelFactory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,25 +32,32 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.shareTheApp.setOnClickListener{
-            viewModel.shareApp(this)
+        binding.shareTheApp.setOnClickListener {
+            viewModel.shareApp()
         }
 
-        binding.writeToSupport.setOnClickListener{
-            viewModel.openSupport(this)
+        binding.writeToSupport.setOnClickListener {
+            viewModel.openSupport()
         }
 
-        binding.userAgreement.setOnClickListener{
-            viewModel.openTerms(this)
+        binding.userAgreement.setOnClickListener {
+            viewModel.openTerms()
         }
+
+//        binding.themeSwitcher.isChecked = viewModel.getTheme()
+
+
 
         binding.themeSwitcher.isChecked = viewModel.getTheme()
 
+        Log.d("theme_isChecked", "проверили тему кнопки")
+        Log.d("theme_isChecked_1", "тема кнопки ${binding.themeSwitcher.isChecked}")
+
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
             viewModel.getSwitchTheme(checked)
+            recreate()
         }
-
-        viewModel.saveTheme()
+        Log.d("theme_recreate", "пересоздали/создали")
 
 
     }

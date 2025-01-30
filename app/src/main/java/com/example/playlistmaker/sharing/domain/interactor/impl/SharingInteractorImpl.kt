@@ -8,27 +8,31 @@ import com.example.playlistmaker.sharing.domain.interactor.SharingInteractor
 class SharingInteractorImpl(
     private val externalNavigator: ExternalNavigator,
 ) : SharingInteractor {
-    override fun shareApp(appInstance: Context) {
-        externalNavigator.shareLink(appInstance)
+    override fun shareApp() {
+        externalNavigator.shareLink()
     }
 
-    override fun openTerms(appInstance: Context) {
-        externalNavigator.openLink(appInstance)
+    override fun openTerms() {
+        externalNavigator.openLink()
     }
 
-    override fun openSupport(appInstance: Context) {
-        externalNavigator.openEmail(appInstance)
+    override fun openSupport() {
+        externalNavigator.openEmail()
     }
-
-//    private fun getShareAppLink(): String {
-//        return (R.string.message_share_settings).toString()
-//    }
-//
-//    private fun getSupportEmailData(): EmailData {
-//        // Нужно реализовать
-//    }
-//
-//    private fun getTermsLink(): String {
-//        // Нужно реализовать
-//    }
 }
+//
+//class SharingInteractorImpl(
+//    private val externalNavigator: ExternalNavigator,
+//) : SharingInteractor {
+//    override fun shareApp(appInstance: Context) {
+//        externalNavigator.shareLink(appInstance)
+//    }
+//
+//    override fun openTerms(appInstance: Context) {
+//        externalNavigator.openLink(appInstance)
+//    }
+//
+//    override fun openSupport(appInstance: Context) {
+//        externalNavigator.openEmail(appInstance)
+//    }
+//}
