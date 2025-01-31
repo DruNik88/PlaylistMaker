@@ -12,10 +12,6 @@ class SettingsInteractorImpl(
         return themeModeRepository.getSettingTheme().themeMode
     }
 
-//    override fun saveTheme() {
-//        themeModeRepository.saveTheme(checked)
-//    }
-
     override fun switchTheme(checked: Boolean) {
         themeModeRepository.switchTheme(checked)
     }

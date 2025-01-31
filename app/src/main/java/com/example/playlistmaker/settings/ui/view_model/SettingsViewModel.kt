@@ -1,7 +1,6 @@
 package com.example.playlistmaker.settings.ui.view_model
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
@@ -36,11 +35,6 @@ class SettingsViewModel(
     fun getSwitchTheme(checked: Boolean) {
         settingsInteractor.switchTheme(checked)
     }
-
-//    fun saveTheme() {
-//        settingsInteractor.saveTheme()
-//        Log.d("saveTheme","вызвали")
-//    }
 
     companion object {
         fun getViewModelFactory(applicationContext: Context): ViewModelProvider.Factory =

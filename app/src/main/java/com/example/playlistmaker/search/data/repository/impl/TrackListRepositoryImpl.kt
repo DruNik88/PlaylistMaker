@@ -11,28 +11,66 @@ import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 class TrackListRepositoryImpl(private val trackNetworkClient: TrackNetworkClient) :
     TrackListRepository {
 
-        companion object{
-            const val NOT_FOUND = 1
-            const val CONNECTION_PROBLEMS = 2
-        }
+    companion object {
+        const val NOT_FOUND = 1
+        const val CONNECTION_PROBLEMS = 2
+    }
 
     override fun searchTrackList(expression: String): Resource<List<TrackSearchDomain>> {
         val networkResponse = trackNetworkClient.doRequest(ItunesRequest(expression))
 
-        return if (networkResponse.resultCode == 200 && networkResponse is ItunesResponse && networkResponse.resultCount > 0) {
-            val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
-            Resource.Success(trackList)
-        } else if (
-            (networkResponse is ItunesResponse &&
-                    (networkResponse.resultCount == 0 || networkResponse.resultCode == 404)
-                    ) || networkResponse !is ItunesResponse
-        )
-        {
-            Resource.Error(NOT_FOUND)
-        } else {
-            Resource.Error(CONNECTION_PROBLEMS)
+        return when (networkResponse.resultCode) {
+            -1 -> {
+                Resource.Error(CONNECTION_PROBLEMS)
+            }
+
+            200 -> {
+                networkResponse as ItunesResponse
+                val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
+                Resource.Success(trackList)
+            }
+
+            else -> {Resource.Error(NOT_FOUND)}
         }
+
+//        return if (networkResponse.resultCode == 200 && networkResponse is ItunesResponse && networkResponse.resultCount > 0) {
+//            val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
+//            Resource.Success(trackList)
+//        } else if (
+//            (networkResponse is ItunesResponse &&
+//                    (networkResponse.resultCount == 0 || networkResponse.resultCode == 404)
+//                    ) || networkResponse !is ItunesResponse
+//        )
+//        {
+//            Resource.Error(NOT_FOUND)
+//        } else {
+//            Resource.Error(CONNECTION_PROBLEMS)
+//        }
     }
+
+
+//        companion object{
+//            const val NOT_FOUND = 1
+//            const val CONNECTION_PROBLEMS = 2
+//        }
+//
+//    override fun searchTrackList(expression: String): Resource<List<TrackSearchDomain>> {
+//        val networkResponse = trackNetworkClient.doRequest(ItunesRequest(expression))
+//
+//        return if (networkResponse.resultCode == 200 && networkResponse is ItunesResponse && networkResponse.resultCount > 0) {
+//            val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
+//            Resource.Success(trackList)
+//        } else if (
+//            (networkResponse is ItunesResponse &&
+//                    (networkResponse.resultCount == 0 || networkResponse.resultCode == 404)
+//                    ) || networkResponse !is ItunesResponse
+//        )
+//        {
+//            Resource.Error(NOT_FOUND)
+//        } else {
+//            Resource.Error(CONNECTION_PROBLEMS)
+//        }
+//    }
 }
 
 

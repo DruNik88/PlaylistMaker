@@ -27,6 +27,7 @@ class AudioPlayerActivityViewModel (
 
 
     init {
+        showDataLiveData.postValue(ShowData.Loading)
         val trackPlayer = TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(trackSearch)
         audioPlayerInteractor.preparePlayer(
             track = trackPlayer,

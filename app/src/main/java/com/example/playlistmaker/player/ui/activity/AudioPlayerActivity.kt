@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -56,8 +57,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         toolBar()
 
         viewModel.getShowDataLiveData().observe(this) { showData ->
-            renderShowData(showData)
-            Log.d("SD", "$showData")
+            when(showData){
+                is ShowData.Content -> renderShowData(showData)
+                is ShowData.Loading -> loading(loading = true)
+            }
+
         }
 
         viewModel.getPlayStatusLiveData().observe(this) { playStatus ->
@@ -95,7 +99,11 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun renderShowData(showData: ShowData) {
         when (showData) {
-            is ShowData.Content -> showContent(showData.trackModel)
+            is ShowData.Content -> {
+                loading(loading = false)
+                showContent(trackPlayer = showData.trackModel)
+            }
+            is ShowData.Loading -> loading(loading = true)
         }
     }
 
@@ -125,6 +133,11 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         trackPlayer.country?.let { binding.countryApiAudioPlayer.text = it }
             ?: run { binding.countryApiAudioPlayer.text = getString(R.string.something_went_wrong) }
+    }
+
+    private fun loading(loading: Boolean){
+        binding.layoutPlayer.isVisible = !loading
+        binding.layoutProgressBar.isVisible = loading
     }
 
     override fun onPause() {

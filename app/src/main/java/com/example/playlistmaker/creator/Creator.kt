@@ -57,16 +57,16 @@ object Creator {
         )
     }
 
-    private fun provideNetworkClient(): TrackNetworkClient {
-        return ItunesRetrofitNetworkClient()
+    private fun provideNetworkClient(applicationContext: Context): TrackNetworkClient {
+        return ItunesRetrofitNetworkClient(applicationContext)
     }
 
-    private fun provideGetTrackListRepository(): TrackListRepository {
-        return TrackListRepositoryImpl(provideNetworkClient())
+    private fun provideGetTrackListRepository(applicationContext: Context): TrackListRepository {
+        return TrackListRepositoryImpl(provideNetworkClient(applicationContext))
     }
 
-    fun provideGetTrackListInteractor(): TrackListInteractor {
-        return TrackListInteractorImpl(provideGetTrackListRepository())
+    fun provideGetTrackListInteractor(applicationContext: Context): TrackListInteractor {
+        return TrackListInteractorImpl(provideGetTrackListRepository(applicationContext))
     }
 
     private fun provideGetHistoryRepository(): HistoryRepository {

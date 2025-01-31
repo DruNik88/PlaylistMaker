@@ -52,7 +52,7 @@ class SearchActivity : AppCompatActivity() {
         const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
-    private val getTrackList = Creator.provideGetTrackListInteractor()
+    private val getTrackList = Creator.provideGetTrackListInteractor(this)
 
     private var inputValue: String = DEFAULT_VALUE
     private var isClickAllowed = true

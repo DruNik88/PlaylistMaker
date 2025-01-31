@@ -20,19 +20,3 @@ class SharingInteractorImpl(
         externalNavigator.openEmail()
     }
 }
-//
-//class SharingInteractorImpl(
-//    private val externalNavigator: ExternalNavigator,
-//) : SharingInteractor {
-//    override fun shareApp(appInstance: Context) {
-//        externalNavigator.shareLink(appInstance)
-//    }
-//
-//    override fun openTerms(appInstance: Context) {
-//        externalNavigator.openLink(appInstance)
-//    }
-//
-//    override fun openSupport(appInstance: Context) {
-//        externalNavigator.openEmail(appInstance)
-//    }
-//}

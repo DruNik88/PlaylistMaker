@@ -2,11 +2,9 @@ package com.example.playlistmaker.settings.ui.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.application.App
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 
@@ -44,22 +42,11 @@ class SettingsActivity : AppCompatActivity() {
             viewModel.openTerms()
         }
 
-//        binding.themeSwitcher.isChecked = viewModel.getTheme()
-
-
-
         binding.themeSwitcher.isChecked = viewModel.getTheme()
-
-        Log.d("theme_isChecked", "проверили тему кнопки")
-        Log.d("theme_isChecked_1", "тема кнопки ${binding.themeSwitcher.isChecked}")
-
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
             viewModel.getSwitchTheme(checked)
-            recreate()
+//            recreate()
         }
-        Log.d("theme_recreate", "пересоздали/создали")
-
-
-    }
+       }
 }
 
