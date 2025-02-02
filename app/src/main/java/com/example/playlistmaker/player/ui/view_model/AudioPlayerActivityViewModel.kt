@@ -52,7 +52,6 @@ class AudioPlayerActivityViewModel (
                     showDataLiveData.postValue(ShowData.Content(trackModel = trackPlayer))
                     Log.d("SD_1", "$trackPlayer")
                 }
-
             }
         )
     }
@@ -72,28 +71,6 @@ class AudioPlayerActivityViewModel (
     fun release() {
         audioPlayerInteractor.release()
     }
-
-
-//    @SuppressLint("UseCompatLoadingForDrawables")
-//    private fun startPlayer() {
-//        audioPlayerInteractor.startPlayer()
-//
-//        var state = getCurrentState()
-//        state = StatePlayer.Playing(currentState = StateAudioPlayer(state = STATE_PLAYING))
-//
-//        mainThreadHandler?.post(createUpdateTimerAudioPlayer())
-//    }
-//
-//    @SuppressLint("UseCompatLoadingForDrawables")
-//    private fun pausePlayer() {
-//        audioPlayerInteractor.pausePlayer()
-//
-//        var state = getCurrentState()
-//        state = StatePlayer.Playing(currentState = StateAudioPlayer(state = STATE_PAUSED))
-//
-//        mainThreadHandler?.removeCallbacks(createUpdateTimerAudioPlayer())
-//    }
-
 
     companion object {
         fun getViewModelFactory(trackSearch: TrackSearchDomain): ViewModelProvider.Factory = viewModelFactory {

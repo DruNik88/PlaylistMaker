@@ -2,7 +2,6 @@ package com.example.playlistmaker.player.ui.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +23,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val KEY_TRACK = "track"
         private const val RADIUS_IMAGE = 8.0F
     }
-
 
     private val viewModel by viewModels<AudioPlayerActivityViewModel> {
         val trackSearch = intent.getParcelableExtra<TrackSearchDomain>(KEY_TRACK)
@@ -61,12 +59,10 @@ class AudioPlayerActivity : AppCompatActivity() {
                 is ShowData.Content -> renderShowData(showData)
                 is ShowData.Loading -> loading(loading = true)
             }
-
         }
 
         viewModel.getPlayStatusLiveData().observe(this) { playStatus ->
             renderPlayStatus(playStatus)
-
         }
 
         binding.playbackControl.setOnClickListener {
@@ -92,9 +88,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                 )
             )
             binding.playbackProgress.text = playStatus.formatProgress()
-
         }
-
     }
 
     private fun renderShowData(showData: ShowData) {

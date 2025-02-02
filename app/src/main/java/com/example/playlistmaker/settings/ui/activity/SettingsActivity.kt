@@ -45,7 +45,6 @@ class SettingsActivity : AppCompatActivity() {
         binding.themeSwitcher.isChecked = viewModel.getTheme()
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
             viewModel.getSwitchTheme(checked)
-//            recreate()
         }
        }
 }

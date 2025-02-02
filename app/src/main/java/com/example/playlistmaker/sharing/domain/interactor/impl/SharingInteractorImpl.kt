@@ -1,7 +1,5 @@
 package com.example.playlistmaker.sharing.domain.interactor.impl
 
-import android.content.Context
-import com.example.playlistmaker.application.App
 import com.example.playlistmaker.sharing.data.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.interactor.SharingInteractor
 

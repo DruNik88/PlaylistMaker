@@ -31,8 +31,6 @@ class SettingsRepositoryImpl(private val sharedPrefs: SharedPreferences, val con
         context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
     override fun switchTheme(checked: Boolean) {
-
-
         val nightMode = if (checked) {
             AppCompatDelegate.MODE_NIGHT_YES
         } else {

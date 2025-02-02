@@ -8,5 +8,4 @@ object ThemeMapper {
     fun settingTheme(settingTheme: ThemeModeData): ThemeMode {
         return ThemeMode(themeMode = settingTheme.themeMode)
     }
-
 }

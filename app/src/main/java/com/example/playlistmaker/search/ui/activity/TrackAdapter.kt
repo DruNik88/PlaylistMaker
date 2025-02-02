@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import com.example.playlistmaker.search.domain.model.TrackList
+import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 
 
 class TrackAdapter(
@@ -32,7 +32,7 @@ class TrackAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun allUpdateTracks(list: TrackList){
+    fun allUpdateTracks(list: TrackSearchListDomain){
         tracks.clear()
         tracks.addAll(list.list)
         notifyDataSetChanged()

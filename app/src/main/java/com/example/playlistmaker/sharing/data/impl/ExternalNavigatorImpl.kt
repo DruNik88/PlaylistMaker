@@ -3,7 +3,6 @@ package com.example.playlistmaker.sharing.data.impl
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import com.example.playlistmaker.R
 import com.example.playlistmaker.sharing.data.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.model.EmailData
@@ -17,7 +16,6 @@ class ExternalNavigatorImpl(val applicationContext: Context) : ExternalNavigator
         private const val URI_STRING = "mailto:"
     }
 
-
     override fun shareLink() {
 
         val shareAppLink = getShareAppLink()
@@ -28,7 +26,6 @@ class ExternalNavigatorImpl(val applicationContext: Context) : ExternalNavigator
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         applicationContext.startActivity(Intent.createChooser(shareIntent, chooseApp()))
-
     }
 
     override fun openLink() {
