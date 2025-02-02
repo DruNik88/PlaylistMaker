@@ -46,8 +46,6 @@ class SeachViewModel(application: Application) : AndroidViewModel(application) {
 
     private val handler = Handler(Looper.getMainLooper())
 
-//    private val searchRunnable = Runnable { requestTrack() }
-
     fun searchRequestText(requestText: String) {
         if (latestRequestText == requestText) {
             return
@@ -102,13 +100,6 @@ class SeachViewModel(application: Application) : AndroidViewModel(application) {
                 @SuppressLint("NotifyDataSetChanged")
                 override fun consume(trackList: Resource<List<TrackSearchDomain>>) {
 
-//                    val trackListResponse = TrackSearchListDomain(list = mutableListOf())
-//
-//                    if ((trackList is Resource.Success)) {
-//                        trackListResponse.list.clear()
-//                        trackListResponse.list.addAll(trackList.data.toMutableList())
-//                    }
-
                     when (trackList) {
                         is Resource.Error -> {
                             when (trackList.message) {
@@ -154,7 +145,6 @@ class SeachViewModel(application: Application) : AndroidViewModel(application) {
 
                 }
             }
-
         )
     }
 
