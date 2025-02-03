@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +13,7 @@ import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
-class AudioPlayerActivityViewModel (
+class AudioPlayerViewModel (
     private val trackSearch: TrackSearchDomain,
     private val audioPlayerInteractor: AudioPlayerInteractor,
 ) : ViewModel() {
@@ -50,7 +49,6 @@ class AudioPlayerActivityViewModel (
 
                 override fun onLoad() {
                     showDataLiveData.postValue(ShowData.Content(trackModel = trackPlayer))
-                    Log.d("SD_1", "$trackPlayer")
                 }
             }
         )
@@ -78,7 +76,7 @@ class AudioPlayerActivityViewModel (
 
                 val interactor = Creator.provideGetAudioPlayerManagerInteractor()
 
-                AudioPlayerActivityViewModel(
+                AudioPlayerViewModel(
                     trackSearch = trackSearch,
                     audioPlayerInteractor = interactor
                  )

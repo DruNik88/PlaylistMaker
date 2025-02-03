@@ -1,9 +1,5 @@
 package com.example.playlistmaker.player.data.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 class TrackPlayerData(
     val trackId: Long,
     val trackName: String?, // Название композиции
@@ -15,4 +11,4 @@ class TrackPlayerData(
     val primaryGenreName: String?, //Жанр трека
     val country:String?, //Страна исполнителя
     val previewUrl:String?, //Ссылка на отрывок песни
-): Parcelable
+)

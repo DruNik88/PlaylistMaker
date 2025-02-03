@@ -1,9 +1,7 @@
 package com.example.playlistmaker.search.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
-@Parcelize
 data class TrackSearchDomain (
    val trackId: Long,
    val trackName: String?, // Название композиции
@@ -15,4 +13,4 @@ data class TrackSearchDomain (
    val primaryGenreName: String?, //Жанр трека
    val country:String?, //Страна исполнителя
    val previewUrl:String?, //Ссылка на отрывок песни
-): Parcelable
+): Serializable

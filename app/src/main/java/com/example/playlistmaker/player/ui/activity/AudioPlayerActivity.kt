@@ -14,7 +14,7 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
-import com.example.playlistmaker.player.ui.view_model.AudioPlayerActivityViewModel
+import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -24,10 +24,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val RADIUS_IMAGE = 8.0F
     }
 
-    private val viewModel by viewModels<AudioPlayerActivityViewModel> {
-        val trackSearch = intent.getParcelableExtra<TrackSearchDomain>(KEY_TRACK)
+    private val viewModel by viewModels<AudioPlayerViewModel> {
+        val trackSearch = intent.getSerializableExtra(KEY_TRACK) as? TrackSearchDomain
         trackSearch?.let {
-            AudioPlayerActivityViewModel.getViewModelFactory(
+            AudioPlayerViewModel.getViewModelFactory(
                 trackSearch
             )
         } ?: throw IllegalArgumentException("Track is null")
