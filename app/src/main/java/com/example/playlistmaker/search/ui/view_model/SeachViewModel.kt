@@ -1,13 +1,12 @@
 package com.example.playlistmaker.search.ui.view_model
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.playlistmaker.creator.Creator
+import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
 import com.example.playlistmaker.search.domain.interactor.TrackListInteractor
 import com.example.playlistmaker.search.domain.model.Resource
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
@@ -15,7 +14,10 @@ import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.example.playlistmaker.search.ui.state.HistoryState
 import com.example.playlistmaker.search.ui.state.SearchState
 
-class SeachViewModel(application: Application) : AndroidViewModel(application) {
+class SearchViewModel(
+    private val searchInteractor: TrackListInteractor,
+    private val getUserHistory: HistoryInteractor
+) : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
@@ -31,10 +33,6 @@ class SeachViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private var trackListHistory = TrackSearchListDomain(list = mutableListOf())
-
-    private val searchInteractor = Creator.provideGetTrackListInteractor(getApplication<Application>())
-    private val getUserHistory = Creator.provideGetHistoryInteractor()
-
 
     private val stateSearchLiveData = MutableLiveData<SearchState>()
     fun observeStateSearch(): MutableLiveData<SearchState> = stateSearchLiveData
@@ -68,24 +66,24 @@ class SeachViewModel(application: Application) : AndroidViewModel(application) {
         getUserHistory.addTrackListHistory(track)
     }
 
-    fun saveSharedPrefs(){
+    fun saveSharedPrefs() {
         getUserHistory.saveSharedPrefs()
     }
 
-    fun getHistoryList(){
+    fun getHistoryList() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
         trackListHistory = getUserHistory.getListHistory()
-        if(trackListHistory.list.isEmpty()){
+        if (trackListHistory.list.isEmpty()) {
             renderStateHistory(HistoryState.Empty)
         } else {
             renderStateHistory(HistoryState.Content(trackListHistory))
         }
     }
 
-    fun clearHistoryList(){
+    fun clearHistoryList() {
         getUserHistory.clearHistory()
         trackListHistory.list.clear()
-        if(trackListHistory.list.isEmpty()){
+        if (trackListHistory.list.isEmpty()) {
             renderStateHistory(HistoryState.Clear)
         }
     }
@@ -131,7 +129,7 @@ class SeachViewModel(application: Application) : AndroidViewModel(application) {
 
                         is Resource.Success -> {
                             val trackListResponse = TrackSearchListDomain(list = mutableListOf())
-                            if (trackList.data != null){
+                            if (trackList.data != null) {
                                 trackListResponse.list.clear()
                                 trackListResponse.list.addAll(trackList.data.toMutableList())
                             }

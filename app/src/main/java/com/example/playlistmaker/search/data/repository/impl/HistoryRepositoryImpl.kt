@@ -1,6 +1,7 @@
 package com.example.playlistmaker.search.data.repository.impl
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
 import com.example.playlistmaker.search.data.model.TrackListHistory
 import com.example.playlistmaker.search.data.repository.HistoryRepository
@@ -8,7 +9,8 @@ import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.google.gson.Gson
 
 class HistoryRepositoryImpl(
-    val sharedPrefs: SharedPreferences,
+    private val gson: Gson,
+    private val sharedPrefs: SharedPreferences,
 ) : HistoryRepository {
     companion object {
         const val COUNT_ITEMS = 10
@@ -19,12 +21,14 @@ class HistoryRepositoryImpl(
 
     init {
         restoreHistoryList()
+        Log.d("history_4", "отобразили сохранённое")
     }
 
     private fun restoreHistoryList() {
         val json = sharedPrefs.getString(KEY_HISTORY_LIST, null)
+        Log.d("history_5", "$json")
         if (!json.isNullOrEmpty()) {
-            val history = Gson().fromJson(json, TrackListHistory::class.java)
+            val history = gson.fromJson(json, TrackListHistory::class.java)
             if (!history.list.isNullOrEmpty()) {
                 trackListHistory.list.addAll(history.list)
             }
@@ -56,10 +60,11 @@ class HistoryRepositoryImpl(
 
     override fun saveSharedPrefs() {
         if (trackListHistory.list.isNotEmpty()) {
-            val json = Gson().toJson(trackListHistory)
+            val json = gson.toJson(trackListHistory)
             sharedPrefs.edit()
                 .putString(KEY_HISTORY_LIST, json)
                 .apply()
         }
     }
 }
+

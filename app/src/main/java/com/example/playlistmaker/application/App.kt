@@ -5,6 +5,10 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.application.di.appModule
 import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.search.di.searchDataModule
+import com.example.playlistmaker.search.di.searchInteractorModule
+import com.example.playlistmaker.search.di.searchRepositoryModule
+import com.example.playlistmaker.search.di.searchViewModelModule
 import com.example.playlistmaker.settings.di.settingsInteractorModel
 import com.example.playlistmaker.settings.di.settingsRepositoryModule
 import com.example.playlistmaker.settings.di.settingsViewModelModule
@@ -26,6 +30,7 @@ class App : Application() {
             modules(
                 appModule,
                 settingsRepositoryModule, settingsInteractorModel, settingsViewModelModule,
+                searchDataModule, searchRepositoryModule, searchInteractorModule, searchViewModelModule,
             )
         }
 

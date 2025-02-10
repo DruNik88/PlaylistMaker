@@ -9,7 +9,6 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.example.playlistmaker.R
@@ -18,13 +17,14 @@ import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.example.playlistmaker.search.ui.state.HistoryState
 import com.example.playlistmaker.search.ui.state.SearchState
-import com.example.playlistmaker.search.ui.view_model.SeachViewModel
-import com.example.playlistmaker.search.ui.view_model.SeachViewModel.ErrorSearch
+
+import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
 
-    private val viewModel by viewModels<SeachViewModel>()
+    private val viewModel: SearchViewModel by viewModel()
 
     private lateinit var binding: ActivitySearchBinding
 
@@ -179,7 +179,6 @@ class SearchActivity : AppCompatActivity() {
             adapter.clearOrUpdateTracks()
             binding.headHistoryViews.isVisible = false
             binding.buttonClearHistory.isVisible = false
-
         }
     }
 
@@ -196,9 +195,9 @@ class SearchActivity : AppCompatActivity() {
         binding.progressBar.isVisible = true
     }
 
-    private fun showError(error: ErrorSearch) {
+    private fun showError(error: SearchViewModel.ErrorSearch) {
         when (error) {
-            ErrorSearch.NOT_FOUND -> {
+            SearchViewModel.ErrorSearch.NOT_FOUND -> {
                 binding.progressBar.isVisible = false
                 binding.layoutSearchError.isVisible = true
                 binding.errorImage.setImageResource(R.drawable.nothing_found)
@@ -206,7 +205,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.buttonUpdateErrorSearch.isVisible = false
             }
 
-            ErrorSearch.CONNECTION_PROBLEMS -> {
+            SearchViewModel.ErrorSearch.CONNECTION_PROBLEMS -> {
                 binding.progressBar.isVisible = false
                 binding.layoutSearchError.isVisible = true
                 binding.errorImage.setImageResource(R.drawable.connection_problems)
@@ -214,7 +213,7 @@ class SearchActivity : AppCompatActivity() {
                 binding.buttonUpdateErrorSearch.isVisible = true
             }
 
-            ErrorSearch.INVISIBLE -> {
+            SearchViewModel.ErrorSearch.INVISIBLE -> {
                 binding.progressBar.isVisible = false
                 binding.layoutSearchError.isVisible = false
             }

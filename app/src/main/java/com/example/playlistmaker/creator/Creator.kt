@@ -41,43 +41,43 @@ object Creator {
             Context.MODE_PRIVATE
         )
     }
+//
+//    private fun provideGetSettingsRepository(applicationContext: Context): SettingsRepository {
+//        return SettingsRepositoryImpl(
+//            sharedPrefs = provideSharedPreferences(),
+//            context = applicationContext
+//        )
+//    }
+//
+//    fun provideGetSettingsInteractor(applicationContext: Context): SettingsInteractor {
+//        return SettingsInteractorImpl(
+//            themeModeRepository = provideGetSettingsRepository(
+//                applicationContext
+//            )
+//        )
+//    }
 
-    private fun provideGetSettingsRepository(applicationContext: Context): SettingsRepository {
-        return SettingsRepositoryImpl(
-            sharedPrefs = provideSharedPreferences(),
-            context = applicationContext
-        )
-    }
+//    private fun provideNetworkClient(applicationContext: Context): TrackNetworkClient {
+//        return ItunesRetrofitNetworkClient(applicationContext)
+//    }
+//
+//    private fun provideGetTrackListRepository(applicationContext: Context): TrackListRepository {
+//        return TrackListRepositoryImpl(provideNetworkClient(applicationContext))
+//    }
+//
+//    fun provideGetTrackListInteractor(applicationContext: Context): TrackListInteractor {
+//        return TrackListInteractorImpl(provideGetTrackListRepository(applicationContext))
+//    }
 
-    fun provideGetSettingsInteractor(applicationContext: Context): SettingsInteractor {
-        return SettingsInteractorImpl(
-            themeModeRepository = provideGetSettingsRepository(
-                applicationContext
-            )
-        )
-    }
+//    private fun provideGetHistoryRepository(): HistoryRepository {
+//        return HistoryRepositoryImpl(
+//            sharedPrefs = provideSharedPreferences()
+//        )
+//    }
 
-    private fun provideNetworkClient(applicationContext: Context): TrackNetworkClient {
-        return ItunesRetrofitNetworkClient(applicationContext)
-    }
-
-    private fun provideGetTrackListRepository(applicationContext: Context): TrackListRepository {
-        return TrackListRepositoryImpl(provideNetworkClient(applicationContext))
-    }
-
-    fun provideGetTrackListInteractor(applicationContext: Context): TrackListInteractor {
-        return TrackListInteractorImpl(provideGetTrackListRepository(applicationContext))
-    }
-
-    private fun provideGetHistoryRepository(): HistoryRepository {
-        return HistoryRepositoryImpl(
-            sharedPrefs = provideSharedPreferences()
-        )
-    }
-
-    fun provideGetHistoryInteractor(): HistoryInteractor {
-        return HistoryInteractorImpl(trackManager = provideGetHistoryRepository())
-    }
+//    fun provideGetHistoryInteractor(): HistoryInteractor {
+//        return HistoryInteractorImpl(trackManager = provideGetHistoryRepository())
+//    }
 
     private fun provideGetAudioPlayerRepository(): AudioPlayerRepository {
         return AudioPlayerRepositoryImpl()
@@ -87,15 +87,15 @@ object Creator {
         return AudioPlayerInteractorImpl(provideGetAudioPlayerRepository())
     }
 
-    private fun provideExternalNavigator(applicationContext: Context): ExternalNavigator{
-        return ExternalNavigatorImpl(
-            applicationContext = applicationContext
-        )
-    }
-
-    fun provideShareButton(applicationContext: Context): SharingInteractor{
-        return SharingInteractorImpl(provideExternalNavigator(applicationContext))
-    }
+//    private fun provideExternalNavigator(applicationContext: Context): ExternalNavigator{
+//        return ExternalNavigatorImpl(
+//            applicationContext = applicationContext
+//        )
+//    }
+//
+//    fun provideShareButton(applicationContext: Context): SharingInteractor{
+//        return SharingInteractorImpl(provideExternalNavigator(applicationContext))
+//    }
 }
 
 
