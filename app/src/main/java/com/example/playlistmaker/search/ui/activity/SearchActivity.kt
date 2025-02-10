@@ -84,9 +84,7 @@ class SearchActivity : AppCompatActivity() {
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
-            else viewModel.searchRequestText(
-                requestText = requestText
-            )
+            else viewModel.searchRequestText(requestText = requestText)
         }
 
         binding.buttonUpdateErrorSearch.setOnClickListener {

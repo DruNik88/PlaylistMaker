@@ -48,7 +48,6 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
         val trackPlayerData= TrackPlayerDomainInToTrackPlayerData.trackPlayerDomainInToTrackPlayerData(track)
 
         innerPlayerObserver = playerObserver
-
         mediaPlayer.setDataSource(trackPlayerData.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {

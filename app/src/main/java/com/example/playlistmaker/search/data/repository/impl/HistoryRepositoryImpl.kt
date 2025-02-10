@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.data.repository.impl
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
 import com.example.playlistmaker.search.data.model.TrackListHistory
 import com.example.playlistmaker.search.data.repository.HistoryRepository
@@ -21,12 +20,10 @@ class HistoryRepositoryImpl(
 
     init {
         restoreHistoryList()
-        Log.d("history_4", "отобразили сохранённое")
     }
 
     private fun restoreHistoryList() {
         val json = sharedPrefs.getString(KEY_HISTORY_LIST, null)
-        Log.d("history_5", "$json")
         if (!json.isNullOrEmpty()) {
             val history = gson.fromJson(json, TrackListHistory::class.java)
             if (!history.list.isNullOrEmpty()) {

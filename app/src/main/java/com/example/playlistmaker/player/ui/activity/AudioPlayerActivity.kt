@@ -3,7 +3,6 @@ package com.example.playlistmaker.player.ui.activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
@@ -16,6 +15,8 @@ import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class AudioPlayerActivity : AppCompatActivity() {
 
@@ -24,15 +25,13 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val RADIUS_IMAGE = 8.0F
     }
 
-    private val viewModel by viewModels<AudioPlayerViewModel> {
+    private val viewModel: AudioPlayerViewModel by viewModel{
         val trackSearch = intent.getSerializableExtra(KEY_TRACK) as? TrackSearchDomain
         trackSearch?.let {
-            AudioPlayerViewModel.getViewModelFactory(
-                trackSearch
-            )
+            parametersOf(trackSearch)
         } ?: throw IllegalArgumentException("Track is null")
-
     }
+
     private lateinit var binding: ActivityAudioPlayerBinding
 
     private fun toolBar() {
