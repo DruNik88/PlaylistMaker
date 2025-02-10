@@ -16,7 +16,7 @@ class ExternalNavigatorImpl(val applicationContext: Context) : ExternalNavigator
         private const val URI_STRING = "mailto:"
     }
 
-    override fun shareLink() {
+    override fun shareLink(context: Context) {
 
         val shareAppLink = getShareAppLink()
 
@@ -25,10 +25,10 @@ class ExternalNavigatorImpl(val applicationContext: Context) : ExternalNavigator
             putExtra(Intent.EXTRA_TEXT, shareAppLink)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        applicationContext.startActivity(Intent.createChooser(shareIntent, chooseApp()))
+        context.startActivity(Intent.createChooser(shareIntent, chooseApp()))
     }
 
-    override fun openLink() {
+    override fun openLink(context: Context) {
 
         val termsLink = getTermsLink()
 
@@ -37,10 +37,10 @@ class ExternalNavigatorImpl(val applicationContext: Context) : ExternalNavigator
             data = url
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        applicationContext.startActivity(openLink)
+        context.startActivity(openLink)
     }
 
-    override fun openEmail() {
+    override fun openEmail(context: Context) {
 
         val emailData = getEmailData()
         val shareIntent = Intent(Intent.ACTION_SENDTO).apply {
@@ -50,7 +50,7 @@ class ExternalNavigatorImpl(val applicationContext: Context) : ExternalNavigator
             putExtra(Intent.EXTRA_TEXT, emailData.text)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        applicationContext.startActivity(Intent.createChooser(shareIntent, chooseApp()))
+        context.startActivity(Intent.createChooser(shareIntent, chooseApp()))
     }
 
     private fun getShareAppLink(): String {

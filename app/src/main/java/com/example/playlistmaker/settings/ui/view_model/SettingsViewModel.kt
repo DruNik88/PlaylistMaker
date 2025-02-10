@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
+import com.example.playlistmaker.settings.ui.activity.SettingsActivity
 import com.example.playlistmaker.sharing.domain.interactor.SharingInteractor
 
 class SettingsViewModel(
@@ -15,16 +16,16 @@ class SettingsViewModel(
 ) : ViewModel() {
 
 
-    fun shareApp() {
-        sharingInteractor.shareApp()
+    fun shareApp(settingsActivity: SettingsActivity) {
+        sharingInteractor.shareApp(settingsActivity)
     }
 
-    fun openTerms() {
-        sharingInteractor.openTerms()
+    fun openTerms(settingsActivity: SettingsActivity) {
+        sharingInteractor.openTerms(settingsActivity)
     }
 
-    fun openSupport() {
-        sharingInteractor.openSupport()
+    fun openSupport(settingsActivity: SettingsActivity) {
+        sharingInteractor.openSupport(settingsActivity)
     }
 
 
@@ -34,24 +35,6 @@ class SettingsViewModel(
 
     fun getSwitchTheme(checked: Boolean) {
         settingsInteractor.switchTheme(checked)
-    }
-
-    companion object {
-        fun getViewModelFactory(applicationContext: Context): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-
-                    val sharing =
-                        Creator.provideShareButton(applicationContext = applicationContext)
-                    val setting =
-                        Creator.provideGetSettingsInteractor(applicationContext = applicationContext)
-
-                    SettingsViewModel(
-                        sharingInteractor = sharing,
-                        settingsInteractor = setting,
-                    )
-                }
-            }
     }
 }
 
