@@ -80,10 +80,13 @@ class SearchActivity : AppCompatActivity() {
                 getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
             binding.layoutSearchError.isVisible = false
-            binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
-                else viewModel.searchRequestText(requestText = requestText)
-            }
+        }
+
+        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
+            else viewModel.searchRequestText(
+                requestText = requestText
+            )
         }
 
         binding.buttonUpdateErrorSearch.setOnClickListener {
@@ -119,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
                     )
                     binding.clearIcon.isVisible = true
                     if (adapter.tracks.isNotEmpty()) {
-                        adapter.clearOrUpdateTracks()
+                        showHistoryEmpty()
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
                         )
@@ -142,6 +145,11 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.recyclerTrackView.adapter = adapter
+
+        binding.buttonClearHistory.setOnClickListener {
+            viewModel.clearHistoryList()
+            showHistoryEmpty()
+        }
     }
 
     private fun renderHistory(historyState: HistoryState) {
@@ -158,7 +166,6 @@ class SearchActivity : AppCompatActivity() {
         binding.recyclerTrackView.isVisible = true
         binding.buttonClearHistory.isVisible = true
         adapter.allUpdateTracks(trackList)
-        viewModel.clearHistoryList()
     }
 
     private fun showHistoryEmpty() {
