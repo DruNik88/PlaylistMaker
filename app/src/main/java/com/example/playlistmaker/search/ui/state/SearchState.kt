@@ -1,7 +1,8 @@
 package com.example.playlistmaker.search.ui.state
 
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
-import com.example.playlistmaker.search.ui.view_model.SeachViewModel
+import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+
 
 sealed interface SearchState {
 
@@ -12,6 +13,6 @@ sealed interface SearchState {
     ) : SearchState
 
     data class Error(
-        val error: SeachViewModel.ErrorSearch
+        val error: SearchViewModel.ErrorSearch
     ) : SearchState
 }

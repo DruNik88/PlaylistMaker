@@ -8,7 +8,8 @@ import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.google.gson.Gson
 
 class HistoryRepositoryImpl(
-    val sharedPrefs: SharedPreferences,
+    private val gson: Gson,
+    private val sharedPrefs: SharedPreferences,
 ) : HistoryRepository {
     companion object {
         const val COUNT_ITEMS = 10
@@ -24,7 +25,7 @@ class HistoryRepositoryImpl(
     private fun restoreHistoryList() {
         val json = sharedPrefs.getString(KEY_HISTORY_LIST, null)
         if (!json.isNullOrEmpty()) {
-            val history = Gson().fromJson(json, TrackListHistory::class.java)
+            val history = gson.fromJson(json, TrackListHistory::class.java)
             if (!history.list.isNullOrEmpty()) {
                 trackListHistory.list.addAll(history.list)
             }
@@ -56,10 +57,11 @@ class HistoryRepositoryImpl(
 
     override fun saveSharedPrefs() {
         if (trackListHistory.list.isNotEmpty()) {
-            val json = Gson().toJson(trackListHistory)
+            val json = gson.toJson(trackListHistory)
             sharedPrefs.edit()
                 .putString(KEY_HISTORY_LIST, json)
                 .apply()
         }
     }
 }
+

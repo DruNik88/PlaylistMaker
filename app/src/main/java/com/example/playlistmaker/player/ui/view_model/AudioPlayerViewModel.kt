@@ -3,18 +3,14 @@ package com.example.playlistmaker.player.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.mapper.TrackSearchDomainInToTrackPlayerDomain
 import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
-class AudioPlayerViewModel (
-    private val trackSearch: TrackSearchDomain,
+class AudioPlayerViewModel(
+    trackSearch: TrackSearchDomain,
     private val audioPlayerInteractor: AudioPlayerInteractor,
 ) : ViewModel() {
 
@@ -27,16 +23,20 @@ class AudioPlayerViewModel (
 
     init {
         showDataLiveData.postValue(ShowData.Loading)
-        val trackPlayer = TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(trackSearch)
+        val trackPlayer =
+            TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(
+                trackSearch
+            )
         audioPlayerInteractor.preparePlayer(
             track = trackPlayer,
-            playerObserver = object :AudioPlayerInteractor.AudioPlayerObserver{
+            playerObserver = object : AudioPlayerInteractor.AudioPlayerObserver {
                 override fun onProgress(progress: Long) {
                     playStatusLiveData.value = getCurrentPlayStatus().copy(progress = progress)
                 }
 
-                override fun onComplete(){
-                    playStatusLiveData.value = getCurrentPlayStatus().copy(progress = 0L, isPlaying = false)
+                override fun onComplete() {
+                    playStatusLiveData.value =
+                        getCurrentPlayStatus().copy(progress = 0L, isPlaying = false)
                 }
 
                 override fun onPause() {
@@ -62,26 +62,12 @@ class AudioPlayerViewModel (
         audioPlayerInteractor.playbackControl()
     }
 
-    fun pause(){
+    fun pause() {
         audioPlayerInteractor.pausePlayer()
     }
 
     fun release() {
         audioPlayerInteractor.release()
-    }
-
-    companion object {
-        fun getViewModelFactory(trackSearch: TrackSearchDomain): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-
-                val interactor = Creator.provideGetAudioPlayerManagerInteractor()
-
-                AudioPlayerViewModel(
-                    trackSearch = trackSearch,
-                    audioPlayerInteractor = interactor
-                 )
-            }
-        }
     }
 }
 
