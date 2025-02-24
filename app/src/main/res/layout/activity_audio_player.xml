@@ -317,7 +317,7 @@
             android:layout_marginTop="148dp"
             android:indeterminate="true"
             android:visibility="visible"
-            app:indicatorColor="@color/bright_blue"
+            app:indicatorColor="@color/yp_blue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

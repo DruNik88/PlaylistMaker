@@ -11,7 +11,7 @@
         android:id="@+id/errorImage"
         android:layout_width="@dimen/activity_search_image_view_error_width"
         android:layout_height="@dimen/activity_search_image_view_error_height"
-        android:layout_marginTop="210dp"
+        android:layout_marginTop="106dp"
         android:contentDescription="@null"
         android:src="@drawable/nothing_found"
         app:layout_constraintEnd_toEndOf="parent"
