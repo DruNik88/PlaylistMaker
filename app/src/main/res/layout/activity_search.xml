@@ -44,6 +44,7 @@
 
             android:autofillHints="no"
             android:hint="@string/search"
+            android:textCursorDrawable="@drawable/custom_cursor"
 
             android:imeOptions="actionDone"
             android:singleLine="true" />
@@ -79,7 +80,7 @@
                 android:visibility="gone"
                 android:layout_gravity="center"
                 android:layout_marginTop="148dp"
-                app:indicatorColor="@color/bright_blue"/>
+                app:indicatorColor="@color/yp_blue"/>
 
             <TextView
                 android:id="@+id/headHistoryViews"

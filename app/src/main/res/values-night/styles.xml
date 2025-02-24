@@ -2,7 +2,7 @@
 <resources>
 
     <style name="LinearLayoutMain">
-        <item name="android:background">@color/black</item>
+        <item name="android:background">@color/yp_black</item>
      </style>
 
     <style name="TextActivitySettings">
@@ -134,4 +134,26 @@
         <item name="android:enabled">false</item>
     </style>
 
+    <style name= "TabLayoutStyle" parent="Widget.Material3.TabLayout">
+        <item name="android:background">@null</item>
+        <item name="tabTextColor">?attr/colorOnSecondary</item>
+        <item name="tabIndicatorColor">?attr/colorOnSecondary</item>
+        <item name="tabTextAppearance">@style/TabTextAppearance</item>
+    </style>
+
+    <style name="TabTextAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+
+
+    <style name="ButtonNewPlayList">
+        <item name="android:text">@string/new_playlist</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:fontFamily">@font/ys_text_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">54dp</item>
+    </style>
 </resources>

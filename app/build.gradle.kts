@@ -57,4 +57,9 @@ dependencies {
     implementation (libs.androidx.core.ktx.v190)
 
     implementation (libs.koin.android)
+
+    implementation (libs.material.v180)
+    implementation (libs.androidx.viewpager2)
+    implementation (libs.androidx.fragment.ktx)
+
 }
