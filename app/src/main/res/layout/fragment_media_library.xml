@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".medialibrary.ui.activity.MediaLibraryActivity">
+    tools:context=".medialibrary.ui.fragment.MediaLibraryFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/left_guideline_audio_player_16"

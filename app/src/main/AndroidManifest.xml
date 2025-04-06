@@ -26,7 +26,7 @@
             android:name=".search.ui.activity.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".medialibrary.ui.activity.MediaLibraryActivity"
+            android:name=".medialibrary.ui.fragment.MediaLibraryFragment"
             android:exported="false" />
         <activity
             android:name=".settings.ui.fragment.SettingsFragment"
