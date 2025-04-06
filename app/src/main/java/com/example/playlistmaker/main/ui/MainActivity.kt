@@ -6,7 +6,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.ui.fragment.MediaLibraryFragment
-import com.example.playlistmaker.search.ui.activity.SearchActivity
+import com.example.playlistmaker.search.ui.fragment.SearchFragment
 import com.example.playlistmaker.settings.ui.fragment.SettingsFragment
 
 
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
         val buttonSearch = findViewById<Button>(R.id.button_search)
         buttonSearch.setOnClickListener {
-            val displayIntent = Intent(this, SearchActivity::class.java)
+            val displayIntent = Intent(this, SearchFragment::class.java)
             startActivity(displayIntent)
         }
 

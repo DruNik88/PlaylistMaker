@@ -23,7 +23,7 @@
             android:name=".player.ui.activity.AudioPlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".search.ui.activity.SearchActivity"
+            android:name=".search.ui.fragment.SearchFragment"
             android:exported="false" />
         <activity
             android:name=".medialibrary.ui.fragment.MediaLibraryFragment"
