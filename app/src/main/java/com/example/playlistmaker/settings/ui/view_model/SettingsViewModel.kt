@@ -1,8 +1,9 @@
 package com.example.playlistmaker.settings.ui.view_model
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
-import com.example.playlistmaker.settings.ui.activity.SettingsActivity
+import com.example.playlistmaker.settings.ui.fragment.SettingsFragment
 import com.example.playlistmaker.sharing.domain.interactor.SharingInteractor
 
 class SettingsViewModel(
@@ -11,16 +12,16 @@ class SettingsViewModel(
 ) : ViewModel() {
 
 
-    fun shareApp(settingsActivity: SettingsActivity) {
-        sharingInteractor.shareApp(settingsActivity)
+    fun shareApp(context: Context) {
+        sharingInteractor.shareApp(context)
     }
 
-    fun openTerms(settingsActivity: SettingsActivity) {
-        sharingInteractor.openTerms(settingsActivity)
+    fun openTerms(context: Context) {
+        sharingInteractor.openTerms(context)
     }
 
-    fun openSupport(settingsActivity: SettingsActivity) {
-        sharingInteractor.openSupport(settingsActivity)
+    fun openSupport(context: Context) {
+        sharingInteractor.openSupport(context)
     }
 
 

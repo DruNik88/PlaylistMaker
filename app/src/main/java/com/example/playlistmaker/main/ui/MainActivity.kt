@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.ui.activity.MediaLibraryActivity
 import com.example.playlistmaker.search.ui.activity.SearchActivity
-import com.example.playlistmaker.settings.ui.activity.SettingsActivity
+import com.example.playlistmaker.settings.ui.fragment.SettingsFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         val buttonSettings = findViewById<Button>(R.id.button_settings)
         buttonSettings.setOnClickListener {
-            val displayIntent = Intent(this, SettingsActivity::class.java)
+            val displayIntent = Intent(this, SettingsFragment::class.java)
             startActivity(displayIntent)
         }
     }
