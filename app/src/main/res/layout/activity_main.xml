@@ -51,7 +51,7 @@
         style="@style/ButtonActivityMain"
         android:layout_marginTop="@dimen/margin_button"
         android:layout_marginBottom="24dp"
-        android:text="@string/options"
+        android:text="@string/settings"
         app:icon="@drawable/vector_options"/>
 
 </LinearLayout>

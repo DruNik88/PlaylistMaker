@@ -1,12 +1,12 @@
 package com.example.playlistmaker.root
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityRootBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class RootActivity : AppCompatActivity() {
 
@@ -18,5 +18,11 @@ class RootActivity : AppCompatActivity() {
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_root)
 
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setupWithNavController(navController)
     }
 }
