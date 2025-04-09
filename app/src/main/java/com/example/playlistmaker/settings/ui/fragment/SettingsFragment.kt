@@ -2,6 +2,7 @@ package com.example.playlistmaker.settings.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SettingsFragment : Fragment() {
     @SuppressLint("IntentReset", "QueryPermissionsNeeded")
 
-    private lateinit var binding: FragmentSettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: SettingsViewModel by viewModel<SettingsViewModel>()
 
@@ -23,7 +25,9 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+
+        Log.d("yes","я создан")
 
         return binding.root
     }
@@ -59,6 +63,11 @@ class SettingsFragment : Fragment() {
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
             viewModel.getSwitchTheme(checked)
         }
-       }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
 

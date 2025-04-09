@@ -27,7 +27,8 @@ class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         const val DEFAULT_VALUE = ""
@@ -63,7 +64,7 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -244,5 +245,10 @@ class SearchFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         viewModel.saveSharedPrefs()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

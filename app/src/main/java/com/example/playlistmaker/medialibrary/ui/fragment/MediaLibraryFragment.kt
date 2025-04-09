@@ -15,7 +15,9 @@ class MediaLibraryFragment : Fragment() {
 
     private val viewModel: MediaLibraryViewModel by viewModel<MediaLibraryViewModel>()
 
-    private lateinit var binding: FragmentMediaLibraryBinding
+    private var _binding: FragmentMediaLibraryBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var tabMediator: TabLayoutMediator
 
     override fun onCreateView(
@@ -24,7 +26,7 @@ class MediaLibraryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentMediaLibraryBinding.inflate(inflater, container, false)
+        _binding = FragmentMediaLibraryBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -57,8 +59,9 @@ class MediaLibraryFragment : Fragment() {
         tabMediator.attach()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
         tabMediator.detach()
     }
 }
