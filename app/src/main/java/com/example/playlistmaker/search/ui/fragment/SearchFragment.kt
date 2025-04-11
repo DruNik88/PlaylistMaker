@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,25 +72,10 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//    }
-//
-//    @SuppressLint("MissingInflatedId", "NotifyDataSetChanged")
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-////        setContentView(R.layout.activity_search)
-//
-//        binding = ActivitySearchBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
 
         viewModel.observeStateSearch().observe(viewLifecycleOwner) { state ->
             render(state)
         }
-
-//        setSupportActionBar(binding.toolbarSearch)
-//        binding.toolbarSearch.setNavigationIcon(R.drawable.vector_arrow_back)
-//        binding.toolbarSearch.setNavigationOnClickListener {
-//            finish()
-//        }
 
         binding.clearIcon.setOnClickListener {
             binding.inputEditText.setText(DEFAULT_VALUE)

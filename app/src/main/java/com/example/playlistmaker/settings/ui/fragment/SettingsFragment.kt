@@ -34,18 +34,6 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//    }
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.fragment_settings)
-
-
-//        setSupportActionBar(binding.toolbarSettings)
-//        binding.toolbarSettings.setNavigationIcon(R.drawable.vector_arrow_back)
-//        binding.toolbarSettings.setNavigationOnClickListener {
-//            finish()
-//        }
 
         binding.shareTheApp.setOnClickListener {
             viewModel.shareApp(requireContext())

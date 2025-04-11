@@ -33,19 +33,6 @@ class MediaLibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//    }
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        binding = ActivityMediaLibraryBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        setSupportActionBar(binding.toolbarMediaLibrary)
-//        binding.toolbarMediaLibrary.setNavigationIcon(R.drawable.vector_arrow_back)
-//        binding.toolbarMediaLibrary.setNavigationOnClickListener {
-//            finish()
-//        }
 
         binding.viewPager.adapter = MediaLibraryPagerAdapter(
             fragmentManager = childFragmentManager,
