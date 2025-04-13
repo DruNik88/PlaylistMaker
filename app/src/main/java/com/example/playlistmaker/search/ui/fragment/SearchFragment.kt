@@ -91,7 +91,11 @@ class SearchFragment : Fragment() {
         }
 
         binding.buttonUpdateErrorSearch.setOnClickListener {
-            viewModel.searchRequestText(requestText = requestText)
+            viewModel.request(requestText = requestText)
+            binding.errorImage.isVisible = false
+            binding.errorMessage.isVisible = false
+            binding.buttonUpdateErrorSearch.isVisible = false
+            showLoading()
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -209,6 +213,8 @@ class SearchFragment : Fragment() {
             SearchViewModel.ErrorSearch.CONNECTION_PROBLEMS -> {
                 binding.progressBar.isVisible = false
                 binding.layoutSearchError.isVisible = true
+                binding.errorImage.isVisible = true
+                binding.errorMessage.isVisible = true
                 binding.errorImage.setImageResource(R.drawable.connection_problems)
                 binding.errorMessage.text = getString(R.string.error_search_connection_problems)
                 binding.buttonUpdateErrorSearch.isVisible = true
