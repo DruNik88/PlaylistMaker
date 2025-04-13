@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.data.repository.impl
 
+import android.util.Log
 import com.example.playlistmaker.search.data.mapper.TrackListApiInTrackListMapper
 import com.example.playlistmaker.search.data.model.ItunesRequest
 import com.example.playlistmaker.search.data.model.ItunesResponse
@@ -12,8 +13,7 @@ class TrackListRepositoryImpl(private val trackNetworkClient: TrackNetworkClient
     TrackListRepository {
 
     companion object {
-        const val NOT_FOUND = 1
-        const val CONNECTION_PROBLEMS = 2
+        const val CONNECTION_PROBLEMS = "Проблемы со связью"
     }
 
     override fun searchTrackList(expression: String): Resource<List<TrackSearchDomain>> {
@@ -30,7 +30,8 @@ class TrackListRepositoryImpl(private val trackNetworkClient: TrackNetworkClient
                 Resource.Success(trackList)
             }
 
-            else -> {Resource.Error(NOT_FOUND)}
+            else -> {Resource.Error(CONNECTION_PROBLEMS)}
+
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.playlistmaker.search.data.network.impl
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import com.example.playlistmaker.search.data.model.ItunesRequest
 import com.example.playlistmaker.search.data.model.NetworkResponse
 import com.example.playlistmaker.search.data.network.ItunesApi
@@ -18,6 +19,7 @@ class ItunesRetrofitNetworkClient(
                 return NetworkResponse().apply { resultCode = -1 }
             }
             val response = itunesApi.search(request.expression).execute()
+            response.body()?.results?.isEmpty()
             val networkResponse = response.body() ?: NetworkResponse()
             networkResponse.apply { resultCode = response.code() }
         } catch (ex: Exception) {

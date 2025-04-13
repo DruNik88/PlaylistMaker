@@ -23,8 +23,6 @@ class SearchViewModel(
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-        const val NOT_FOUND = 1
-        const val CONNECTION_PROBLEMS = 2
     }
 
     enum class ErrorSearch {
@@ -102,31 +100,11 @@ class SearchViewModel(
 
                     when (trackList) {
                         is Resource.Error -> {
-                            when (trackList.message) {
-                                NOT_FOUND -> {
-                                    renderStateSearch(
-                                        SearchState.Error(
-                                            error = ErrorSearch.NOT_FOUND
-                                        )
-                                    )
-                                }
-
-                                CONNECTION_PROBLEMS -> {
-                                    renderStateSearch(
-                                        SearchState.Error(
-                                            error = ErrorSearch.CONNECTION_PROBLEMS
-                                        )
-                                    )
-                                }
-
-                                else -> {
-                                    renderStateSearch(
-                                        SearchState.Error(
-                                            error = ErrorSearch.CONNECTION_PROBLEMS
-                                        )
-                                    )
-                                }
-                            }
+                            renderStateSearch(
+                                SearchState.Error(
+                                    error = ErrorSearch.CONNECTION_PROBLEMS
+                                )
+                            )
                         }
 
                         is Resource.Success -> {
@@ -135,11 +113,25 @@ class SearchViewModel(
                                 trackListResponse.list.clear()
                                 trackListResponse.list.addAll(trackList.data.toMutableList())
                             }
-                            renderStateSearch(
-                                SearchState.Content(
-                                    trackList = trackListResponse
-                                )
-                            )
+                            when {
+                                trackListResponse.list.isEmpty() -> {
+                                    renderStateSearch(
+                                        SearchState.Error(
+                                            error = ErrorSearch.NOT_FOUND
+                                        )
+                                    )
+                                }
+
+                                else -> {
+
+                                    renderStateSearch(
+                                        SearchState.Content(
+                                            trackList = trackListResponse
+                                        )
+                                    )
+                                }
+                            }
+
                         }
                     }
 
