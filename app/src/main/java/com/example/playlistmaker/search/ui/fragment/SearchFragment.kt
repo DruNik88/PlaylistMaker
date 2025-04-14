@@ -1,6 +1,5 @@
-package com.example.playlistmaker.search.ui.activity
+package com.example.playlistmaker.search.ui.fragment
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,25 +7,29 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.example.playlistmaker.search.ui.state.HistoryState
 import com.example.playlistmaker.search.ui.state.SearchState
-
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
 
-    private val viewModel: SearchViewModel by viewModel()
+    private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
-    private lateinit var binding: ActivitySearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         const val DEFAULT_VALUE = ""
@@ -50,34 +53,34 @@ class SearchActivity : AppCompatActivity() {
     private val adapter = TrackAdapter { track ->
         if (clickDebounce()) {
             viewModel.addTrackListHistory(track)
-            intent = Intent(this, AudioPlayerActivity::class.java)
+            val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
             intent.putExtra("track", track)
             startActivity(intent)
         }
     }
 
-    @SuppressLint("MissingInflatedId", "NotifyDataSetChanged")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        viewModel.observeStateSearch().observe(this) { state ->
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.observeStateSearch().observe(viewLifecycleOwner) { state ->
             render(state)
-        }
-
-        setSupportActionBar(binding.toolbarSearch)
-        binding.toolbarSearch.setNavigationIcon(R.drawable.vector_arrow_back)
-        binding.toolbarSearch.setNavigationOnClickListener {
-            finish()
         }
 
         binding.clearIcon.setOnClickListener {
             binding.inputEditText.setText(DEFAULT_VALUE)
             val inputMethodManager =
-                getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
             binding.layoutSearchError.isVisible = false
         }
@@ -134,11 +137,11 @@ class SearchActivity : AppCompatActivity() {
         }
         binding.inputEditText.addTextChangedListener(simpleTextWatcher)
 
-        viewModel.observeStateSearch().observe(this) {
+        viewModel.observeStateSearch().observe(viewLifecycleOwner) {
             render(it)
         }
 
-        viewModel.observeHistorySearch().observe(this) {
+        viewModel.observeHistorySearch().observe(viewLifecycleOwner) {
             renderHistory(it)
         }
 
@@ -228,5 +231,10 @@ class SearchActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         viewModel.saveSharedPrefs()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
