@@ -14,9 +14,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
+import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.example.playlistmaker.search.ui.state.HistoryState
 import com.example.playlistmaker.search.ui.state.SearchState
@@ -53,9 +54,13 @@ class SearchFragment : Fragment() {
     private val adapter = TrackAdapter { track ->
         if (clickDebounce()) {
             viewModel.addTrackListHistory(track)
-            val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-            intent.putExtra("track", track)
-            startActivity(intent)
+//            val intent = Intent(requireContext(), AudioPlayerFragment::class.java)
+//            intent.putExtra("track", track)
+//            startActivity(intent)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.createArgs(track)
+            )
         }
     }
 
@@ -109,6 +114,7 @@ class SearchFragment : Fragment() {
                     } else {
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
+
                         )
                     }
                 }
@@ -166,6 +172,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun showHistoryContent(trackList: TrackSearchListDomain) {
+        Log.d("request_h", "пошёл запрос")
         adapter.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = true
         binding.recyclerTrackView.isVisible = true

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
@@ -54,6 +55,7 @@ class SearchViewModel(
     }
 
     fun request(requestText: String) {
+        Log.d("request", "пошёл запрос")
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
         val searchRunnable = Runnable { requestTrack(requestText) }
