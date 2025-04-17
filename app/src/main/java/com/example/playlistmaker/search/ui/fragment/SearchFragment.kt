@@ -54,9 +54,6 @@ class SearchFragment : Fragment() {
     private val adapter = TrackAdapter { track ->
         if (clickDebounce()) {
             viewModel.addTrackListHistory(track)
-//            val intent = Intent(requireContext(), AudioPlayerFragment::class.java)
-//            intent.putExtra("track", track)
-//            startActivity(intent)
             findNavController().navigate(
                 R.id.action_searchFragment_to_audioPlayerFragment,
                 AudioPlayerFragment.createArgs(track)
@@ -92,7 +89,6 @@ class SearchFragment : Fragment() {
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
-            else viewModel.searchRequestText(requestText = requestText)
         }
 
         binding.buttonUpdateErrorSearch.setOnClickListener {
@@ -108,35 +104,22 @@ class SearchFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (binding.inputEditText.hasFocus()) {
-                    if (s.isNullOrEmpty()) {
-                        viewModel.getHistoryList()
-                    } else {
-                        viewModel.searchRequestText(
-                            requestText = s?.toString() ?: ""
-
-                        )
-                    }
-                }
 
                 if (s.isNullOrEmpty()) {
                     binding.clearIcon.isVisible = false
                     binding.layoutSearchError.isVisible = false
-                    if (adapter.tracks.isNotEmpty()) {
-                        adapter.clearOrUpdateTracks()
-                        viewModel.getHistoryList()
-                    }
                 } else {
-                    requestText = s?.toString() ?: ""
-                    viewModel.searchRequestText(
-                        requestText = requestText
-                    )
-                    binding.clearIcon.isVisible = true
                     if (adapter.tracks.isNotEmpty()) {
                         showHistoryEmpty()
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
                         )
+                    } else {
+                        requestText = s?.toString() ?: ""
+                        viewModel.searchRequestText(
+                            requestText = s?.toString() ?: ""
+                        )
+                        binding.clearIcon.isVisible = true
                     }
                 }
             }
