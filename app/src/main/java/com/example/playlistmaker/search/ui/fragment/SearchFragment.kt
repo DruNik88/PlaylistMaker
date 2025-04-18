@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.ui.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -61,6 +60,10 @@ class SearchFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -88,7 +91,18 @@ class SearchFragment : Fragment() {
         }
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
+            Log.d("focus", "я в вфокусе")
             if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
+            else {
+                if (requestText.isEmpty()) {
+                    Log.d("focus_запрос пустой", "я в вфокусе")
+                    viewModel.getHistoryList()
+                } else {
+                    showHistoryEmpty()
+                    Log.d("focus_нет", "я в вфокусе")
+                    viewModel.searchRequestText(requestText = requestText)
+                }
+            }
         }
 
         binding.buttonUpdateErrorSearch.setOnClickListener {
@@ -110,11 +124,13 @@ class SearchFragment : Fragment() {
                     binding.layoutSearchError.isVisible = false
                 } else {
                     if (adapter.tracks.isNotEmpty()) {
+                        Log.d("focus_адаптер", "я в вфокусе")
                         showHistoryEmpty()
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
                         )
                     } else {
+                        Log.d("focus_адаптер пуст", "я в вфокусе")
                         requestText = s?.toString() ?: ""
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
@@ -148,14 +164,22 @@ class SearchFragment : Fragment() {
 
     private fun renderHistory(historyState: HistoryState) {
         when (historyState) {
-            is HistoryState.Content -> showHistoryContent(historyState.trackList)
-            HistoryState.Empty -> showHistoryEmpty()
-            HistoryState.Clear -> showHistoryClear()
+            is HistoryState.Content -> {
+                Log.d("focus_historyContent", "я в вфокусе")
+                showHistoryContent(historyState.trackList)
+            }
+            HistoryState.Empty -> {
+                Log.d("focus_historyEmpty", "я в вфокусе")
+                showHistoryEmpty()
+            }
+            HistoryState.Clear -> {
+                Log.d("focus_historyClear", "я в вфокусе")
+                showHistoryClear()
+            }
         }
     }
 
     private fun showHistoryContent(trackList: TrackSearchListDomain) {
-        Log.d("request_h", "пошёл запрос")
         adapter.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = true
         binding.recyclerTrackView.isVisible = true
@@ -180,7 +204,10 @@ class SearchFragment : Fragment() {
     private fun render(state: SearchState) {
         when (state) {
             is SearchState.Loading -> showLoading()
-            is SearchState.Content -> showContent(state.trackList)
+            is SearchState.Content -> {
+                showContent(state.trackList)
+            }
+
             is SearchState.Error -> showError(state.error)
         }
     }
@@ -218,6 +245,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun showContent(trackList: TrackSearchListDomain) {
+        Log.d("focus_content", "я в вфокусе")
+//        binding.headHistoryViews.isVisible = false
+//        binding.buttonClearHistory.isVisible = false
+
         binding.recyclerTrackView.isVisible = true
         binding.progressBar.isVisible = false
         adapter.allUpdateTracks(trackList)
