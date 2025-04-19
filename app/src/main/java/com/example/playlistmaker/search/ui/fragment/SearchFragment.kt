@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,10 +59,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -91,15 +86,12 @@ class SearchFragment : Fragment() {
         }
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            Log.d("focus", "я в вфокусе")
             if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
             else {
                 if (requestText.isEmpty()) {
-                    Log.d("focus_запрос пустой", "я в вфокусе")
                     viewModel.getHistoryList()
                 } else {
                     showHistoryEmpty()
-                    Log.d("focus_нет", "я в вфокусе")
                     viewModel.searchRequestText(requestText = requestText)
                 }
             }
@@ -124,13 +116,11 @@ class SearchFragment : Fragment() {
                     binding.layoutSearchError.isVisible = false
                 } else {
                     if (adapter.tracks.isNotEmpty()) {
-                        Log.d("focus_адаптер", "я в вфокусе")
                         showHistoryEmpty()
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
                         )
                     } else {
-                        Log.d("focus_адаптер пуст", "я в вфокусе")
                         requestText = s?.toString() ?: ""
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
@@ -146,12 +136,12 @@ class SearchFragment : Fragment() {
         }
         binding.inputEditText.addTextChangedListener(simpleTextWatcher)
 
-        viewModel.observeStateSearch().observe(viewLifecycleOwner) {
-            render(it)
-        }
-
         viewModel.observeHistorySearch().observe(viewLifecycleOwner) {
             renderHistory(it)
+        }
+
+        viewModel.observeStateSearch().observe(viewLifecycleOwner) {
+            render(it)
         }
 
         binding.recyclerTrackView.adapter = adapter
@@ -165,15 +155,14 @@ class SearchFragment : Fragment() {
     private fun renderHistory(historyState: HistoryState) {
         when (historyState) {
             is HistoryState.Content -> {
-                Log.d("focus_historyContent", "я в вфокусе")
                 showHistoryContent(historyState.trackList)
             }
-            HistoryState.Empty -> {
-                Log.d("focus_historyEmpty", "я в вфокусе")
+
+            is HistoryState.Empty -> {
                 showHistoryEmpty()
             }
-            HistoryState.Clear -> {
-                Log.d("focus_historyClear", "я в вфокусе")
+
+            is HistoryState.Clear -> {
                 showHistoryClear()
             }
         }
@@ -245,9 +234,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun showContent(trackList: TrackSearchListDomain) {
-        Log.d("focus_content", "я в вфокусе")
-//        binding.headHistoryViews.isVisible = false
-//        binding.buttonClearHistory.isVisible = false
+        binding.headHistoryViews.isVisible = false
+        binding.buttonClearHistory.isVisible = false
 
         binding.recyclerTrackView.isVisible = true
         binding.progressBar.isVisible = false
