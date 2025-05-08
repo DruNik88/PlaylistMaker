@@ -12,10 +12,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
+import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.example.playlistmaker.search.ui.state.HistoryState
 import com.example.playlistmaker.search.ui.state.SearchState
@@ -35,29 +38,32 @@ class SearchFragment : Fragment() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private var isClickAllowed = true
+    private var adapter: TrackAdapter? = null
+    private lateinit var onTrackClickDebounce: (TrackSearchDomain) -> Unit
+
+//    private var isClickAllowed = true
     private var requestText: String = ""
 
-    private val handler = Handler(Looper.getMainLooper())
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-    private val adapter = TrackAdapter { track ->
-        if (clickDebounce()) {
-            viewModel.addTrackListHistory(track)
-            findNavController().navigate(
-                R.id.action_searchFragment_to_audioPlayerFragment,
-                AudioPlayerFragment.createArgs(track)
-            )
-        }
-    }
+//    private val handler = Handler(Looper.getMainLooper())
+//
+//    private fun clickDebounce(): Boolean {
+//        val current = isClickAllowed
+//        if (isClickAllowed) {
+//            isClickAllowed = false
+//            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+//        }
+//        return current
+//    }
+//
+//    private val adapter = TrackAdapter { track ->
+//        if (clickDebounce()) {
+//            viewModel.addTrackListHistory(track)
+//            findNavController().navigate(
+//                R.id.action_searchFragment_to_audioPlayerFragment,
+//                AudioPlayerFragment.createArgs(track)
+//            )
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,6 +78,21 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter = TrackAdapter{ track ->
+            onTrackClickDebounce(track)
+        }
+
+        onTrackClickDebounce = debounce<TrackSearchDomain>(
+            delayMillis = CLICK_DEBOUNCE_DELAY,
+            coroutineScope = viewLifecycleOwner.lifecycleScope,
+            useLastParam = false,
+        ){ track ->
+            viewModel.addTrackListHistory(track)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.createArgs(track))
+        }
 
         viewModel.observeStateSearch().observe(viewLifecycleOwner) { state ->
             render(state)
@@ -115,7 +136,7 @@ class SearchFragment : Fragment() {
                     binding.clearIcon.isVisible = false
                     binding.layoutSearchError.isVisible = false
                 } else {
-                    if (adapter.tracks.isNotEmpty()) {
+                    if (adapter?.tracks?.isNotEmpty() == true) {
                         showHistoryEmpty()
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
@@ -169,22 +190,22 @@ class SearchFragment : Fragment() {
     }
 
     private fun showHistoryContent(trackList: TrackSearchListDomain) {
-        adapter.clearOrUpdateTracks()
+        adapter?.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = true
         binding.recyclerTrackView.isVisible = true
         binding.buttonClearHistory.isVisible = true
-        adapter.allUpdateTracks(trackList)
+        adapter?.allUpdateTracks(trackList)
     }
 
     private fun showHistoryEmpty() {
-        adapter.clearOrUpdateTracks()
+        adapter?.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = false
         binding.buttonClearHistory.isVisible = false
     }
 
     private fun showHistoryClear() {
         binding.buttonClearHistory.setOnClickListener {
-            adapter.clearOrUpdateTracks()
+            adapter?.clearOrUpdateTracks()
             binding.headHistoryViews.isVisible = false
             binding.buttonClearHistory.isVisible = false
         }
@@ -239,7 +260,7 @@ class SearchFragment : Fragment() {
 
         binding.recyclerTrackView.isVisible = true
         binding.progressBar.isVisible = false
-        adapter.allUpdateTracks(trackList)
+        adapter?.allUpdateTracks(trackList)
 
     }
 
