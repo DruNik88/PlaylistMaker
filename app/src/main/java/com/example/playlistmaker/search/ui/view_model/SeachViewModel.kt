@@ -15,6 +15,7 @@ import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.example.playlistmaker.search.ui.state.HistoryState
 import com.example.playlistmaker.search.ui.state.SearchState
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchInteractor: TrackListInteractor,
@@ -46,8 +47,8 @@ class SearchViewModel(
         delayMillis = SEARCH_DEBOUNCE_DELAY,
         coroutineScope = viewModelScope,
         useLastParam = true,
-    ) {
-        requestText -> requestTrack(requestText)
+    ) { requestText ->
+        requestTrack(requestText)
     }
 
 //    private val handler = Handler(Looper.getMainLooper())
@@ -61,7 +62,7 @@ class SearchViewModel(
         request(requestText)
     }
 
-    fun request(requestText: String){
+    fun request(requestText: String) {
         trackSearchDebounce(requestText)
     }
 
@@ -108,61 +109,115 @@ class SearchViewModel(
     private fun requestTrack(requestText: String) {
         if (requestText.isNotEmpty()) {
             renderStateSearch(SearchState.Loading)
+            viewModelScope.launch {
+                searchInteractor.searchTrackList(requestText)
+                    .collect { trackList ->
+                        showRequest(trackList)
+                    }
+            }
         }
-        searchInteractor.searchTrackList(
-            expression = requestText,
-            consumer = object : TrackListInteractor.TrackListConsumer {
-                @SuppressLint("NotifyDataSetChanged")
-                override fun consume(trackList: Resource<List<TrackSearchDomain>>) {
+    }
 
-                    when (trackList) {
-                        is Resource.Error -> {
-                            renderStateSearch(
-                                SearchState.Error(
-                                    error = ErrorSearch.CONNECTION_PROBLEMS
-                                )
+    private fun showRequest(trackList: Resource<List<TrackSearchDomain>>) {
+        when (trackList) {
+            is Resource.Error -> {
+                renderStateSearch(
+                    SearchState.Error(
+                        error = ErrorSearch.CONNECTION_PROBLEMS
+                    )
+                )
+            }
+
+            is Resource.Success -> {
+                val trackListResponse = TrackSearchListDomain(list = mutableListOf())
+                if (trackList.data != null) {
+                    trackListResponse.list.clear()
+                    trackListResponse.list.addAll(trackList.data.toMutableList())
+                }
+                when {
+                    trackListResponse.list.isEmpty() -> {
+                        renderStateSearch(
+                            SearchState.Error(
+                                error = ErrorSearch.NOT_FOUND
                             )
-                        }
-
-                        is Resource.Success -> {
-                            val trackListResponse = TrackSearchListDomain(list = mutableListOf())
-                            if (trackList.data != null) {
-                                trackListResponse.list.clear()
-                                trackListResponse.list.addAll(trackList.data.toMutableList())
-                            }
-                            when {
-                                trackListResponse.list.isEmpty() -> {
-                                    renderStateSearch(
-                                        SearchState.Error(
-                                            error = ErrorSearch.NOT_FOUND
-                                        )
-                                    )
-                                }
-
-                                else -> {
-
-                                    renderStateSearch(
-                                        SearchState.Content(
-                                            trackList = trackListResponse
-                                        )
-                                    )
-                                }
-                            }
-
-                        }
+                        )
                     }
 
+                    else -> {
+
+                        renderStateSearch(
+                            SearchState.Content(
+                                trackList = trackListResponse
+                            )
+                        )
+                    }
                 }
+
             }
-        )
+        }
+
     }
 
-    private fun renderStateSearch(state: SearchState) {
-        stateSearchLiveData.postValue(state)
-    }
 
-    private fun renderStateHistory(state: HistoryState) {
-        stateHistoryLiveData.postValue(state)
-    }
+
+//    private fun requestTrack(requestText: String) {
+//        if (requestText.isNotEmpty()) {
+//            renderStateSearch(SearchState.Loading)
+//        }
+//        searchInteractor.searchTrackList(
+//            expression = requestText,
+//            consumer = object : TrackListInteractor.TrackListConsumer {
+//                @SuppressLint("NotifyDataSetChanged")
+//                override fun consume(trackList: Resource<List<TrackSearchDomain>>) {
+//
+//                    when (trackList) {
+//                        is Resource.Error -> {
+//                            renderStateSearch(
+//                                SearchState.Error(
+//                                    error = ErrorSearch.CONNECTION_PROBLEMS
+//                                )
+//                            )
+//                        }
+//
+//                        is Resource.Success -> {
+//                            val trackListResponse = TrackSearchListDomain(list = mutableListOf())
+//                            if (trackList.data != null) {
+//                                trackListResponse.list.clear()
+//                                trackListResponse.list.addAll(trackList.data.toMutableList())
+//                            }
+//                            when {
+//                                trackListResponse.list.isEmpty() -> {
+//                                    renderStateSearch(
+//                                        SearchState.Error(
+//                                            error = ErrorSearch.NOT_FOUND
+//                                        )
+//                                    )
+//                                }
+//
+//                                else -> {
+//
+//                                    renderStateSearch(
+//                                        SearchState.Content(
+//                                            trackList = trackListResponse
+//                                        )
+//                                    )
+//                                }
+//                            }
+//
+//                        }
+//                    }
+//
+//                }
+//            }
+//        )
+//    }
+
+private fun renderStateSearch(state: SearchState) {
+    stateSearchLiveData.postValue(state)
+}
+
+private fun renderStateHistory(state: HistoryState) {
+    stateHistoryLiveData.postValue(state)
+}
 
 }
