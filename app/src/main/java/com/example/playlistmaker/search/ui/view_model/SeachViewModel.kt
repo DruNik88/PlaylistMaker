@@ -6,6 +6,8 @@ import android.os.Looper
 import android.os.SystemClock
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
 import com.example.playlistmaker.search.domain.interactor.TrackListInteractor
 import com.example.playlistmaker.search.domain.model.Resource
@@ -40,7 +42,15 @@ class SearchViewModel(
 
     private var latestRequestText: String? = null
 
-    private val handler = Handler(Looper.getMainLooper())
+    private val trackSearchDebounce = debounce<String>(
+        delayMillis = SEARCH_DEBOUNCE_DELAY,
+        coroutineScope = viewModelScope,
+        useLastParam = true,
+    ) {
+        requestText -> requestTrack(requestText)
+    }
+
+//    private val handler = Handler(Looper.getMainLooper())
 
     fun searchRequestText(requestText: String) {
         if (latestRequestText == requestText) {
@@ -49,21 +59,25 @@ class SearchViewModel(
 
         latestRequestText = requestText
         request(requestText)
-
     }
 
-    fun request(requestText: String) {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+    fun request(requestText: String){
+        trackSearchDebounce(requestText)
+    }
 
-        val searchRunnable = Runnable { requestTrack(requestText) }
 
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
-        }
+//    fun request(requestText: String) {
+//        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+//
+//        val searchRunnable = Runnable { requestTrack(requestText) }
+//
+//        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
+//        handler.postAtTime(
+//            searchRunnable,
+//            SEARCH_REQUEST_TOKEN,
+//            postTime,
+//        )
+//        }
 
     fun addTrackListHistory(track: TrackSearchDomain) {
         getUserHistory.addTrackListHistory(track)
@@ -74,7 +88,7 @@ class SearchViewModel(
     }
 
     fun getHistoryList() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+//        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
         trackListHistory = getUserHistory.getListHistory()
         if (trackListHistory.list.isEmpty()) {
             renderStateHistory(HistoryState.Empty)
