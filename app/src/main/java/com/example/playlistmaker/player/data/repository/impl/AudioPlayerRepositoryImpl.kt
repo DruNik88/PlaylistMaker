@@ -8,6 +8,9 @@ import com.example.playlistmaker.player.data.mapper.TrackPlayerDomainInToTrackPl
 import com.example.playlistmaker.player.data.repository.AudioPlayerRepository
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 
@@ -16,7 +19,7 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        private const val DELAY = 1000L
+        private const val DELAY = 300L
         private const val AVAILABLE_TIME = 30000L
     }
 
@@ -24,28 +27,40 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
-    private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
+//    private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
 
-    private fun createUpdateTimerAudioPlayer(): Runnable {
-        return object : Runnable {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            override fun run() {
-                if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
-                    val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
-                    innerPlayerObserver.onProgress(progress = reverseTimer)
-                    mainThreadHandler.postDelayed(this,DELAY)
-                }
-            }
+//    private fun createUpdateTimerAudioPlayer(): Runnable {
+//        return object : Runnable {
+//            @SuppressLint("UseCompatLoadingForDrawables")
+//            override fun run() {
+//                if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
+//                    val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
+//                    innerPlayerObserver.onProgress(progress = reverseTimer)
+//                    mainThreadHandler.postDelayed(this,DELAY)
+//                }
+//            }
+//
+//        }
+//    }
+
+    private suspend fun createUpdateTimerAudioPlayer() {
+        while (mediaPlayer.isPlaying) {
+            val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
+            delay(DELAY)
+            innerPlayerObserver.onProgress(progress = reverseTimer)
+//                delay(DELAY)
 
         }
     }
 
     override fun preparePlayer(
         track: TrackPlayerDomain,
-        playerObserver: AudioPlayerInteractor.AudioPlayerObserver) {
+        playerObserver: AudioPlayerInteractor.AudioPlayerObserver
+    ) {
 
-        val trackPlayerData= TrackPlayerDomainInToTrackPlayerData.trackPlayerDomainInToTrackPlayerData(track)
+        val trackPlayerData =
+            TrackPlayerDomainInToTrackPlayerData.trackPlayerDomainInToTrackPlayerData(track)
 
         innerPlayerObserver = playerObserver
         mediaPlayer.setDataSource(trackPlayerData.previewUrl)
@@ -62,33 +77,43 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    override fun startPlayer() {
+    suspend fun startPlayer() {
         mediaPlayer.start()
 
         playerState = STATE_PLAYING
 
         innerPlayerObserver.onPlay()
 
-        mainThreadHandler.post(createUpdateTimerAudioPlayer())
+        createUpdateTimerAudioPlayer()
     }
+
+//    @SuppressLint("UseCompatLoadingForDrawables")
+//    override fun startPlayer() {
+//        mediaPlayer.start()
+//
+//        playerState = STATE_PLAYING
+//
+//        innerPlayerObserver.onPlay()
+//
+//        mainThreadHandler.post(createUpdateTimerAudioPlayer())
+//    }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun pausePlayer() {
-            mediaPlayer.pause()
+        mediaPlayer.pause()
 
-            playerState = STATE_PAUSED
+        playerState = STATE_PAUSED
 
         innerPlayerObserver.onPause()
 
-        mainThreadHandler.removeCallbacks(createUpdateTimerAudioPlayer())
+//        mainThreadHandler.removeCallbacks(createUpdateTimerAudioPlayer())
     }
 
     override fun release() {
         mediaPlayer.release()
     }
 
-
-    override fun playbackControl() {
+    override suspend fun playbackControl() {
         when (playerState) {
             STATE_PLAYING -> {
                 pausePlayer()
@@ -99,4 +124,16 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
             }
         }
     }
+
+//    override fun playbackControl() {
+//        when (playerState) {
+//            STATE_PLAYING -> {
+//                pausePlayer()
+//            }
+//
+//            STATE_PREPARED, STATE_PAUSED -> {
+//                startPlayer()
+//            }
+//        }
+//    }
 }
