@@ -2,15 +2,11 @@ package com.example.playlistmaker.player.data.repository.impl
 
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import com.example.playlistmaker.player.data.mapper.TrackPlayerDomainInToTrackPlayerData
 import com.example.playlistmaker.player.data.repository.AudioPlayerRepository
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 
 class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 
@@ -27,30 +23,12 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 
     private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
-//    private var mainThreadHandler: Handler = Handler(Looper.getMainLooper())
-
-
-//    private fun createUpdateTimerAudioPlayer(): Runnable {
-//        return object : Runnable {
-//            @SuppressLint("UseCompatLoadingForDrawables")
-//            override fun run() {
-//                if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
-//                    val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
-//                    innerPlayerObserver.onProgress(progress = reverseTimer)
-//                    mainThreadHandler.postDelayed(this,DELAY)
-//                }
-//            }
-//
-//        }
-//    }
 
     private suspend fun createUpdateTimerAudioPlayer() {
         while (mediaPlayer.isPlaying) {
             val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
             delay(DELAY)
             innerPlayerObserver.onProgress(progress = reverseTimer)
-//                delay(DELAY)
-
         }
     }
 
@@ -87,17 +65,6 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
         createUpdateTimerAudioPlayer()
     }
 
-//    @SuppressLint("UseCompatLoadingForDrawables")
-//    override fun startPlayer() {
-//        mediaPlayer.start()
-//
-//        playerState = STATE_PLAYING
-//
-//        innerPlayerObserver.onPlay()
-//
-//        mainThreadHandler.post(createUpdateTimerAudioPlayer())
-//    }
-
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun pausePlayer() {
         mediaPlayer.pause()
@@ -106,7 +73,6 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 
         innerPlayerObserver.onPause()
 
-//        mainThreadHandler.removeCallbacks(createUpdateTimerAudioPlayer())
     }
 
     override fun release() {
@@ -124,16 +90,4 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
             }
         }
     }
-
-//    override fun playbackControl() {
-//        when (playerState) {
-//            STATE_PLAYING -> {
-//                pausePlayer()
-//            }
-//
-//            STATE_PREPARED, STATE_PAUSED -> {
-//                startPlayer()
-//            }
-//        }
-//    }
 }

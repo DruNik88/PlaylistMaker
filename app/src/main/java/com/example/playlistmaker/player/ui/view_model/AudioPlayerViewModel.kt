@@ -66,10 +66,6 @@ class AudioPlayerViewModel(
         }
     }
 
-//    fun playbackControl() {
-//        audioPlayerInteractor.playbackControl()
-//    }
-
     fun pause() {
         audioPlayerInteractor.pausePlayer()
     }

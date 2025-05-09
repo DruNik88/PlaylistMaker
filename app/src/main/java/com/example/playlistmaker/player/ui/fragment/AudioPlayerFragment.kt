@@ -34,7 +34,6 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private val viewModel: AudioPlayerViewModel by viewModel{
-//        val trackSearch = intent.getSerializableExtra(KEY_TRACK) as? TrackSearchDomain
         val trackSearch = requireArguments().getSerializable(KEY_TRACK) as? TrackSearchDomain
         trackSearch?.let {
             parametersOf(trackSearch)
@@ -51,7 +50,6 @@ class AudioPlayerFragment : Fragment() {
         binding.toolbarAudioPlayer.setNavigationIcon(R.drawable.vector_arrow_back)
         binding.toolbarAudioPlayer.setNavigationOnClickListener {
             findNavController().navigateUp()
-//            (activity as AppCompatActivity).finish()
         }
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
     }

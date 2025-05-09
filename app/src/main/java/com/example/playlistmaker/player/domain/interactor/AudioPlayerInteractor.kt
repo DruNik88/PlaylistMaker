@@ -5,10 +5,8 @@ import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 interface AudioPlayerInteractor {
     fun preparePlayer(track: TrackPlayerDomain, playerObserver: AudioPlayerObserver)
 
-    //    fun startPlayer()
     fun pausePlayer()
     fun release()
-//    fun playbackControl()
     suspend fun playbackControl()
 
     interface AudioPlayerObserver {

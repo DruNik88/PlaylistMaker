@@ -18,10 +18,6 @@ class AudioPlayerInteractorImpl(
         )
     }
 
-//    override fun startPlayer() {
-//        audioPlayerRepository.startPlayer()
-//    }
-
     override fun pausePlayer() {
         audioPlayerRepository.pausePlayer()
     }
@@ -34,7 +30,4 @@ class AudioPlayerInteractorImpl(
         audioPlayerRepository.playbackControl()
     }
 
-//    override fun playbackControl() {
-//        audioPlayerRepository.playbackControl()
-//    }
 }

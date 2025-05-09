@@ -2,8 +2,6 @@ package com.example.playlistmaker.search.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -40,30 +38,7 @@ class SearchFragment : Fragment() {
 
     private var adapter: TrackAdapter? = null
     private lateinit var onTrackClickDebounce: (TrackSearchDomain) -> Unit
-
-//    private var isClickAllowed = true
     private var requestText: String = ""
-
-//    private val handler = Handler(Looper.getMainLooper())
-//
-//    private fun clickDebounce(): Boolean {
-//        val current = isClickAllowed
-//        if (isClickAllowed) {
-//            isClickAllowed = false
-//            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-//        }
-//        return current
-//    }
-//
-//    private val adapter = TrackAdapter { track ->
-//        if (clickDebounce()) {
-//            viewModel.addTrackListHistory(track)
-//            findNavController().navigate(
-//                R.id.action_searchFragment_to_audioPlayerFragment,
-//                AudioPlayerFragment.createArgs(track)
-//            )
-//        }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
