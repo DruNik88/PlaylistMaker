@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.application.di.appModule
 import com.example.playlistmaker.medialibrary.di.mediaLibraryViewModelModule
+import com.example.playlistmaker.player.di.playerDataModule
 import com.example.playlistmaker.player.di.playerInteractorModule
 import com.example.playlistmaker.player.di.playerRepositoryModule
 import com.example.playlistmaker.player.di.playerViewModelModule
@@ -39,6 +40,7 @@ class App : Application() {
                 playerInteractorModule,
                 playerViewModelModule,
                 mediaLibraryViewModelModule,
+                playerDataModule,
             )
         }
 
