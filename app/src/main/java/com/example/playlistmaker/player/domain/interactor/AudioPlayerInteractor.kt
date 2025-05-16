@@ -3,11 +3,11 @@ package com.example.playlistmaker.player.domain.interactor
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
 interface AudioPlayerInteractor {
-    fun preparePlayer (track: TrackPlayerDomain, playerObserver: AudioPlayerObserver)
-    fun startPlayer()
+    fun preparePlayer(track: TrackPlayerDomain, playerObserver: AudioPlayerObserver)
+
     fun pausePlayer()
     fun release()
-    fun playbackControl()
+    suspend fun playbackControl()
 
     interface AudioPlayerObserver {
         fun onProgress(progress: Long)

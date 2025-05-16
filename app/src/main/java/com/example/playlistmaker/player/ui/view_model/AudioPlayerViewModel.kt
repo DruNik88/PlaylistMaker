@@ -3,11 +3,13 @@ package com.example.playlistmaker.player.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.mapper.TrackSearchDomainInToTrackPlayerDomain
 import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
+import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     trackSearch: TrackSearchDomain,
@@ -59,7 +61,9 @@ class AudioPlayerViewModel(
     }
 
     fun playbackControl() {
-        audioPlayerInteractor.playbackControl()
+        viewModelScope.launch {
+            audioPlayerInteractor.playbackControl()
+        }
     }
 
     fun pause() {

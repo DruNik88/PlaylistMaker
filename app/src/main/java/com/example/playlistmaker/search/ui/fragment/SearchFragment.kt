@@ -1,22 +1,22 @@
 package com.example.playlistmaker.search.ui.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
+import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
+import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.example.playlistmaker.search.ui.state.HistoryState
 import com.example.playlistmaker.search.ui.state.SearchState
@@ -36,28 +36,9 @@ class SearchFragment : Fragment() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private var isClickAllowed = true
+    private var adapter: TrackAdapter? = null
+    private lateinit var onTrackClickDebounce: (TrackSearchDomain) -> Unit
     private var requestText: String = ""
-
-    private val handler = Handler(Looper.getMainLooper())
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-    private val adapter = TrackAdapter { track ->
-        if (clickDebounce()) {
-            viewModel.addTrackListHistory(track)
-            val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-            intent.putExtra("track", track)
-            startActivity(intent)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +54,21 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter = TrackAdapter{ track ->
+            onTrackClickDebounce(track)
+        }
+
+        onTrackClickDebounce = debounce<TrackSearchDomain>(
+            delayMillis = CLICK_DEBOUNCE_DELAY,
+            coroutineScope = viewLifecycleOwner.lifecycleScope,
+            useLastParam = false,
+        ){ track ->
+            viewModel.addTrackListHistory(track)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.createArgs(track))
+        }
+
         viewModel.observeStateSearch().observe(viewLifecycleOwner) { state ->
             render(state)
         }
@@ -87,11 +83,22 @@ class SearchFragment : Fragment() {
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
-            else viewModel.searchRequestText(requestText = requestText)
+            else {
+                if (requestText.isEmpty()) {
+                    viewModel.getHistoryList()
+                } else {
+                    showHistoryEmpty()
+                    viewModel.searchRequestText(requestText = requestText)
+                }
+            }
         }
 
         binding.buttonUpdateErrorSearch.setOnClickListener {
-            viewModel.searchRequestText(requestText = requestText)
+            viewModel.request(requestText = requestText)
+            binding.errorImage.isVisible = false
+            binding.errorMessage.isVisible = false
+            binding.buttonUpdateErrorSearch.isVisible = false
+            showLoading()
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -99,34 +106,22 @@ class SearchFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (binding.inputEditText.hasFocus()) {
-                    if (s.isNullOrEmpty()) {
-                        viewModel.getHistoryList()
-                    } else {
-                        viewModel.searchRequestText(
-                            requestText = s?.toString() ?: ""
-                        )
-                    }
-                }
 
                 if (s.isNullOrEmpty()) {
                     binding.clearIcon.isVisible = false
                     binding.layoutSearchError.isVisible = false
-                    if (adapter.tracks.isNotEmpty()) {
-                        adapter.clearOrUpdateTracks()
-                        viewModel.getHistoryList()
-                    }
                 } else {
-                    requestText = s?.toString() ?: ""
-                    viewModel.searchRequestText(
-                        requestText = requestText
-                    )
-                    binding.clearIcon.isVisible = true
-                    if (adapter.tracks.isNotEmpty()) {
+                    if (adapter?.tracks?.isNotEmpty() == true) {
                         showHistoryEmpty()
                         viewModel.searchRequestText(
                             requestText = s?.toString() ?: ""
                         )
+                    } else {
+                        requestText = s?.toString() ?: ""
+                        viewModel.searchRequestText(
+                            requestText = s?.toString() ?: ""
+                        )
+                        binding.clearIcon.isVisible = true
                     }
                 }
             }
@@ -137,12 +132,12 @@ class SearchFragment : Fragment() {
         }
         binding.inputEditText.addTextChangedListener(simpleTextWatcher)
 
-        viewModel.observeStateSearch().observe(viewLifecycleOwner) {
-            render(it)
-        }
-
         viewModel.observeHistorySearch().observe(viewLifecycleOwner) {
             renderHistory(it)
+        }
+
+        viewModel.observeStateSearch().observe(viewLifecycleOwner) {
+            render(it)
         }
 
         binding.recyclerTrackView.adapter = adapter
@@ -155,29 +150,37 @@ class SearchFragment : Fragment() {
 
     private fun renderHistory(historyState: HistoryState) {
         when (historyState) {
-            is HistoryState.Content -> showHistoryContent(historyState.trackList)
-            HistoryState.Empty -> showHistoryEmpty()
-            HistoryState.Clear -> showHistoryClear()
+            is HistoryState.Content -> {
+                showHistoryContent(historyState.trackList)
+            }
+
+            is HistoryState.Empty -> {
+                showHistoryEmpty()
+            }
+
+            is HistoryState.Clear -> {
+                showHistoryClear()
+            }
         }
     }
 
     private fun showHistoryContent(trackList: TrackSearchListDomain) {
-        adapter.clearOrUpdateTracks()
+        adapter?.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = true
         binding.recyclerTrackView.isVisible = true
         binding.buttonClearHistory.isVisible = true
-        adapter.allUpdateTracks(trackList)
+        adapter?.allUpdateTracks(trackList)
     }
 
     private fun showHistoryEmpty() {
-        adapter.clearOrUpdateTracks()
+        adapter?.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = false
         binding.buttonClearHistory.isVisible = false
     }
 
     private fun showHistoryClear() {
         binding.buttonClearHistory.setOnClickListener {
-            adapter.clearOrUpdateTracks()
+            adapter?.clearOrUpdateTracks()
             binding.headHistoryViews.isVisible = false
             binding.buttonClearHistory.isVisible = false
         }
@@ -186,7 +189,10 @@ class SearchFragment : Fragment() {
     private fun render(state: SearchState) {
         when (state) {
             is SearchState.Loading -> showLoading()
-            is SearchState.Content -> showContent(state.trackList)
+            is SearchState.Content -> {
+                showContent(state.trackList)
+            }
+
             is SearchState.Error -> showError(state.error)
         }
     }
@@ -209,6 +215,8 @@ class SearchFragment : Fragment() {
             SearchViewModel.ErrorSearch.CONNECTION_PROBLEMS -> {
                 binding.progressBar.isVisible = false
                 binding.layoutSearchError.isVisible = true
+                binding.errorImage.isVisible = true
+                binding.errorMessage.isVisible = true
                 binding.errorImage.setImageResource(R.drawable.connection_problems)
                 binding.errorMessage.text = getString(R.string.error_search_connection_problems)
                 binding.buttonUpdateErrorSearch.isVisible = true
@@ -222,9 +230,12 @@ class SearchFragment : Fragment() {
     }
 
     private fun showContent(trackList: TrackSearchListDomain) {
+        binding.headHistoryViews.isVisible = false
+        binding.buttonClearHistory.isVisible = false
+
         binding.recyclerTrackView.isVisible = true
         binding.progressBar.isVisible = false
-        adapter.allUpdateTracks(trackList)
+        adapter?.allUpdateTracks(trackList)
 
     }
 
