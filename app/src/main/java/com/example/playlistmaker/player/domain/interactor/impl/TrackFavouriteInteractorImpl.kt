@@ -9,16 +9,20 @@ import kotlinx.coroutines.flow.Flow
 class TrackFavouriteInteractorImpl (
     private val trackFavouriteRepository: TrackFavouriteRepository
 ): TrackFavouriteInteractor {
-    override fun insertTrackInFavourite(trackPlayerDomain: TrackPlayerDomain) {
+    override suspend fun insertTrackInFavourite(trackPlayerDomain: TrackPlayerDomain) {
        trackFavouriteRepository.insertTrackInFavourite(trackPlayerDomain)
     }
 
-    override fun deleteTrackInFavourite() {
-        TODO("Not yet implemented")
+    override suspend fun deleteTrackInFavourite(trackPlayerDomain: TrackPlayerDomain) {
+        trackFavouriteRepository.deleteTrackInFavourite(trackPlayerDomain)
     }
 
     override fun getTrackListInFavourite(): Flow<List<TrackEntity>> {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getTrackListIdEntity(): Flow<List<Long>> {
+        return trackFavouriteRepository.getTrackListIdEntity()
     }
 
 }

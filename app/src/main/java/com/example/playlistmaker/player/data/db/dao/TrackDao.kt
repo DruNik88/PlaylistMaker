@@ -20,5 +20,5 @@ interface TrackDao {
     fun getTrackListEntity(): List<TrackEntity>
 
     @Query("SELECT trackId FROM track_table")
-    fun getTrackListIdEntity(): List<TrackEntity>
+    fun getTrackListIdEntity(): List<Long>
 }

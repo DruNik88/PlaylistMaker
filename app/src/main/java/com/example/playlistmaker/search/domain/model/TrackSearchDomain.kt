@@ -13,4 +13,5 @@ data class TrackSearchDomain (
    val primaryGenreName: String?, //Жанр трека
    val country:String?, //Страна исполнителя
    val previewUrl:String?, //Ссылка на отрывок песни
+   var isFavourite: Boolean = false, //Нахождение в "Избранном"
 ): Serializable

@@ -1,15 +1,22 @@
 package com.example.playlistmaker.search.data.repository.impl
 
 import android.content.SharedPreferences
+import com.example.playlistmaker.player.data.db.AppDatabase
 import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
 import com.example.playlistmaker.search.data.model.TrackListHistory
 import com.example.playlistmaker.search.data.repository.HistoryRepository
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
+import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 
 class HistoryRepositoryImpl(
     private val gson: Gson,
     private val sharedPrefs: SharedPreferences,
+    private val database: AppDatabase
 ) : HistoryRepository {
     companion object {
         const val COUNT_ITEMS = 10
@@ -43,10 +50,19 @@ class HistoryRepositoryImpl(
         }
     }
 
-    override fun getListHistory(): com.example.playlistmaker.search.domain.model.TrackSearchListDomain {
+    override fun getListHistory(): Flow<TrackSearchListDomain> = flow {
+        val listId = withContext(Dispatchers.IO){
+            database.getTrackDao().getTrackListIdEntity()
+        }
         val listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
-        return listDomain
+        listDomain.list.forEach{ track -> track.isFavourite = track.trackId in listId}
+        emit(listDomain)
     }
+
+//    override fun getListHistory(): com.example.playlistmaker.search.domain.model.TrackSearchListDomain {
+//        val listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
+//        return listDomain
+//    }
 
     override fun clearHistory() {
         sharedPrefs.edit()

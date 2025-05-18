@@ -76,11 +76,17 @@ class AudioPlayerViewModel(
         audioPlayerInteractor.release()
     }
 
-    fun addFavourite(){
-        trackFavouriteInteractor.insertTrackInFavourite(trackPlayerDomain)
+    fun addFavourite() {
+        viewModelScope.launch {
+            if(!trackPlayerDomain.isFavourite) {
+                trackFavouriteInteractor.insertTrackInFavourite(trackPlayerDomain)
+            } else (
+                trackFavouriteInteractor.deleteTrackInFavourite(trackPlayerDomain)
+            )
+        }
     }
 
-    private fun convertSearchTrackToDomainTrack(trackSearch: TrackSearchDomain): TrackPlayerDomain{
+    private fun convertSearchTrackToDomainTrack(trackSearch: TrackSearchDomain): TrackPlayerDomain {
         return TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(
             trackSearch
         )

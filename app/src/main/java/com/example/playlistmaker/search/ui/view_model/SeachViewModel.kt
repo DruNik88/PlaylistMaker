@@ -67,14 +67,32 @@ class SearchViewModel(
         getUserHistory.saveSharedPrefs()
     }
 
+//    fun getHistoryList() {
+//        trackListHistory = getUserHistory.getListHistory()
+//        if (trackListHistory.list.isEmpty()) {
+//            renderStateHistory(HistoryState.Empty)
+//        } else {
+//            renderStateHistory(HistoryState.Content(trackListHistory))
+//        }
+//    }
+
     fun getHistoryList() {
-        trackListHistory = getUserHistory.getListHistory()
+        viewModelScope.launch {
+            getUserHistory.getListHistory().collect {trackList ->
+                showHistoryList(trackList)
+            }
+        }
+    }
+
+    private fun showHistoryList(trackList: TrackSearchListDomain) {
+        trackListHistory = trackList
         if (trackListHistory.list.isEmpty()) {
             renderStateHistory(HistoryState.Empty)
         } else {
             renderStateHistory(HistoryState.Content(trackListHistory))
         }
     }
+
 
     fun clearHistoryList() {
         getUserHistory.clearHistory()

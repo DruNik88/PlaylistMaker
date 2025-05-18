@@ -2,10 +2,11 @@ package com.example.playlistmaker.search.data.repository
 
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
+import kotlinx.coroutines.flow.Flow
 
 interface HistoryRepository {
     fun addTrackListHistory(track: TrackSearchDomain)
-    fun getListHistory(): TrackSearchListDomain
+    fun getListHistory(): Flow<TrackSearchListDomain>
     fun clearHistory()
     fun saveSharedPrefs()
 }
