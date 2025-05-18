@@ -85,6 +85,10 @@ class AudioPlayerFragment : Fragment() {
         binding.playbackControl.setOnClickListener {
             viewModel.playbackControl()
         }
+
+        binding.addFavourite.setOnClickListener{
+            viewModel.addFavourite()
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

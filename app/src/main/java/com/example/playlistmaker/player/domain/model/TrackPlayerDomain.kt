@@ -1,6 +1,6 @@
 package com.example.playlistmaker.player.domain.model
 
-class TrackPlayerDomain(
+data class TrackPlayerDomain(
     val trackId: Long,
     val trackName: String?, // Название композиции
     val artistName: String?, // Имя исполнителя
