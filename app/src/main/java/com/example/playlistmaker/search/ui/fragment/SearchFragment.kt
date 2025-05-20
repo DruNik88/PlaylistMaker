@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.TrackAdapter
 import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
@@ -36,7 +37,7 @@ class SearchFragment : Fragment() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private var adapter: TrackAdapter? = null
+    private var adapter: TrackAdapter<TrackSearchDomain>? = null
     private lateinit var onTrackClickDebounce: (TrackSearchDomain) -> Unit
     private var requestText: String = ""
 
@@ -54,7 +55,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter{ track ->
+        adapter = TrackAdapter { track ->
             onTrackClickDebounce(track)
         }
 
@@ -62,11 +63,12 @@ class SearchFragment : Fragment() {
             delayMillis = CLICK_DEBOUNCE_DELAY,
             coroutineScope = viewLifecycleOwner.lifecycleScope,
             useLastParam = false,
-        ){ track ->
+        ) { track ->
             viewModel.addTrackListHistory(track)
             findNavController().navigate(
                 R.id.action_searchFragment_to_audioPlayerFragment,
-                AudioPlayerFragment.createArgs(track))
+                AudioPlayerFragment.createArgs(track)
+            )
         }
 
         viewModel.observeStateSearch().observe(viewLifecycleOwner) { state ->
@@ -164,7 +166,7 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun showHistoryContent(trackList: TrackSearchListDomain) {
+    private fun showHistoryContent(trackList: List<TrackSearchDomain>) {
         adapter?.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = true
         binding.recyclerTrackView.isVisible = true
@@ -191,6 +193,7 @@ class SearchFragment : Fragment() {
             is SearchState.Loading -> showLoading()
             is SearchState.Content -> {
                 showContent(state.trackList)
+//                showContent(state.trackList)
             }
 
             is SearchState.Error -> showError(state.error)
@@ -229,7 +232,8 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun showContent(trackList: TrackSearchListDomain) {
+    //    private fun showContent(trackList: TrackSearchListDomain) {
+    private fun showContent(trackList: List<TrackSearchDomain>) {
         binding.headHistoryViews.isVisible = false
         binding.buttonClearHistory.isVisible = false
 

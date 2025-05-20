@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui.fragment
+package com.example.playlistmaker.application
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,11 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
 
-class TrackViewHolder (
+class TrackViewHolder<T: TrackGeneric> (
     parent: ViewGroup
 ) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context)
@@ -23,7 +22,7 @@ class TrackViewHolder (
     private val sourceArtistName: TextView = itemView.findViewById(R.id.artistName)
     private val sourceTrackTime: TextView = itemView.findViewById(R.id.trackTime)
 
-    fun bind(model: TrackSearchDomain){
+    fun bind(model: T){
         val imageUrl = model.artworkUrl100
         Glide.with(itemView.context)
             .load(imageUrl)

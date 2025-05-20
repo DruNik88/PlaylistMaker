@@ -80,9 +80,11 @@ class AudioPlayerViewModel(
         viewModelScope.launch {
             if(!trackPlayerDomain.isFavourite) {
                 trackFavouriteInteractor.insertTrackInFavourite(trackPlayerDomain)
-            } else (
+                trackPlayerDomain.isFavourite = true
+            } else {
                 trackFavouriteInteractor.deleteTrackInFavourite(trackPlayerDomain)
-            )
+                trackPlayerDomain.isFavourite = false
+            }
         }
     }
 

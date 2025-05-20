@@ -28,7 +28,10 @@ class SearchViewModel(
         INVISIBLE
     }
 
-    private var trackListHistory = TrackSearchListDomain(list = mutableListOf())
+//    private var trackListHistory = TrackSearchListDomain(list = mutableListOf())
+private var trackListHistory: List<TrackSearchDomain> = listOf()
+
+    private var trackListResponse: List<TrackSearchDomain> = listOf()
 
     private val stateSearchLiveData = MutableLiveData<SearchState>()
     fun observeStateSearch(): MutableLiveData<SearchState> = stateSearchLiveData
@@ -78,15 +81,15 @@ class SearchViewModel(
 
     fun getHistoryList() {
         viewModelScope.launch {
-            getUserHistory.getListHistory().collect {trackList ->
+            getUserHistory.getListHistory().collect { trackList ->
                 showHistoryList(trackList)
             }
         }
     }
 
-    private fun showHistoryList(trackList: TrackSearchListDomain) {
+    private fun showHistoryList(trackList: List<TrackSearchDomain>) {
         trackListHistory = trackList
-        if (trackListHistory.list.isEmpty()) {
+        if (trackListHistory.isEmpty()) {
             renderStateHistory(HistoryState.Empty)
         } else {
             renderStateHistory(HistoryState.Content(trackListHistory))
@@ -96,8 +99,8 @@ class SearchViewModel(
 
     fun clearHistoryList() {
         getUserHistory.clearHistory()
-        trackListHistory.list.clear()
-        if (trackListHistory.list.isEmpty()) {
+        trackListHistory = listOf()
+        if (trackListHistory.isEmpty()) {
             renderStateHistory(HistoryState.Clear)
         }
     }
@@ -125,13 +128,19 @@ class SearchViewModel(
             }
 
             is Resource.Success -> {
-                val trackListResponse = TrackSearchListDomain(list = mutableListOf())
-                if (trackList.data != null) {
-                    trackListResponse.list.clear()
-                    trackListResponse.list.addAll(trackList.data.toMutableList())
-                }
+//                val trackListResponse = TrackSearchListDomain(list = mutableListOf())
+
+                trackListResponse = trackList.data?.let{it} ?: listOf()
+//                if (trackList.data != null) {
+//                    trackListResponse.clear()
+//                    trackListResponse.addAll(trackList.data.toMutableList())
+
+//                    trackListResponse.list.clear()
+//                    trackListResponse.list.addAll(trackList.data.toMutableList())
+
                 when {
-                    trackListResponse.list.isEmpty() -> {
+//                    trackListResponse.list.isEmpty() -> {
+                    trackListResponse.isEmpty() -> {
                         renderStateSearch(
                             SearchState.Error(
                                 error = ErrorSearch.NOT_FOUND
@@ -154,12 +163,12 @@ class SearchViewModel(
 
     }
 
-private fun renderStateSearch(state: SearchState) {
-    stateSearchLiveData.postValue(state)
-}
+    private fun renderStateSearch(state: SearchState) {
+        stateSearchLiveData.postValue(state)
+    }
 
-private fun renderStateHistory(state: HistoryState) {
-    stateHistoryLiveData.postValue(state)
-}
+    private fun renderStateHistory(state: HistoryState) {
+        stateHistoryLiveData.postValue(state)
+    }
 
 }

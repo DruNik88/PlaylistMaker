@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface HistoryRepository {
     fun addTrackListHistory(track: TrackSearchDomain)
-    fun getListHistory(): Flow<TrackSearchListDomain>
+    fun getListHistory(): Flow<List<TrackSearchDomain>>
     fun clearHistory()
     fun saveSharedPrefs()
 }

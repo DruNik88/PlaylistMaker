@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.data.mapper
 
 import com.example.playlistmaker.search.data.model.TrackHistory
-import com.example.playlistmaker.search.data.model.TrackListHistory
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
 object TrackOrListMapper {
@@ -18,11 +17,30 @@ object TrackOrListMapper {
             primaryGenreName = track.primaryGenreName, //Жанр трека
             country = track.country, //Страна исполнителя
             previewUrl = track.previewUrl, //Ссылка на отрывок песни
+            isFavourite = track.isFavourite, //Нахождение в "Избранном"
         )
     }
 
-    fun listDataToListDomain(list: TrackListHistory): com.example.playlistmaker.search.domain.model.TrackSearchListDomain {
-        return com.example.playlistmaker.search.domain.model.TrackSearchListDomain(list = list.list.map {
+    fun trackDataInToTrackDomain(track: TrackHistory): TrackSearchDomain {
+        return TrackSearchDomain(
+            trackId = track.trackId,
+            trackName = track.trackName, // Название композиции
+            artistName = track.artistName, // Имя исполнителя
+            trackTimeMillis = track.trackTimeMillis, // Продолжительность трека
+            artworkUrl100 = track.artworkUrl100, // Ссылка на изображение обложки
+            collectionName = track.collectionName, //Название альбома
+            releaseDate = track.releaseDate, //Год релиза трека
+            primaryGenreName = track.primaryGenreName, //Жанр трека
+            country = track.country, //Страна исполнителя
+            previewUrl = track.previewUrl, //Ссылка на отрывок песни
+            isFavourite = track.isFavourite, //Нахождение в "Избранном"
+        )
+    }
+
+
+
+    fun listDataToListDomain(list: MutableList<TrackHistory>): List<TrackSearchDomain> {
+        return list.map {
             TrackSearchDomain(
                 trackId = it.trackId,
                 trackName = it.trackName, // Название композиции
@@ -34,7 +52,8 @@ object TrackOrListMapper {
                 primaryGenreName = it.primaryGenreName, //Жанр трека
                 country = it.country, //Страна исполнителя
                 previewUrl = it.previewUrl, //Ссылка на отрывок песни
+                isFavourite = it.isFavourite, //Нахождение в "Избранном"
             )
-        }.toMutableList())
+        }.toList()
     }
 }

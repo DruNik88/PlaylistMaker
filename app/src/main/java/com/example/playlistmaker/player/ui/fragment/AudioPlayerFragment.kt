@@ -148,6 +148,15 @@ class AudioPlayerFragment : Fragment() {
 
         trackPlayer.country?.let { binding.countryApiAudioPlayer.text = it }
             ?: run { binding.countryApiAudioPlayer.text = getString(R.string.something_went_wrong) }
+        favourite(trackPlayer)
+    }
+
+    private fun favourite(trackPlayer: TrackPlayerDomain){
+        if (trackPlayer.isFavourite) {
+            binding.addFavourite.setImageResource(R.drawable.ic_added_favourite)
+        } else {
+            binding.addFavourite.setImageResource(R.drawable.ic_add_favourite)
+        }
     }
 
     private fun loading(loading: Boolean){

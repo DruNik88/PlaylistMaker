@@ -1,10 +1,10 @@
 package com.example.playlistmaker.search.ui.state
 
-import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
+import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
 sealed interface HistoryState {
     data class Content(
-        val trackList: TrackSearchListDomain
+        val trackList: List<TrackSearchDomain>
     ) : HistoryState
 
     data object Empty : HistoryState

@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.data.repository.impl
 
-import android.util.Log
-import com.example.playlistmaker.player.data.db.AppDatabase
+import com.example.playlistmaker.application.db.AppDatabase
 import com.example.playlistmaker.search.data.mapper.TrackListApiInTrackListMapper
 import com.example.playlistmaker.search.data.model.ItunesRequest
 import com.example.playlistmaker.search.data.model.ItunesResponse

@@ -11,7 +11,7 @@ class HistoryInteractorImpl(private val trackManager: HistoryRepository): Histor
         trackManager.addTrackListHistory(track)
     }
 
-    override suspend fun getListHistory(): Flow<TrackSearchListDomain> {
+    override suspend fun getListHistory(): Flow<List<TrackSearchDomain>> {
         return trackManager.getListHistory()
     }
 
