@@ -9,6 +9,7 @@ import com.example.playlistmaker.search.data.repository.HistoryRepository
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -24,7 +25,7 @@ class HistoryRepositoryImpl(
         const val KEY_HISTORY_LIST = "track_list_history"
     }
 
-//    private var trackListHistory: TrackListHistory = TrackListHistory(list = mutableListOf())
+    //    private var trackListHistory: TrackListHistory = TrackListHistory(list = mutableListOf())
     private var trackListHistory: MutableList<TrackHistory> = mutableListOf()
 
     init {
@@ -34,9 +35,11 @@ class HistoryRepositoryImpl(
     private fun restoreHistoryList() {
         val json = sharedPrefs.getString(KEY_HISTORY_LIST, null)
         if (!json.isNullOrEmpty()) {
-            val history = gson.fromJson(json, TrackListHistory::class.java)
-            if (!history.list.isNullOrEmpty()) {
-                trackListHistory.addAll(history.list)
+            val type = object : TypeToken<MutableList<TrackHistory>>() {}.type
+            val history: MutableList<TrackHistory> = gson.fromJson(json, type)
+//            val history = gson.fromJson(json, trackListHistory::class.java)
+            if (!history.isNullOrEmpty()) {
+                trackListHistory.addAll(history)
             }
         }
     }
@@ -64,16 +67,24 @@ class HistoryRepositoryImpl(
 //    }
 
     override fun getListHistory(): Flow<List<TrackSearchDomain>> = flow {
-        val listId = withContext(Dispatchers.IO){
+        val listId = withContext(Dispatchers.IO) {
             database.getTrackDao().getTrackListIdEntity()
         }
 //        val listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
 //        listDomain.list.forEach{ track -> track.isFavourite = track.trackId in listId}
 
+        val listDomain: List<TrackSearchDomain>
 
-        trackListHistory.forEach{ track ->
-            track.isFavourite = track.trackId in listId}
-        val listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
+        val trackListHistory = trackListHistory
+
+        if (trackListHistory.isEmpty()) {
+            listDomain = listOf()
+        } else {
+            trackListHistory.forEach { track ->
+                track.isFavourite = track.trackId in listId
+            }
+            listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
+        }
 
         emit(listDomain)
     }
@@ -99,4 +110,3 @@ class HistoryRepositoryImpl(
         }
     }
 }
-

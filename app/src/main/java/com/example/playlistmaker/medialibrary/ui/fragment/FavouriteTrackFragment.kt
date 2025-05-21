@@ -16,6 +16,8 @@ import com.example.playlistmaker.databinding.FragmentFavouriteTrackBinding
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.medialibrary.ui.state.FavouriteData
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavouriteTrackViewModel
+import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteTrackFragment : Fragment() {
 
@@ -24,7 +26,7 @@ class FavouriteTrackFragment : Fragment() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    val viewModel by activityViewModels<FavouriteTrackViewModel>()
+    val viewModel: FavouriteTrackViewModel by viewModel<FavouriteTrackViewModel>()
 
     private var _binding: FragmentFavouriteTrackBinding? = null
     private val binding get() = _binding!!
@@ -62,6 +64,7 @@ class FavouriteTrackFragment : Fragment() {
                     showFavouriteList(trackListFavourite)
                 }
                 is FavouriteData.Empty -> showPlaceHolder()
+                else -> {}
             }
         }
 

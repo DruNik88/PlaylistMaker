@@ -13,15 +13,16 @@ import kotlinx.coroutines.withContext
 class FavouriteRepositoryImpl(
     private val dataBase: AppDatabase,
     private val dataBaseConvertor: DataBaseConvertor
-): FavouriteRepository {
+) : FavouriteRepository {
     override fun getTrackListInFavourite(): Flow<List<TrackFavourite>> = flow {
-        withContext(Dispatchers.IO){
-            val trackListEntity = dataBase.getTrackDao().getTrackListEntity()
-            converterTrackEntityToTrackFavourite(trackListEntity)
+        val trackListEntity = withContext(Dispatchers.IO) {
+            dataBase.getTrackDao().getTrackListEntity()
         }
+        val listFavouriteTrack = converterTrackEntityToTrackFavourite(trackListEntity)
+        emit(listFavouriteTrack)
     }
 
-    private fun converterTrackEntityToTrackFavourite(trackListEntity: List<TrackEntity>): List<TrackFavourite>{
+    private fun converterTrackEntityToTrackFavourite(trackListEntity: List<TrackEntity>): List<TrackFavourite> {
         return dataBaseConvertor.converterTrackEntityToTrackFavourite(trackListEntity)
     }
 

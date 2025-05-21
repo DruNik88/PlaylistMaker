@@ -28,8 +28,8 @@ class SearchViewModel(
         INVISIBLE
     }
 
-//    private var trackListHistory = TrackSearchListDomain(list = mutableListOf())
-private var trackListHistory: List<TrackSearchDomain> = listOf()
+    //    private var trackListHistory = TrackSearchListDomain(list = mutableListOf())
+    private var trackListHistory: List<TrackSearchDomain> = listOf()
 
     private var trackListResponse: List<TrackSearchDomain> = listOf()
 
@@ -130,7 +130,7 @@ private var trackListHistory: List<TrackSearchDomain> = listOf()
             is Resource.Success -> {
 //                val trackListResponse = TrackSearchListDomain(list = mutableListOf())
 
-                trackListResponse = trackList.data?.let{it} ?: listOf()
+                trackListResponse = trackList.data?.let { it } ?: listOf()
 //                if (trackList.data != null) {
 //                    trackListResponse.clear()
 //                    trackListResponse.addAll(trackList.data.toMutableList())

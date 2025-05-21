@@ -78,12 +78,14 @@ class AudioPlayerViewModel(
 
     fun addFavourite() {
         viewModelScope.launch {
-            if(!trackPlayerDomain.isFavourite) {
+            if (!trackPlayerDomain.isFavourite) {
                 trackFavouriteInteractor.insertTrackInFavourite(trackPlayerDomain)
                 trackPlayerDomain.isFavourite = true
+                showDataLiveData.postValue(ShowData.Content(trackModel = trackPlayerDomain))
             } else {
                 trackFavouriteInteractor.deleteTrackInFavourite(trackPlayerDomain)
                 trackPlayerDomain.isFavourite = false
+                showDataLiveData.postValue(ShowData.Content(trackModel = trackPlayerDomain))
             }
         }
     }
