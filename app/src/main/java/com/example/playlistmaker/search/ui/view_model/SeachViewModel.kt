@@ -8,7 +8,6 @@ import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
 import com.example.playlistmaker.search.domain.interactor.TrackListInteractor
 import com.example.playlistmaker.search.domain.model.Resource
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import com.example.playlistmaker.search.ui.state.HistoryState
 import com.example.playlistmaker.search.ui.state.SearchState
 import kotlinx.coroutines.launch
@@ -28,7 +27,6 @@ class SearchViewModel(
         INVISIBLE
     }
 
-    //    private var trackListHistory = TrackSearchListDomain(list = mutableListOf())
     private var trackListHistory: List<TrackSearchDomain> = listOf()
 
     private var trackListResponse: List<TrackSearchDomain> = listOf()
@@ -69,15 +67,6 @@ class SearchViewModel(
     fun saveSharedPrefs() {
         getUserHistory.saveSharedPrefs()
     }
-
-//    fun getHistoryList() {
-//        trackListHistory = getUserHistory.getListHistory()
-//        if (trackListHistory.list.isEmpty()) {
-//            renderStateHistory(HistoryState.Empty)
-//        } else {
-//            renderStateHistory(HistoryState.Content(trackListHistory))
-//        }
-//    }
 
     fun getHistoryList() {
         viewModelScope.launch {
@@ -128,18 +117,10 @@ class SearchViewModel(
             }
 
             is Resource.Success -> {
-//                val trackListResponse = TrackSearchListDomain(list = mutableListOf())
 
                 trackListResponse = trackList.data?.let { it } ?: listOf()
-//                if (trackList.data != null) {
-//                    trackListResponse.clear()
-//                    trackListResponse.addAll(trackList.data.toMutableList())
-
-//                    trackListResponse.list.clear()
-//                    trackListResponse.list.addAll(trackList.data.toMutableList())
 
                 when {
-//                    trackListResponse.list.isEmpty() -> {
                     trackListResponse.isEmpty() -> {
                         renderStateSearch(
                             SearchState.Error(

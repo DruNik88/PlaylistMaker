@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.domain.interactor
 
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 import kotlinx.coroutines.flow.Flow
 
 interface HistoryInteractor {

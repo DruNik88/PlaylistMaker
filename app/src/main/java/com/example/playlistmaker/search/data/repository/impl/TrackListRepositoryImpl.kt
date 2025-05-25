@@ -8,13 +8,10 @@ import com.example.playlistmaker.search.data.network.TrackNetworkClient
 import com.example.playlistmaker.search.data.repository.TrackListRepository
 import com.example.playlistmaker.search.domain.model.Resource
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toSet
-import kotlinx.coroutines.withContext
 
 class TrackListRepositoryImpl(
     private val trackNetworkClient: TrackNetworkClient,
@@ -38,7 +35,7 @@ class TrackListRepositoryImpl(
                 }
 
                 200 -> {
-//                    Вариант на потоке из БД
+
                     networkResponse as ItunesResponse
                     val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
                     emitAll(
@@ -49,20 +46,6 @@ class TrackListRepositoryImpl(
                             Resource.Success(favouriteList)
                         }
                     )
-
-                    // Вариант
-
-//                    val listId = withContext(Dispatchers.IO) {
-//                        database.getTrackDao().getTrackListIdEntity()
-//                    }
-//
-//                    networkResponse as ItunesResponse
-//
-//                    val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
-//                    trackList.forEach() { track ->
-//                        track.isFavourite = track.trackId in listId
-//                    }
-//                    emit(Resource.Success(trackList))
 
                 }
 

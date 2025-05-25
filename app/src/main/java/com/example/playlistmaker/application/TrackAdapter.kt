@@ -3,8 +3,6 @@ package com.example.playlistmaker.application
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
 
 class TrackAdapter<T: TrackGeneric>(
     private val onItemClickListener: ((T) -> Unit)? = null
