@@ -16,6 +16,10 @@ import com.example.playlistmaker.databinding.FragmentFavouriteTrackBinding
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.medialibrary.ui.state.FavouriteData
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavouriteTrackViewModel
+import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
+import com.example.playlistmaker.search.data.mapper.TrackListApiInTrackListMapper
+import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
+import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -46,15 +50,17 @@ class FavouriteTrackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter {onTrackClickDebounce}
+        adapter = TrackAdapter { track -> onTrackClickDebounce(track) }
 
         onTrackClickDebounce = debounce<TrackFavourite>(
             delayMillis = CLICK_DEBOUNCE_DELAY,
             coroutineScope = viewLifecycleOwner.lifecycleScope,
             useLastParam = false,
-        ) {findNavController().navigate(
-                R.id.action_mediaLibraryFragment_to_audioPlayerFragment2
-        )
+        ) { track ->
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_audioPlayerFragment2,
+                AudioPlayerFragment.createArgs(convertTrackFavouriteToTrackSearchDomain(track))
+            )
         }
 
         viewModel.getFavouriteLiveData().observe(viewLifecycleOwner) { favouriteList ->
@@ -63,13 +69,17 @@ class FavouriteTrackFragment : Fragment() {
                     val trackListFavourite = favouriteList.favouriteTrackList
                     showFavouriteList(trackListFavourite)
                 }
+
                 is FavouriteData.Empty -> showPlaceHolder()
                 else -> {}
             }
         }
 
         binding.recyclerTrackView.adapter = adapter
+    }
 
+    private fun convertTrackFavouriteToTrackSearchDomain(track: TrackFavourite): TrackSearchDomain {
+        return TrackOrListMapper.trackDataInToTrackDomain(track)
     }
 
     private fun showPlaceHolder() {

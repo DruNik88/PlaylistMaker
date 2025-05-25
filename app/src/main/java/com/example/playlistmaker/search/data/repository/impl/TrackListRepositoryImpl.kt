@@ -10,42 +10,68 @@ import com.example.playlistmaker.search.domain.model.Resource
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.withContext
 
 class TrackListRepositoryImpl(
     private val trackNetworkClient: TrackNetworkClient,
-    private val database: AppDatabase,) :
+    private val database: AppDatabase,
+) :
     TrackListRepository {
 
     companion object {
         const val CONNECTION_PROBLEMS = "Проблемы со связью"
     }
 
-    override fun searchTrackList(expression: String): Flow<Resource<List<TrackSearchDomain>>> = flow {
-        val networkResponse = trackNetworkClient.doRequest(ItunesRequest(expression))
 
-        when (networkResponse.resultCode) {
-            -1 -> {
-                emit(Resource.Error(CONNECTION_PROBLEMS))
-            }
+    override fun searchTrackList(expression: String): Flow<Resource<List<TrackSearchDomain>>> =
+        flow {
 
-            200 -> {
-               val listId = withContext(Dispatchers.IO){
-                    database.getTrackDao().getTrackListIdEntity()
-                }.toSet()
+            val networkResponse = trackNetworkClient.doRequest(ItunesRequest(expression))
 
-                networkResponse as ItunesResponse
-                val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
-                trackList.forEach() { track -> track.isFavourite = track.trackId in listId
+            when (networkResponse.resultCode) {
+                -1 -> {
+                    emit(Resource.Error(CONNECTION_PROBLEMS))
                 }
-                emit(Resource.Success(trackList))
+
+                200 -> {
+//                    Вариант на потоке из БД
+                    networkResponse as ItunesResponse
+                    val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
+                    emitAll(
+                        database.getTrackDao().getTrackListIdEntity().map{ listId ->
+                            val favouriteList = trackList.map{
+                                it.copy(isFavourite = it.trackId in listId)
+                            }
+                            Resource.Success(favouriteList)
+                        }
+                    )
+
+                    // Вариант
+
+//                    val listId = withContext(Dispatchers.IO) {
+//                        database.getTrackDao().getTrackListIdEntity()
+//                    }
+//
+//                    networkResponse as ItunesResponse
+//
+//                    val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
+//                    trackList.forEach() { track ->
+//                        track.isFavourite = track.trackId in listId
+//                    }
+//                    emit(Resource.Success(trackList))
+
+                }
+
+                else -> {
+                    emit(Resource.Error(CONNECTION_PROBLEMS))
+                }
+
             }
-
-            else -> {emit(Resource.Error(CONNECTION_PROBLEMS))}
-
         }
-    }
 }
 
 

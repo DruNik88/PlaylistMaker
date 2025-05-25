@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.data.mapper
 
+import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.search.data.model.TrackHistory
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
@@ -21,7 +22,7 @@ object TrackOrListMapper {
         )
     }
 
-    fun trackDataInToTrackDomain(track: TrackHistory): TrackSearchDomain {
+    fun trackDataInToTrackDomain(track: TrackFavourite): TrackSearchDomain {
         return TrackSearchDomain(
             trackId = track.trackId,
             trackName = track.trackName, // Название композиции

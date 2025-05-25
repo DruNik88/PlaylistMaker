@@ -17,6 +17,7 @@ class DataBaseConvertor {
             primaryGenreName = trackPlayerDomain.primaryGenreName,
             country = trackPlayerDomain.country,
             previewUrl = trackPlayerDomain.previewUrl,
+            isFavourite = trackPlayerDomain.isFavourite,
         )
     }
 
@@ -33,6 +34,7 @@ class DataBaseConvertor {
                 primaryGenreName = entity.primaryGenreName,
                 country = entity.country,
                 previewUrl = entity.previewUrl,
+                isFavourite = entity.isFavourite,
             )
         }
     }

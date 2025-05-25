@@ -96,7 +96,7 @@ class AudioPlayerFragment : Fragment() {
         if (!playStatus.isPlaying) {
             binding.playbackControl.isEnabled = true
             binding.playbackControl.setImageDrawable(
-                getResources().getDrawable(
+                resources.getDrawable(
                     R.drawable.ic_playback_control,
                     null
                 )

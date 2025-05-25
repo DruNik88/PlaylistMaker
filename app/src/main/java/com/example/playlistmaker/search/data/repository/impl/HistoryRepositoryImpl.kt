@@ -12,7 +12,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class HistoryRepositoryImpl(
@@ -66,27 +68,59 @@ class HistoryRepositoryImpl(
 //        }
 //    }
 
+//    override fun getListHistory(): Flow<List<TrackSearchDomain>> {
+//        val listFlowId = database.getTrackDao().getTrackListIdEntity()
+//
+////        val listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
+////        listDomain.list.forEach{ track -> track.isFavourite = track.trackId in listId}
+//        return listFlowId.map { listId ->
+//            if (trackListHistory.isEmpty()) {
+//               emptyList()
+//            } else {
+//                val listFavouriteIsHistory = trackListHistory.map { trackHistory ->
+//                    trackHistory.apply {
+//                        isFavourite = trackHistory.trackId in listId
+//                    }
+//                }.toMutableList()
+//                TrackOrListMapper.listDataToListDomain(listFavouriteIsHistory)
+//            }
+//        }
+//    }
+
     override fun getListHistory(): Flow<List<TrackSearchDomain>> = flow {
-        val listId = withContext(Dispatchers.IO) {
-            database.getTrackDao().getTrackListIdEntity()
-        }
-//        val listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
-//        listDomain.list.forEach{ track -> track.isFavourite = track.trackId in listId}
 
-        val listDomain: List<TrackSearchDomain>
+        if(trackListHistory.isEmpty()){
+            emit(emptyList())
+        } else (
+            emitAll(
+                database.getTrackDao().getTrackListIdEntity().map{ listId ->
+                    val favouriteList = trackListHistory.map{ trackHistory ->
+                        trackHistory.copy(isFavourite = trackHistory.trackId in listId)
+                    }.toMutableList()
+                    val listDomain = TrackOrListMapper.listDataToListDomain(favouriteList)
+                    listDomain
+                }
+            )
+        )
 
-        val trackListHistory = trackListHistory
-
-        if (trackListHistory.isEmpty()) {
-            listDomain = listOf()
-        } else {
-            trackListHistory.forEach { track ->
-                track.isFavourite = track.trackId in listId
-            }
-            listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
-        }
-
-        emit(listDomain)
+//        val listId = withContext(Dispatchers.IO) {
+//            database.getTrackDao().getTrackListIdEntity()
+//        }
+//
+//        val listDomain: List<TrackSearchDomain>
+//
+//        val trackListHistory = trackListHistory
+//
+//        if (trackListHistory.isEmpty()) {
+//            listDomain = listOf()
+//        } else {
+//            trackListHistory.forEach { track ->
+//                track.isFavourite = track.trackId in listId
+//            }
+//            listDomain = TrackOrListMapper.listDataToListDomain(trackListHistory)
+//        }
+//
+//        emit(listDomain)
     }
 
 //    override fun getListHistory(): com.example.playlistmaker.search.domain.model.TrackSearchListDomain {
@@ -94,19 +128,19 @@ class HistoryRepositoryImpl(
 //        return listDomain
 //    }
 
-    override fun clearHistory() {
-        sharedPrefs.edit()
-            .remove(KEY_HISTORY_LIST)
-            .apply()
-        trackListHistory.clear()
-    }
-
-    override fun saveSharedPrefs() {
-        if (trackListHistory.isNotEmpty()) {
-            val json = gson.toJson(trackListHistory)
+        override fun clearHistory() {
             sharedPrefs.edit()
-                .putString(KEY_HISTORY_LIST, json)
+                .remove(KEY_HISTORY_LIST)
                 .apply()
+            trackListHistory.clear()
+        }
+
+        override fun saveSharedPrefs() {
+            if (trackListHistory.isNotEmpty()) {
+                val json = gson.toJson(trackListHistory)
+                sharedPrefs.edit()
+                    .putString(KEY_HISTORY_LIST, json)
+                    .apply()
+            }
         }
     }
-}

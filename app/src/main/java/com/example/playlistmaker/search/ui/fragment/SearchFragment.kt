@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -83,13 +84,27 @@ class SearchFragment : Fragment() {
         }
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
-            else {
-                if (requestText.isEmpty()) {
+            if (binding.inputEditText.text.isEmpty()) {
+                Log.d("has_Focus", "запросил историю")
+                if (hasFocus) {
                     viewModel.getHistoryList()
                 } else {
+                    Log.d("has_notFocus", "запросил историю")
                     showHistoryEmpty()
-                    viewModel.searchRequestText(requestText = requestText)
+
+//            if (hasFocus && binding.inputEditText.text.isEmpty()) {
+//                Log.d("hasFocus1", "запросил историю")
+//                viewModel.getHistoryList()
+//            } else {
+//                Log.d("hasFocus2", "запросил историю 2")
+//                viewModel.getHistoryList()
+
+//                if (requestText.isEmpty()) {
+//                    viewModel.getHistoryList()
+//                } else {
+//                    showHistoryEmpty()
+//                    viewModel.searchRequestText(requestText = requestText)
+//                }
                 }
             }
         }
@@ -109,21 +124,29 @@ class SearchFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                 if (s.isNullOrEmpty()) {
+                    Log.d("has_s.isNullOrEmpty", "запросил историю")
                     binding.clearIcon.isVisible = false
                     binding.layoutSearchError.isVisible = false
+                    viewModel.getHistoryList()
                 } else {
-                    if (adapter?.tracks?.isNotEmpty() == true) {
-                        showHistoryEmpty()
-                        viewModel.searchRequestText(
-                            requestText = s?.toString() ?: ""
-                        )
-                    } else {
+                    requestText = s?.toString() ?: ""
+                    viewModel.searchRequestText(
                         requestText = s?.toString() ?: ""
-                        viewModel.searchRequestText(
-                            requestText = s?.toString() ?: ""
-                        )
-                        binding.clearIcon.isVisible = true
-                    }
+                    )
+                    binding.clearIcon.isVisible = true
+
+//                    if (adapter?.tracks?.isNotEmpty() == true) {
+//                        showHistoryEmpty()
+//                        viewModel.searchRequestText(
+//                            requestText = s?.toString() ?: ""
+//                        )
+//                    } else {
+//                        requestText = s?.toString() ?: ""
+//                        viewModel.searchRequestText(
+//                            requestText = requestText
+//                        )
+//                        binding.clearIcon.isVisible = true
+//                    }
                 }
             }
 
@@ -176,6 +199,7 @@ class SearchFragment : Fragment() {
     private fun showHistoryEmpty() {
         adapter?.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = false
+        binding.recyclerTrackView.isVisible = false
         binding.buttonClearHistory.isVisible = false
     }
 
@@ -251,4 +275,18 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+//    private var isFirstLaunch = true
+//
+//    override fun onResume() {
+//        super.onResume()
+//        if (isFirstLaunch) {
+//            Log.d("onResume__1", "опа создали")
+//            isFirstLaunch = false
+//        } else {
+//            Log.d("onResume__2", "опа пересоздали")
+//            viewModel.getHistoryList()
+//        }
+//
+//    }
 }
