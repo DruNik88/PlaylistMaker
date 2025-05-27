@@ -25,8 +25,7 @@ class FavouriteTrackViewModel(
     }
 
     private fun showFavouriteList(trackFavouriteList: List<TrackFavourite>) {
-        val trackFavouriteListNew = trackFavouriteList
-        if (trackFavouriteListNew.isEmpty()) {
+        if (trackFavouriteList.isEmpty()) {
             favouriteLiveData.postValue(FavouriteData.Empty)
         } else {
             favouriteLiveData.postValue(FavouriteData.Content(trackFavouriteList))
