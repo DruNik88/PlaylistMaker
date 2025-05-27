@@ -7,6 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".medialibrary.ui.fragment.FavouriteTrackFragment">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerTrackView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/activity_search_recycler_text_error_margin_top"
+        android:layout_weight="1"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:itemCount="3"
+        tools:listitem="@layout/track_view" />
+
     <ImageView
         android:id="@+id/errorImage"
         android:layout_width="@dimen/activity_search_image_view_error_width"
@@ -14,6 +28,7 @@
         android:layout_marginTop="106dp"
         android:contentDescription="@null"
         android:src="@drawable/nothing_found"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,6 +41,7 @@
         android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
         android:text="@string/media_library_empty"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/errorImage" />

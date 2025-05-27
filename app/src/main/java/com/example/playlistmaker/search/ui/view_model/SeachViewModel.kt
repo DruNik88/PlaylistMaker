@@ -8,9 +8,7 @@ import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
 import com.example.playlistmaker.search.domain.interactor.TrackListInteractor
 import com.example.playlistmaker.search.domain.model.Resource
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
-import com.example.playlistmaker.search.ui.state.HistoryState
-import com.example.playlistmaker.search.ui.state.SearchState
+import com.example.playlistmaker.search.ui.state.SearchHistoryState
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -28,13 +26,12 @@ class SearchViewModel(
         INVISIBLE
     }
 
-    private var trackListHistory = TrackSearchListDomain(list = mutableListOf())
+    private var trackListHistory: List<TrackSearchDomain> = listOf()
 
-    private val stateSearchLiveData = MutableLiveData<SearchState>()
-    fun observeStateSearch(): MutableLiveData<SearchState> = stateSearchLiveData
+    private var trackListResponse: List<TrackSearchDomain> = listOf()
 
-    private val stateHistoryLiveData = MutableLiveData<HistoryState>()
-    fun observeHistorySearch(): MutableLiveData<HistoryState> = stateHistoryLiveData
+    private val stateSearchHistoryLiveData = MutableLiveData<SearchHistoryState>()
+    fun observeSearchHistory(): MutableLiveData<SearchHistoryState> = stateSearchHistoryLiveData
 
     private var latestRequestText: String? = null
 
@@ -68,25 +65,33 @@ class SearchViewModel(
     }
 
     fun getHistoryList() {
-        trackListHistory = getUserHistory.getListHistory()
-        if (trackListHistory.list.isEmpty()) {
-            renderStateHistory(HistoryState.Empty)
+        viewModelScope.launch {
+            getUserHistory.getListHistory().collect { trackList ->
+                showHistoryList(trackList)
+            }
+        }
+    }
+
+    private fun showHistoryList(trackList: List<TrackSearchDomain>) {
+        trackListHistory = trackList
+        if (trackListHistory.isEmpty()) {
+            renderSearchHistoryState(SearchHistoryState.HistoryEmpty)
         } else {
-            renderStateHistory(HistoryState.Content(trackListHistory))
+            renderSearchHistoryState(SearchHistoryState.HistoryContent(trackListHistory))
         }
     }
 
     fun clearHistoryList() {
         getUserHistory.clearHistory()
-        trackListHistory.list.clear()
-        if (trackListHistory.list.isEmpty()) {
-            renderStateHistory(HistoryState.Clear)
+        trackListHistory = listOf()
+        if (trackListHistory.isEmpty()) {
+            renderSearchHistoryState(SearchHistoryState.HistoryClear)
         }
     }
 
     private fun requestTrack(requestText: String) {
         if (requestText.isNotEmpty()) {
-            renderStateSearch(SearchState.Loading)
+            renderSearchHistoryState(SearchHistoryState.SearchLoading)
             viewModelScope.launch {
                 searchInteractor.searchTrackList(requestText)
                     .collect { trackList ->
@@ -99,23 +104,21 @@ class SearchViewModel(
     private fun showRequest(trackList: Resource<List<TrackSearchDomain>>) {
         when (trackList) {
             is Resource.Error -> {
-                renderStateSearch(
-                    SearchState.Error(
+                renderSearchHistoryState(
+                    SearchHistoryState.SearchError(
                         error = ErrorSearch.CONNECTION_PROBLEMS
                     )
                 )
             }
 
             is Resource.Success -> {
-                val trackListResponse = TrackSearchListDomain(list = mutableListOf())
-                if (trackList.data != null) {
-                    trackListResponse.list.clear()
-                    trackListResponse.list.addAll(trackList.data.toMutableList())
-                }
+
+                trackListResponse = trackList.data?.let { it } ?: listOf()
+
                 when {
-                    trackListResponse.list.isEmpty() -> {
-                        renderStateSearch(
-                            SearchState.Error(
+                    trackListResponse.isEmpty() -> {
+                        renderSearchHistoryState(
+                            SearchHistoryState.SearchError(
                                 error = ErrorSearch.NOT_FOUND
                             )
                         )
@@ -123,25 +126,18 @@ class SearchViewModel(
 
                     else -> {
 
-                        renderStateSearch(
-                            SearchState.Content(
+                        renderSearchHistoryState(
+                            SearchHistoryState.SearchContent(
                                 trackList = trackListResponse
                             )
                         )
                     }
                 }
-
             }
         }
-
     }
 
-private fun renderStateSearch(state: SearchState) {
-    stateSearchLiveData.postValue(state)
-}
-
-private fun renderStateHistory(state: HistoryState) {
-    stateHistoryLiveData.postValue(state)
-}
-
+    private fun renderSearchHistoryState(state: SearchHistoryState) {
+        stateSearchHistoryLiveData.postValue(state)
+    }
 }

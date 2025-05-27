@@ -16,6 +16,7 @@ object TrackSearchDomainInToTrackPlayerDomain {
             primaryGenreName = track.primaryGenreName, //Жанр трека
             country = track.country, //Страна исполнителя
             previewUrl = track.previewUrl, //Ссылка на отрывок песни
+            isFavourite = track.isFavourite, //Нахождение в "Избранном"
         )
     }
 

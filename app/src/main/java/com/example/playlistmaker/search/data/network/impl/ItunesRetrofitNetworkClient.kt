@@ -21,20 +21,21 @@ class ItunesRetrofitNetworkClient(
             return NetworkResponse().apply { resultCode = -1 }
         }
 
-        when (request) {
+        return when (request) {
             is ItunesRequest -> {
-                return try {
+                runCatching {
                     withContext(Dispatchers.IO) {
-                        val response = itunesApi.search(request.expression)
-                        response.apply { resultCode = 200 }
+                        itunesApi.search(request.expression)
+                    }.apply {
+                        resultCode = 200
                     }
-                } catch (e: Throwable) {
+                }.getOrElse {
                     NetworkResponse().apply { resultCode = 500 }
                 }
             }
 
             else -> {
-                return NetworkResponse().apply { resultCode = 400 }
+                NetworkResponse().apply { resultCode = 400 }
             }
         }
     }

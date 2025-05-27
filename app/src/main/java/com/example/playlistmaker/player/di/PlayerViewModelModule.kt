@@ -9,7 +9,8 @@ val playerViewModelModule = module {
     viewModel { (track: TrackSearchDomain) ->
         AudioPlayerViewModel(
             trackSearch = track,
-            audioPlayerInteractor = get()
+            audioPlayerInteractor = get(),
+            trackFavouriteInteractor = get()
         )
     }
 }

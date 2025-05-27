@@ -10,12 +10,14 @@ val searchRepositoryModule = module{
 
     single<TrackListRepository> {
         TrackListRepositoryImpl(
-            trackNetworkClient = get())
+            trackNetworkClient = get(),
+            database = get())
     }
 
     factory <HistoryRepository> {
         HistoryRepositoryImpl(
             gson = get(),
-            sharedPrefs = get())
+            sharedPrefs = get(),
+            database = get())
     }
 }

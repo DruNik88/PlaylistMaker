@@ -13,13 +13,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.TrackAdapter
 import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import com.example.playlistmaker.search.domain.model.TrackSearchListDomain
-import com.example.playlistmaker.search.ui.state.HistoryState
-import com.example.playlistmaker.search.ui.state.SearchState
+import com.example.playlistmaker.search.ui.state.SearchHistoryState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -36,7 +35,7 @@ class SearchFragment : Fragment() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private var adapter: TrackAdapter? = null
+    private var adapter: TrackAdapter<TrackSearchDomain>? = null
     private lateinit var onTrackClickDebounce: (TrackSearchDomain) -> Unit
     private var requestText: String = ""
 
@@ -54,7 +53,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter{ track ->
+        adapter = TrackAdapter { track ->
             onTrackClickDebounce(track)
         }
 
@@ -62,15 +61,12 @@ class SearchFragment : Fragment() {
             delayMillis = CLICK_DEBOUNCE_DELAY,
             coroutineScope = viewLifecycleOwner.lifecycleScope,
             useLastParam = false,
-        ){ track ->
+        ) { track ->
             viewModel.addTrackListHistory(track)
             findNavController().navigate(
                 R.id.action_searchFragment_to_audioPlayerFragment,
-                AudioPlayerFragment.createArgs(track))
-        }
-
-        viewModel.observeStateSearch().observe(viewLifecycleOwner) { state ->
-            render(state)
+                AudioPlayerFragment.createArgs(track)
+            )
         }
 
         binding.clearIcon.setOnClickListener {
@@ -82,13 +78,11 @@ class SearchFragment : Fragment() {
         }
 
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && binding.inputEditText.text.isEmpty()) viewModel.getHistoryList()
-            else {
-                if (requestText.isEmpty()) {
+            if (hasFocus) {
+                if (binding.inputEditText.text.isEmpty()) {
                     viewModel.getHistoryList()
                 } else {
                     showHistoryEmpty()
-                    viewModel.searchRequestText(requestText = requestText)
                 }
             }
         }
@@ -110,19 +104,14 @@ class SearchFragment : Fragment() {
                 if (s.isNullOrEmpty()) {
                     binding.clearIcon.isVisible = false
                     binding.layoutSearchError.isVisible = false
+                    viewModel.getHistoryList()
                 } else {
-                    if (adapter?.tracks?.isNotEmpty() == true) {
-                        showHistoryEmpty()
-                        viewModel.searchRequestText(
-                            requestText = s?.toString() ?: ""
-                        )
-                    } else {
+                    showHistoryEmpty()
+                    requestText = s?.toString() ?: ""
+                    viewModel.searchRequestText(
                         requestText = s?.toString() ?: ""
-                        viewModel.searchRequestText(
-                            requestText = s?.toString() ?: ""
-                        )
-                        binding.clearIcon.isVisible = true
-                    }
+                    )
+                    binding.clearIcon.isVisible = true
                 }
             }
 
@@ -130,13 +119,10 @@ class SearchFragment : Fragment() {
 
             }
         }
+
         binding.inputEditText.addTextChangedListener(simpleTextWatcher)
 
-        viewModel.observeHistorySearch().observe(viewLifecycleOwner) {
-            renderHistory(it)
-        }
-
-        viewModel.observeStateSearch().observe(viewLifecycleOwner) {
+        viewModel.observeSearchHistory().observe(viewLifecycleOwner) {
             render(it)
         }
 
@@ -148,23 +134,18 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun renderHistory(historyState: HistoryState) {
-        when (historyState) {
-            is HistoryState.Content -> {
-                showHistoryContent(historyState.trackList)
-            }
-
-            is HistoryState.Empty -> {
-                showHistoryEmpty()
-            }
-
-            is HistoryState.Clear -> {
-                showHistoryClear()
+    private fun render(state: SearchHistoryState) {
+        when (state) {
+            is SearchHistoryState.SearchLoading -> showLoading()
+            is SearchHistoryState.SearchContent -> showContent(state.trackList)
+            is SearchHistoryState.SearchError -> showError(state.error)
+            is SearchHistoryState.HistoryContent -> showHistoryContent(state.trackList)
+            is SearchHistoryState.HistoryEmpty -> showHistoryEmpty()
+            is SearchHistoryState.HistoryClear -> showHistoryClear()
             }
         }
-    }
 
-    private fun showHistoryContent(trackList: TrackSearchListDomain) {
+    private fun showHistoryContent(trackList: List<TrackSearchDomain>) {
         adapter?.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = true
         binding.recyclerTrackView.isVisible = true
@@ -175,6 +156,7 @@ class SearchFragment : Fragment() {
     private fun showHistoryEmpty() {
         adapter?.clearOrUpdateTracks()
         binding.headHistoryViews.isVisible = false
+        binding.recyclerTrackView.isVisible = false
         binding.buttonClearHistory.isVisible = false
     }
 
@@ -183,17 +165,6 @@ class SearchFragment : Fragment() {
             adapter?.clearOrUpdateTracks()
             binding.headHistoryViews.isVisible = false
             binding.buttonClearHistory.isVisible = false
-        }
-    }
-
-    private fun render(state: SearchState) {
-        when (state) {
-            is SearchState.Loading -> showLoading()
-            is SearchState.Content -> {
-                showContent(state.trackList)
-            }
-
-            is SearchState.Error -> showError(state.error)
         }
     }
 
@@ -229,7 +200,7 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun showContent(trackList: TrackSearchListDomain) {
+    private fun showContent(trackList: List<TrackSearchDomain>) {
         binding.headHistoryViews.isVisible = false
         binding.buttonClearHistory.isVisible = false
 
@@ -248,4 +219,5 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

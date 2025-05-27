@@ -85,6 +85,10 @@ class AudioPlayerFragment : Fragment() {
         binding.playbackControl.setOnClickListener {
             viewModel.playbackControl()
         }
+
+        binding.addFavourite.setOnClickListener{
+            viewModel.addFavourite()
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -92,7 +96,7 @@ class AudioPlayerFragment : Fragment() {
         if (!playStatus.isPlaying) {
             binding.playbackControl.isEnabled = true
             binding.playbackControl.setImageDrawable(
-                getResources().getDrawable(
+                resources.getDrawable(
                     R.drawable.ic_playback_control,
                     null
                 )
@@ -144,6 +148,15 @@ class AudioPlayerFragment : Fragment() {
 
         trackPlayer.country?.let { binding.countryApiAudioPlayer.text = it }
             ?: run { binding.countryApiAudioPlayer.text = getString(R.string.something_went_wrong) }
+        favourite(trackPlayer)
+    }
+
+    private fun favourite(trackPlayer: TrackPlayerDomain){
+        if (trackPlayer.isFavourite) {
+            binding.addFavourite.setImageResource(R.drawable.ic_added_favourite)
+        } else {
+            binding.addFavourite.setImageResource(R.drawable.ic_add_favourite)
+        }
     }
 
     private fun loading(loading: Boolean){

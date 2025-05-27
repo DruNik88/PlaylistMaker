@@ -28,8 +28,14 @@ class RootActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener{_, destination, _ ->
             when(destination.id){
-                R.id.audioPlayerFragment -> binding.bottomNavigationView.isVisible = false
-                else -> binding.bottomNavigationView.isVisible = true
+                R.id.audioPlayerFragment -> {
+                    binding.divider.isVisible = false
+                    binding.bottomNavigationView.isVisible = false
+                }
+                else -> {
+                    binding.divider.isVisible = true
+                    binding.bottomNavigationView.isVisible = true
+                }
             }
 
         }
