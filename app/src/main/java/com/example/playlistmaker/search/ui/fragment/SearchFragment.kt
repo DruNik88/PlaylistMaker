@@ -18,8 +18,7 @@ import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import com.example.playlistmaker.search.ui.state.HistoryState
-import com.example.playlistmaker.search.ui.state.SearchState
+import com.example.playlistmaker.search.ui.state.SearchHistoryState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -68,10 +67,6 @@ class SearchFragment : Fragment() {
                 R.id.action_searchFragment_to_audioPlayerFragment,
                 AudioPlayerFragment.createArgs(track)
             )
-        }
-
-        viewModel.observeStateSearch().observe(viewLifecycleOwner) { state ->
-            render(state)
         }
 
         binding.clearIcon.setOnClickListener {
@@ -124,13 +119,10 @@ class SearchFragment : Fragment() {
 
             }
         }
+
         binding.inputEditText.addTextChangedListener(simpleTextWatcher)
 
-        viewModel.observeHistorySearch().observe(viewLifecycleOwner) {
-            renderHistory(it)
-        }
-
-        viewModel.observeStateSearch().observe(viewLifecycleOwner) {
+        viewModel.observeSearchHistory().observe(viewLifecycleOwner) {
             render(it)
         }
 
@@ -142,21 +134,16 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun renderHistory(historyState: HistoryState) {
-        when (historyState) {
-            is HistoryState.Content -> {
-                showHistoryContent(historyState.trackList)
-            }
-
-            is HistoryState.Empty -> {
-                showHistoryEmpty()
-            }
-
-            is HistoryState.Clear -> {
-                showHistoryClear()
+    private fun render(state: SearchHistoryState) {
+        when (state) {
+            is SearchHistoryState.SearchLoading -> showLoading()
+            is SearchHistoryState.SearchContent -> showContent(state.trackList)
+            is SearchHistoryState.SearchError -> showError(state.error)
+            is SearchHistoryState.HistoryContent -> showHistoryContent(state.trackList)
+            is SearchHistoryState.HistoryEmpty -> showHistoryEmpty()
+            is SearchHistoryState.HistoryClear -> showHistoryClear()
             }
         }
-    }
 
     private fun showHistoryContent(trackList: List<TrackSearchDomain>) {
         adapter?.clearOrUpdateTracks()
@@ -178,18 +165,6 @@ class SearchFragment : Fragment() {
             adapter?.clearOrUpdateTracks()
             binding.headHistoryViews.isVisible = false
             binding.buttonClearHistory.isVisible = false
-        }
-    }
-
-    private fun render(state: SearchState) {
-        when (state) {
-            is SearchState.Loading -> showLoading()
-            is SearchState.Content -> {
-                showContent(state.trackList)
-//                showContent(state.trackList)
-            }
-
-            is SearchState.Error -> showError(state.error)
         }
     }
 
