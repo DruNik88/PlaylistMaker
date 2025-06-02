@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/new_playlist"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.playlistmaker.medialibrary.ui.fragment.NewPlayListFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_new_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_guideline_new_playlist_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/constraint_guide_16" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_guideline_new_playlist_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/constraint_guide_16" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_guideline_new_playlist_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/constraint_guide_24" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_guideline_new_playlist_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="387dp" />
+
+    <FrameLayout
+        android:id="@+id/frame_art"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline_new_playlist_24"
+        app:layout_constraintStart_toStartOf="@id/left_guideline_new_playlist_24"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_new_playlist"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/artwork_new_playlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_dotted_rectangle"
+            android:contentDescription="@null"
+            android:layout_gravity="center"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_add_photo"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/title_new_playlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/ic_rectangle_328_56"
+        android:fontFamily="@font/ys_display_regular"
+        android:hint="@string/title_new_playlist"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline_new_playlist_16"
+        app:layout_constraintStart_toStartOf="@id/left_guideline_new_playlist_16"
+        app:layout_constraintTop_toBottomOf="@id/frame_art"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/description_new_playlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ic_rectangle_328_56"
+        android:fontFamily="@font/ys_display_regular"
+        android:hint="@string/description_new_playlist"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline_new_playlist_16"
+        app:layout_constraintStart_toStartOf="@id/left_guideline_new_playlist_16"
+        app:layout_constraintTop_toBottomOf="@id/title_new_playlist"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/ic_button_create"
+        android:fontFamily="@font/ys_display_medium"
+        android:text="@string/create"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline_new_playlist_16"
+        app:layout_constraintStart_toStartOf="@id/left_guideline_new_playlist_16"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout><!--<ImageView-->
+    <!--android:id="@+id/artwork_new_playlist"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_marginTop="26dp"-->
+    <!--android:background="@drawable/ic_dotted_rectangle"-->
+
+    <!--android:contentDescription="@null"-->
+    <!--android:scaleType="centerInside"-->
+
+    <!--app:layout_constraintDimensionRatio="h, 1:1"-->
+    <!--app:layout_constraintEnd_toEndOf="@id/right_guideline_new_playlist_24"-->
+    <!--app:layout_constraintStart_toStartOf="@id/left_guideline_new_playlist_24"-->
+    <!--app:layout_constraintTop_toBottomOf="@id/toolbar_new_playlist"-->
+
+    <!--tools:ignore="NotSibling"-->
+    <!--tools:srcCompat="@drawable/album" />-->
+
+
+<!--<EditText-->
+<!--android:id="@+id/title_new_playlist"-->
+<!--android:layout_width="0dp"-->
+<!--android:layout_height="56dp"-->
+<!--android:layout_marginTop="32dp"-->
+<!--android:background="@drawable/ic_rectangle_328_56"-->
+<!--android:fontFamily="@font/ys_display_regular"-->
+<!--android:hint="@string/title_new_playlist"-->
+<!--android:paddingStart="16dp"-->
+<!--android:paddingEnd="16dp"-->
+<!--app:layout_constraintEnd_toEndOf="@id/right_guideline_new_playlist_16"-->
+<!--app:layout_constraintStart_toStartOf="@id/left_guideline_new_playlist_16"-->
+<!--app:layout_constraintTop_toBottomOf="@id/frame_art"-->
+<!--tools:ignore="MissingConstraints" />-->
+
+<!--<EditText-->
+<!--android:id="@+id/description_new_playlist"-->
+<!--android:layout_width="0dp"-->
+<!--android:layout_height="56dp"-->
+<!--android:layout_marginTop="16dp"-->
+<!--android:background="@drawable/ic_rectangle_328_56"-->
+<!--android:fontFamily="@font/ys_display_regular"-->
+<!--android:hint="@string/description_new_playlist"-->
+<!--android:paddingStart="16dp"-->
+<!--android:paddingEnd="16dp"-->
+<!--app:layout_constraintEnd_toEndOf="@id/right_guideline_new_playlist_16"-->
+<!--app:layout_constraintStart_toStartOf="@id/left_guideline_new_playlist_16"-->
+<!--app:layout_constraintTop_toBottomOf="@id/title_new_playlist"-->
+<!--tools:ignore="MissingConstraints" />-->
+
+<!--<Button-->
+<!--android:layout_width="0dp"-->
+<!--android:layout_height="44dp"-->
+<!--android:layout_marginBottom="32dp"-->
+<!--android:background="@drawable/ic_button_create"-->
+<!--android:fontFamily="@font/ys_display_medium"-->
+<!--android:text="@string/create"-->
+<!--android:textAllCaps="false"-->
+<!--app:layout_constraintBottom_toBottomOf="parent"-->
+<!--app:layout_constraintEnd_toEndOf="@id/right_guideline_new_playlist_16"-->
+<!--app:layout_constraintStart_toStartOf="@id/left_guideline_new_playlist_16"-->
+<!--tools:ignore="MissingConstraints" />-->
