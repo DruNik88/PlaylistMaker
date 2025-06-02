@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
+import com.example.playlistmaker.player.domain.interactor.TrackFavouriteInteractor
 import com.example.playlistmaker.player.domain.mapper.TrackSearchDomainInToTrackPlayerDomain
+import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
@@ -14,6 +16,7 @@ import kotlinx.coroutines.launch
 class AudioPlayerViewModel(
     trackSearch: TrackSearchDomain,
     private val audioPlayerInteractor: AudioPlayerInteractor,
+    private val trackFavouriteInteractor: TrackFavouriteInteractor
 ) : ViewModel() {
 
     private var showDataLiveData = MutableLiveData<ShowData>()
@@ -22,13 +25,12 @@ class AudioPlayerViewModel(
     private val playStatusLiveData = MutableLiveData<PlayStatus>()
     fun getPlayStatusLiveData(): LiveData<PlayStatus> = playStatusLiveData
 
+    private val trackPlayerDomain = convertSearchTrackToDomainTrack(trackSearch)
 
     init {
         showDataLiveData.postValue(ShowData.Loading)
-        val trackPlayer =
-            TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(
-                trackSearch
-            )
+        val trackPlayer = trackPlayerDomain
+
         audioPlayerInteractor.preparePlayer(
             track = trackPlayer,
             playerObserver = object : AudioPlayerInteractor.AudioPlayerObserver {
@@ -72,6 +74,26 @@ class AudioPlayerViewModel(
 
     fun release() {
         audioPlayerInteractor.release()
+    }
+
+    fun addFavourite() {
+        viewModelScope.launch {
+            if (!trackPlayerDomain.isFavourite) {
+                trackPlayerDomain.isFavourite = true
+                trackFavouriteInteractor.insertTrackInFavourite(trackPlayerDomain)
+                showDataLiveData.postValue(ShowData.Content(trackModel = trackPlayerDomain))
+            } else {
+                trackPlayerDomain.isFavourite = false
+                trackFavouriteInteractor.deleteTrackInFavourite(trackPlayerDomain)
+                showDataLiveData.postValue(ShowData.Content(trackModel = trackPlayerDomain))
+            }
+        }
+    }
+
+    private fun convertSearchTrackToDomainTrack(trackSearch: TrackSearchDomain): TrackPlayerDomain {
+        return TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(
+            trackSearch
+        )
     }
 }
 

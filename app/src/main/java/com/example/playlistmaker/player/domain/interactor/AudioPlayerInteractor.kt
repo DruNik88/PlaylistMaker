@@ -2,6 +2,7 @@ package com.example.playlistmaker.player.domain.interactor
 
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
+
 interface AudioPlayerInteractor {
     fun preparePlayer(track: TrackPlayerDomain, playerObserver: AudioPlayerObserver)
 

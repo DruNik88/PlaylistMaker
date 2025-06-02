@@ -2,12 +2,12 @@ package com.example.playlistmaker.settings.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentSettingsBinding
+import com.example.playlistmaker.settings.ui.state.SettingsState
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -26,14 +26,25 @@ class SettingsFragment : Fragment() {
     ): View? {
 
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
-
-        Log.d("yes","я создан")
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.observeStateSearch().observe(viewLifecycleOwner){ theme ->
+            binding.themeSwitcher.setOnCheckedChangeListener(null)
+
+            when(theme) {
+                is SettingsState.LightMode -> binding.themeSwitcher.isChecked = theme.light
+                is SettingsState.DarkMode -> binding.themeSwitcher.isChecked = theme.dark
+            }
+
+            binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
+                viewModel.getSwitchTheme(checked)
+            }
+
+        }
 
         binding.shareTheApp.setOnClickListener {
             viewModel.shareApp(requireContext())
@@ -45,11 +56,6 @@ class SettingsFragment : Fragment() {
 
         binding.userAgreement.setOnClickListener {
             viewModel.openTerms(requireContext())
-        }
-
-        binding.themeSwitcher.isChecked = viewModel.getTheme()
-        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            viewModel.getSwitchTheme(checked)
         }
     }
 
