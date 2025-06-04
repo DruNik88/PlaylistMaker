@@ -1,16 +1,20 @@
 package com.example.playlistmaker.medialibrary.ui.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
 
-class NewPlayListFragment: Fragment() {
+class NewPlayListFragment : Fragment() {
 
     private var _binding: FragmentNewPlaylistBinding? = null
     private val binding get() = _binding!!
@@ -42,6 +46,29 @@ class NewPlayListFragment: Fragment() {
 
         toolBar()
 
+        binding.buttonCreateNewPlaylist.isEnabled = false
+
+
+        binding.titleNewPlaylist.addTextChangedListener { text ->
+            val isNotEmpty = !text.isNullOrBlank()
+            binding.buttonCreateNewPlaylist.isEnabled = isNotEmpty
+            binding.titleNewPlaylistMiddle.isVisible = isNotEmpty
+            if (isNotEmpty){
+                binding.titleNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_blue)
+            } else {
+                binding.titleNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_gray)
+            }
+        }
+
+        binding.descriptionNewPlaylist.addTextChangedListener { text ->
+            val isNotEmpty = !text.isNullOrBlank()
+            binding.descriptionNewPlaylistMiddle.isVisible = isNotEmpty
+            if (isNotEmpty){
+                binding.descriptionNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_blue)
+            } else {
+                binding.descriptionNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_gray)
+            }
+        }
 
     }
 
