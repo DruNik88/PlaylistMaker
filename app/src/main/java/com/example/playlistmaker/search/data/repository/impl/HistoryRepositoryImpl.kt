@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.data.repository.impl
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.application.db.AppDatabase
+import com.example.playlistmaker.application.db.DatabaseTrackEntity
 import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
 import com.example.playlistmaker.search.data.model.TrackHistory
 import com.example.playlistmaker.search.data.repository.HistoryRepository
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.map
 class HistoryRepositoryImpl(
     private val gson: Gson,
     private val sharedPrefs: SharedPreferences,
-    private val database: AppDatabase
+    private val database: DatabaseTrackEntity
 ) : HistoryRepository {
     companion object {
         const val COUNT_ITEMS = 10

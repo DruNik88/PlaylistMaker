@@ -17,6 +17,7 @@ import com.example.playlistmaker.settings.di.settingsInteractorModel
 import com.example.playlistmaker.settings.di.settingsRepositoryModule
 import com.example.playlistmaker.settings.di.settingsViewModelModule
 import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
+import com.markodevcic.peko.PermissionRequester
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
@@ -52,5 +53,7 @@ class App : Application() {
             true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
+
+        PermissionRequester.initialize(applicationContext)
     }
 }

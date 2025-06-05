@@ -1,6 +1,6 @@
 package com.example.playlistmaker.search.data.repository.impl
 
-import com.example.playlistmaker.application.db.AppDatabase
+import com.example.playlistmaker.application.db.DatabaseTrackEntity
 import com.example.playlistmaker.search.data.mapper.TrackListApiInTrackListMapper
 import com.example.playlistmaker.search.data.model.ItunesRequest
 import com.example.playlistmaker.search.data.model.ItunesResponse
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 
 class TrackListRepositoryImpl(
     private val trackNetworkClient: TrackNetworkClient,
-    private val database: AppDatabase,
+    private val database: DatabaseTrackEntity,
 ) :
     TrackListRepository {
 

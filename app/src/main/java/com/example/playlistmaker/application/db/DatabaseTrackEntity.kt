@@ -6,7 +6,7 @@ import com.example.playlistmaker.application.db.dao.TrackDao
 import com.example.playlistmaker.application.db.entity.TrackEntity
 
 @Database(version = 1, entities = [TrackEntity::class])
-abstract class AppDatabase: RoomDatabase(){
+abstract class DatabaseTrackEntity: RoomDatabase(){
 
     abstract fun getTrackDao(): TrackDao
 

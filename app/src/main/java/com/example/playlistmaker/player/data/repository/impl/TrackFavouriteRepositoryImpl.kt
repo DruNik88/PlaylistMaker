@@ -1,6 +1,6 @@
 package com.example.playlistmaker.player.data.repository.impl
 
-import com.example.playlistmaker.application.db.AppDatabase
+import com.example.playlistmaker.application.db.DatabaseTrackEntity
 import com.example.playlistmaker.application.db.entity.TrackEntity
 import com.example.playlistmaker.application.db.mapper.DataBaseConvertor
 import com.example.playlistmaker.player.data.repository.TrackFavouriteRepository
@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class TrackFavouriteRepositoryImpl(
-    private val database: AppDatabase,
+    private val database: DatabaseTrackEntity,
     private val dataBaseConvertor: DataBaseConvertor
 ): TrackFavouriteRepository {
     override suspend fun insertTrackInFavourite(trackPlayerDomain: TrackPlayerDomain) {

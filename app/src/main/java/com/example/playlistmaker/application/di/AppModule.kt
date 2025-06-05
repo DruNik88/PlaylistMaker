@@ -2,7 +2,8 @@ package com.example.playlistmaker.application.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.playlistmaker.application.db.AppDatabase
+import com.example.playlistmaker.application.db.DatabasePlayListEntity
+import com.example.playlistmaker.application.db.DatabaseTrackEntity
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -11,8 +12,12 @@ private const val SHARED_PREFERENCES_PLAYLIST_MAKER = "shared_preferences_playli
 
 val appModule = module {
 
-    single<AppDatabase>{
-        Room.databaseBuilder(androidContext(), AppDatabase::class.java,"database.db").build()
+    single<DatabaseTrackEntity>{
+        Room.databaseBuilder(androidContext(), DatabaseTrackEntity::class.java,"database_track.db").build()
+    }
+
+    single<DatabasePlayListEntity> {
+        Room.databaseBuilder(androidContext(), DatabasePlayListEntity::class.java, "database_playlist.db").build()
     }
 
     single {
