@@ -1,12 +1,10 @@
 package com.example.playlistmaker.medialibrary.ui.fragment
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,7 +29,7 @@ class NewPlayListFragment : Fragment() {
 
     val requestPermission = PermissionRequester.instance()
 
-    lateinit var confirmDialog: MaterialAlertDialogBuilder
+    private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
     private fun toolBar() {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarNewPlaylist)
@@ -42,8 +40,32 @@ class NewPlayListFragment : Fragment() {
         }
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(true)
         binding.toolbarNewPlaylist.setNavigationOnClickListener {
-            confirmDialog.show()
+            handleBackPressed()
         }
+    }
+
+    private fun handleBackPressed(
+        shouldDisableCallback: Boolean = false,
+        callback: OnBackPressedCallback? = null
+    ) {
+        val hasUnsavedChanges =
+            binding.titleNewPlaylist.text?.toString()?.trim()?.isNotEmpty() ?: false ||
+                    binding.descriptionNewPlaylist.text?.toString()?.trim()
+                        ?.isNotEmpty() ?: false ||
+                    !binding.addPhotoNewPlaylist.isVisible
+
+        if (hasUnsavedChanges) {
+            confirmDialog.show()
+        } else {
+            if (shouldDisableCallback) {
+                callback?.isEnabled = false
+            }
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun namePlaylist(): String {
+        return "Плейлист ${binding.titleNewPlaylist.text} создан"
     }
 
 
@@ -65,11 +87,16 @@ class NewPlayListFragment : Fragment() {
 
         binding.buttonCreateNewPlaylist.isEnabled = false
 
-
         binding.titleNewPlaylist.addTextChangedListener { text ->
-            val isNotEmpty = !text.isNullOrBlank()
+            viewModel.updateTitle(newTitle = text.toString())
+        }
+
+        viewModel.title.observe(viewLifecycleOwner) { title ->
+            val isNotEmpty = !title.isNullOrBlank()
             binding.buttonCreateNewPlaylist.isEnabled = isNotEmpty
             binding.titleNewPlaylistMiddle.isVisible = isNotEmpty
+            if (binding.titleNewPlaylist.text.toString() != title)
+                binding.titleNewPlaylist.setText(title)
             if (isNotEmpty) {
                 binding.titleNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_blue)
             } else {
@@ -78,8 +105,15 @@ class NewPlayListFragment : Fragment() {
         }
 
         binding.descriptionNewPlaylist.addTextChangedListener { text ->
-            val isNotEmpty = !text.isNullOrBlank()
+            viewModel.updateDescription(newDescription = text.toString())
+        }
+
+        viewModel.description.observe(viewLifecycleOwner) { description ->
+            val isNotEmpty = !description.isNullOrBlank()
             binding.descriptionNewPlaylistMiddle.isVisible = isNotEmpty
+            if (binding.descriptionNewPlaylist.text.toString() != description) {
+                binding.descriptionNewPlaylist.setText(description)
+            }
             if (isNotEmpty) {
                 binding.descriptionNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_blue)
             } else {
@@ -87,14 +121,17 @@ class NewPlayListFragment : Fragment() {
             }
         }
 
+        binding.buttonCreateNewPlaylist.setOnClickListener {
+            viewModel.saveDataBase()
+            Toast.makeText(requireContext(), namePlaylist(), Toast.LENGTH_LONG).show()
+            findNavController().navigateUp()
+        }
+
+
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                // Callback вызовется, когда пользователь выберет картинку
-                if (uri != null) {
-                    binding.artworkNewPlaylist.setImageURI(uri)
-                    binding.addPhotoNewPlaylist.isVisible = false
-                } else {
-                    Log.d("PhotoPicker", "Ничего не выбрано")
+                uri?.let {
+                    viewModel.updateImageUri(uri)
                 }
             }
 
@@ -102,26 +139,29 @@ class NewPlayListFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
+            binding.artworkNewPlaylist.setImageURI(uri)
+            binding.addPhotoNewPlaylist.isVisible = false
+        }
+
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNeutralButton("Отмена") { dialog, which ->
+            .setTitle(R.string.dialog_title)
+            .setMessage(R.string.dialog_description)
+            .setNeutralButton(R.string.cancel) { dialog, which ->
                 // ничего не делаем
-            }.setPositiveButton("Завершить") { dialog, which ->
-                // сохраняем изменения и выходим
-                // save()
-//                (activity as AppCompatActivity).finish()
+            }.setPositiveButton(R.string.complete) { dialog, which ->
                 findNavController().navigateUp()
             }
 
         ((activity as AppCompatActivity)).onBackPressedDispatcher.addCallback(object :
             OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                confirmDialog.show()
+                handleBackPressed(
+                    shouldDisableCallback = true,
+                    callback = this
+                )
             }
         })
-
-
     }
 
     override fun onDestroyView() {

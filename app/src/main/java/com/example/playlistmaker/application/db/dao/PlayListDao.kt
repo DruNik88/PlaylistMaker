@@ -1,11 +1,13 @@
 package com.example.playlistmaker.application.db.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Update
 import com.example.playlistmaker.application.db.entity.PlayListEntity
 import com.example.playlistmaker.application.db.entity.TrackEntity
 
+@Dao
 interface PlayListDao {
     
     @Insert(entity = PlayListEntity::class, onConflict = OnConflictStrategy.ABORT)

@@ -4,6 +4,7 @@ import com.example.playlistmaker.medialibrary.data.FavouriteRepository
 import com.example.playlistmaker.medialibrary.data.NewPlayListRepository
 import com.example.playlistmaker.medialibrary.data.impl.FavouriteRepositoryImpl
 import com.example.playlistmaker.medialibrary.data.impl.NewPlayListRepositoryImpl
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val mediaLibraryRepositoryModule = module {
@@ -12,6 +13,6 @@ val mediaLibraryRepositoryModule = module {
     }
 
     single<NewPlayListRepository> {
-        NewPlayListRepositoryImpl()
+        NewPlayListRepositoryImpl(androidContext(), get(), get())
     }
 }

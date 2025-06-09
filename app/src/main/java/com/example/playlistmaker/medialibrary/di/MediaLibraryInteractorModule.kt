@@ -13,7 +13,7 @@ val mediaLibraryInteractorModule = module {
     }
 
     single<NewPlayListInteractor> {
-        NewPlayListInteractorImpl()
+        NewPlayListInteractorImpl(get())
     }
 
 }

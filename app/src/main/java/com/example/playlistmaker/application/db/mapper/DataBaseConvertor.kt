@@ -1,6 +1,9 @@
 package com.example.playlistmaker.application.db.mapper
 
+import android.net.Uri
+import com.example.playlistmaker.application.db.entity.PlayListEntity
 import com.example.playlistmaker.application.db.entity.TrackEntity
+import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
@@ -37,5 +40,22 @@ class DataBaseConvertor {
                 isFavourite = entity.isFavourite,
             )
         }
+    }
+    fun converterPlayListDomainToPlayListEntity(playListDomain: PlayList): PlayListEntity{
+      return  PlayListEntity(
+          id = 0L,
+          title = playListDomain.title,
+          description = playListDomain.description,
+          imageInnerUri = uriToString(playListDomain.imageInnerUri),
+          listTrackId = "",
+          countTrack = 0
+      )
+    }
+
+    private fun uriToString(uri: Uri?): String{
+        return uri.toString()
+    }
+    private fun stringToUri(string: String): Uri{
+        return string.let {Uri.parse(it)}
     }
 }
