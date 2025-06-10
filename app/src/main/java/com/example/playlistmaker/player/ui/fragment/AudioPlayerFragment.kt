@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -15,11 +16,14 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
+import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
+import com.example.playlistmaker.player.ui.state.ShowPlaylist
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -29,11 +33,11 @@ class AudioPlayerFragment : Fragment() {
         private const val KEY_TRACK = "track"
         private const val RADIUS_IMAGE = 8.0F
 
-       fun createArgs(track: TrackSearchDomain): Bundle =
-           bundleOf(KEY_TRACK to track)
+        fun createArgs(track: TrackSearchDomain): Bundle =
+            bundleOf(KEY_TRACK to track)
     }
 
-    private val viewModel: AudioPlayerViewModel by viewModel{
+    private val viewModel: AudioPlayerViewModel by viewModel {
         val trackSearch = requireArguments().getSerializable(KEY_TRACK) as? TrackSearchDomain
         trackSearch?.let {
             parametersOf(trackSearch)
@@ -43,6 +47,8 @@ class AudioPlayerFragment : Fragment() {
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
+    private val adapter: AudioPlayerAdapter = AudioPlayerAdapter()
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private fun toolBar() {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarAudioPlayer)
@@ -71,8 +77,31 @@ class AudioPlayerFragment : Fragment() {
 
         toolBar()
 
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                    }
+
+                    else -> {
+                        binding.overlay.isVisible = true
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
         viewModel.getShowDataLiveData().observe(viewLifecycleOwner) { showData ->
-            when(showData){
+            when (showData) {
                 is ShowData.Content -> renderShowData(showData)
                 is ShowData.Loading -> loading(loading = true)
             }
@@ -82,13 +111,39 @@ class AudioPlayerFragment : Fragment() {
             renderPlayStatus(playStatus)
         }
 
+        viewModel.getPlayListLiveData().observe(viewLifecycleOwner) { list ->
+            when (list) {
+                is ShowPlaylist.Content -> {
+                    val playerList = list.playListData
+                    showPlayerList(playerList)
+                }
+
+                is ShowPlaylist.Empty -> {
+                    binding.recyclerPlayerList.isVisible = false
+                }
+            }
+
+        }
+
+        binding.buttonNewPlaylist.setOnClickListener {
+            findNavController().navigate(
+            R.id.action_audioPlayerFragment_to_newPlayListFragment
+            )
+        }
+
         binding.playbackControl.setOnClickListener {
             viewModel.playbackControl()
         }
 
-        binding.addFavourite.setOnClickListener{
+        binding.addFavourite.setOnClickListener {
             viewModel.addFavourite()
         }
+        binding.addPlaylist.setOnClickListener {
+            viewModel.addPlayList()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        binding.recyclerPlayerList.adapter = adapter
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -112,12 +167,19 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
+    private fun showPlayerList(playerList: List<PlayerList>) {
+        adapter.clearOrUpdatePlayerList()
+        binding.recyclerPlayerList.isVisible = true
+        adapter.allUpdatePlayerList(playerList)
+    }
+
     private fun renderShowData(showData: ShowData) {
         when (showData) {
             is ShowData.Content -> {
                 loading(loading = false)
                 showContent(trackPlayer = showData.trackModel)
             }
+
             is ShowData.Loading -> loading(loading = true)
         }
     }
@@ -151,7 +213,7 @@ class AudioPlayerFragment : Fragment() {
         favourite(trackPlayer)
     }
 
-    private fun favourite(trackPlayer: TrackPlayerDomain){
+    private fun favourite(trackPlayer: TrackPlayerDomain) {
         if (trackPlayer.isFavourite) {
             binding.addFavourite.setImageResource(R.drawable.ic_added_favourite)
         } else {
@@ -159,8 +221,8 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
-    private fun loading(loading: Boolean){
-        binding.layoutPlayer.isVisible = !loading
+    private fun loading(loading: Boolean) {
+        binding.audioPlayer.isVisible = !loading
         binding.layoutProgressBar.isVisible = loading
     }
 

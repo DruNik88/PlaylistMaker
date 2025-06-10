@@ -5,6 +5,7 @@ import com.example.playlistmaker.application.db.entity.PlayListEntity
 import com.example.playlistmaker.application.db.entity.TrackEntity
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
+import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
 class DataBaseConvertor {
@@ -62,6 +63,18 @@ class DataBaseConvertor {
             )
         }
     }
+
+    fun converterPlayListEntityToPlayerListDomain(playList: List<PlayListEntity>): List<PlayerList>{
+        return playList.map { entity ->
+            PlayerList(
+                title = entity.title,
+                description = "",
+                imageInnerUri = entity.imageInnerUri?.let { stringToUri(it) },
+                count = entity.countTrack
+            )
+        }
+    }
+
     private fun uriToString(uri: Uri?): String{
         return uri.toString()
     }

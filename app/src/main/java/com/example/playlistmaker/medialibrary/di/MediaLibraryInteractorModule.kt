@@ -6,6 +6,8 @@ import com.example.playlistmaker.medialibrary.domain.interactor.PlayListInteract
 import com.example.playlistmaker.medialibrary.domain.interactor.impl.FavouriteInteractorImpl
 import com.example.playlistmaker.medialibrary.domain.interactor.impl.NewPlayListInteractorImpl
 import com.example.playlistmaker.medialibrary.domain.interactor.impl.PlayListInteractorImpl
+import com.example.playlistmaker.player.domain.interactor.PlayListPlayerInteractor
+import com.example.playlistmaker.player.domain.interactor.impl.PlayListPlayerInteractorImpl
 import org.koin.dsl.module
 
 val mediaLibraryInteractorModule = module {
@@ -20,6 +22,10 @@ val mediaLibraryInteractorModule = module {
 
     single<PlayListInteractor> {
         PlayListInteractorImpl(get())
+    }
+
+    single<PlayListPlayerInteractor> {
+        PlayListPlayerInteractorImpl(get())
     }
 
 }

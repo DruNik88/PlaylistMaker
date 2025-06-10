@@ -35,7 +35,11 @@
         android:id="@+id/audioPlayerFragment"
         android:name="com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment"
         android:label="fragment_audio_player"
-        tools:layout="@layout/fragment_audio_player" />
+        tools:layout="@layout/fragment_audio_player" >
+        <action
+            android:id="@+id/action_audioPlayerFragment_to_newPlayListFragment"
+            app:destination="@id/newPlayListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newPlayListFragment"
         android:name="com.example.playlistmaker.medialibrary.ui.fragment.NewPlayListFragment"
