@@ -22,7 +22,7 @@
         tools:listitem="@layout/track_view" />
 
     <ImageView
-        android:id="@+id/errorImage"
+        android:id="@+id/error_image"
         android:layout_width="@dimen/activity_search_image_view_error_width"
         android:layout_height="@dimen/activity_search_image_view_error_height"
         android:layout_marginTop="106dp"
@@ -35,7 +35,7 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/errorMessage"
+        android:id="@+id/error_message"
         style="@style/TextError"
         android:layout_width="0dp"
         android:layout_marginTop="16dp"
@@ -44,6 +44,6 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/errorImage" />
+        app:layout_constraintTop_toBottomOf="@+id/error_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

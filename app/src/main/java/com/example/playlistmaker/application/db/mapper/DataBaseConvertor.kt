@@ -52,6 +52,16 @@ class DataBaseConvertor {
       )
     }
 
+    fun converterPlayListEntityToPlayListDomain(playList: List<PlayListEntity>): List<PlayList>{
+        return playList.map { entity ->
+            PlayList(
+                title = entity.title,
+                description = "",
+                imageInnerUri = entity.imageInnerUri?.let { stringToUri(it) },
+                count = entity.countTrack
+            )
+        }
+    }
     private fun uriToString(uri: Uri?): String{
         return uri.toString()
     }

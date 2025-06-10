@@ -1,11 +1,8 @@
 package com.example.playlistmaker.medialibrary.domain.interactor
 
-import android.net.Uri
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import kotlinx.coroutines.flow.Flow
 
-interface NewPlayListInteractor {
-    suspend fun saveImageUri(uri: Uri)
-    suspend fun saveDataBase(newPlayList: PlayList)
-
+interface PlayListInteractor {
+    suspend fun getPlayList(): Flow<List<PlayList>>
 }

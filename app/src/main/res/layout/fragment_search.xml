@@ -127,7 +127,7 @@
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
-                android:id="@+id/errorImage"
+                android:id="@+id/error_image"
                 android:layout_width="@dimen/activity_search_image_view_error_width"
                 android:layout_height="@dimen/activity_search_image_view_error_height"
                 android:layout_gravity="center"
@@ -137,7 +137,7 @@
                 tools:srcCompat="@drawable/connection_problems" />
 
             <TextView
-                android:id="@+id/errorMessage"
+                android:id="@+id/error_message"
                 style="@style/TextError"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

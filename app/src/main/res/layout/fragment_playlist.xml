@@ -1,44 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_playlist"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".medialibrary.ui.fragment.PlayListFragment">
 
     <Button
-        android:id="@+id/buttonNewPlayList"
+        android:id="@+id/button_new_playlist"
         style="@style/ButtonNewPlayList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Новый плейлист" />
 
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_playList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:visibility="visible"
+
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            android:orientation="vertical"
+            app:spanCount="2"
+
+            app:layout_constraintTop_toBottomOf="@+id/button_new_playlist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+
+            tools:listitem="@layout/playlist_view" />
+
+<!--    <FrameLayout-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/buttonNewPlayList"-->
+<!--        android:layout_marginTop="16dp">-->
+<!--    -->
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/recyclerPlayList"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:orientation="vertical"-->
+    <!--        android:visibility="visible"-->
+    <!--        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
+    <!--        app:spanCount="2"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/buttonNewPlayList"-->
+    <!--        android:layout_marginBottom="16dp"-->
+
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+
+    <!--        app:layout_constraintEnd_toEndtOf="parent"-->
+    <!--        tools:listitem="@layout/playlist_view" />-->
+
+
     <ImageView
-        android:id="@+id/errorImage"
+        android:id="@+id/error_image"
         android:layout_width="@dimen/activity_search_image_view_error_width"
         android:layout_height="@dimen/activity_search_image_view_error_height"
         android:layout_marginTop="46dp"
         android:contentDescription="@null"
         android:src="@drawable/nothing_found"
-        app:layout_constraintTop_toBottomOf="@+id/buttonNewPlayList"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_new_playlist" />
 
     <TextView
-        android:id="@+id/errorMessage"
+        android:id="@+id/error_message"
         style="@style/TextError"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/errorImage"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/empty_playlist"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/empty_playlist" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/error_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

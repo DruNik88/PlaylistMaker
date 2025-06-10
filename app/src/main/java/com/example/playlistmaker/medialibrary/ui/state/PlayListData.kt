@@ -2,9 +2,9 @@ package com.example.playlistmaker.medialibrary.ui.state
 
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 
-sealed class NewPlayListData {
+sealed class PlayListData {
     data class Content(
-        val newPlayListData: PlayList
-    ): NewPlayListData()
-    data object Empty : NewPlayListData()
+        val playListData: List<PlayList>
+    ): PlayListData()
+    data object Empty : PlayListData()
 }

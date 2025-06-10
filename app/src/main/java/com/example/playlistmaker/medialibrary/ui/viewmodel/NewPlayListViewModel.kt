@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.medialibrary.domain.interactor.NewPlayListInteractor
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
-import com.example.playlistmaker.medialibrary.ui.state.NewPlayListData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class NewPlayListViewModel(
