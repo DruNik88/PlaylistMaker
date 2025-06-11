@@ -6,18 +6,20 @@ import com.example.playlistmaker.search.data.repository.impl.HistoryRepositoryIm
 import com.example.playlistmaker.search.data.repository.impl.TrackListRepositoryImpl
 import org.koin.dsl.module
 
-val searchRepositoryModule = module{
+val searchRepositoryModule = module {
 
     single<TrackListRepository> {
         TrackListRepositoryImpl(
             trackNetworkClient = get(),
-            database = get())
+            database = get()
+        )
     }
 
-    factory <HistoryRepository> {
+    factory<HistoryRepository> {
         HistoryRepositoryImpl(
             gson = get(),
             sharedPrefs = get(),
-            database = get())
+            database = get()
+        )
     }
 }

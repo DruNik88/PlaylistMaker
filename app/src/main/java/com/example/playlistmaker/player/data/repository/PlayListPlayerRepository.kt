@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.data.repository
 
-import com.example.playlistmaker.application.db.entity.PlayListWithTracks
 import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefDomain
 import com.example.playlistmaker.player.domain.model.PlayListWithTrack
 import com.example.playlistmaker.player.domain.model.PlayerList

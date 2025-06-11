@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class TrackAdapter<T: TrackGeneric>(
+class TrackAdapter<T : TrackGeneric>(
     private val onItemClickListener: ((T) -> Unit)? = null
 ) : RecyclerView.Adapter<TrackViewHolder<T>>() {
 
@@ -15,7 +15,7 @@ class TrackAdapter<T: TrackGeneric>(
 
     override fun onBindViewHolder(holder: TrackViewHolder<T>, position: Int) {
         holder.bind(tracks[position])
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(tracks[position])
         }
     }
@@ -23,13 +23,13 @@ class TrackAdapter<T: TrackGeneric>(
     override fun getItemCount(): Int = tracks.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun clearOrUpdateTracks(){
+    fun clearOrUpdateTracks() {
         tracks.clear()
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun allUpdateTracks(list: List<T>){
+    fun allUpdateTracks(list: List<T>) {
         tracks.clear()
         tracks.addAll(list)
         notifyDataSetChanged()

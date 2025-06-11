@@ -37,13 +37,13 @@ class AudioPlayerFragment : Fragment() {
         private const val KEY_TRACK = "track"
         private const val RADIUS_IMAGE = 8.0F
 
-         private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
 
         fun createArgs(track: TrackSearchDomain): Bundle =
             bundleOf(KEY_TRACK to track)
     }
 
-    private val viewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel>{
+    private val viewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel> {
         val trackSearch = requireArguments().getSerializable(KEY_TRACK) as? TrackSearchDomain
         trackSearch?.let {
             parametersOf(trackSearch)
@@ -95,8 +95,8 @@ class AudioPlayerFragment : Fragment() {
             delayMillis = CLICK_DEBOUNCE_DELAY,
             coroutineScope = viewLifecycleOwner.lifecycleScope,
             useLastParam = false,
-        ) { playerList->
-            namePlayerList = playerList.title?.let{playerList.title} ?: ""
+        ) { playerList ->
+            namePlayerList = playerList.title?.let { playerList.title } ?: ""
             viewModel.updatePlayListTableAndAddTrackInTrackTable(playerList)
         }
 
@@ -148,10 +148,17 @@ class AudioPlayerFragment : Fragment() {
             }
         }
 
-        viewModel.getContainsTrack().observe(viewLifecycleOwner){ state ->
-            when(state){
-                true -> { Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_LONG).show()}
-                false -> { Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_LONG).show()}
+        viewModel.getContainsTrack().observe(viewLifecycleOwner) { state ->
+            when (state) {
+                true -> {
+                    Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_LONG)
+                        .show()
+                }
+
+                false -> {
+                    Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_LONG)
+                        .show()
+                }
             }
         }
 

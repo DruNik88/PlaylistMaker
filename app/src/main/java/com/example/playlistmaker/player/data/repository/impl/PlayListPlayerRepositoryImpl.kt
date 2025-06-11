@@ -2,7 +2,6 @@ package com.example.playlistmaker.player.data.repository.impl
 
 import android.util.Log
 import com.example.playlistmaker.application.db.DatabasePlayListEntity
-import com.example.playlistmaker.application.db.entity.PlayListWithTracks
 import com.example.playlistmaker.application.db.mapper.DataBaseConvertor
 import com.example.playlistmaker.player.data.repository.PlayListPlayerRepository
 import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefDomain
@@ -26,25 +25,28 @@ class PlayListPlayerRepositoryImpl(
     }
 
     override suspend fun updatePlayList(playerList: PlayerList) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             val playListEntity = converter.converterPlayerListDomainToPlayListEntity(playerList)
-            Log.d("playListEntity_1","${playListEntity}")
+            Log.d("playListEntity_1", "${playListEntity}")
             val newPlayListEntity = playListEntity.copy(countTrack = playListEntity.countTrack + 1)
-            Log.d("playListEntity_2","${newPlayListEntity}")
+            Log.d("playListEntity_2", "${newPlayListEntity}")
             database.getPlayListDao().updatePlayListEntity(newPlayListEntity)
         }
     }
 
     override suspend fun addTrackInTrackInPlayListTable(track: TrackPlayerDomain) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             val trackEntity = converter.converterTrackDomainToTrackEntity(track)
             database.getPlayListDao().insertTrackEntity(trackEntity)
         }
     }
 
     override suspend fun addPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefDomain) {
-        withContext(Dispatchers.IO){
-            val playListTrackCrossRef= converter.playListTrackCrossRefDomainToPlayListTrackCrossRef(playListTrackCrossRefDomain)
+        withContext(Dispatchers.IO) {
+            val playListTrackCrossRef =
+                converter.playListTrackCrossRefDomainToPlayListTrackCrossRef(
+                    playListTrackCrossRefDomain
+                )
             database.getPlayListDao().addPlayListTrackCrossRef(playListTrackCrossRef)
         }
     }

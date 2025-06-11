@@ -7,12 +7,13 @@ import com.example.playlistmaker.search.domain.interactor.impl.TrackListInteract
 import org.koin.dsl.module
 
 val searchInteractorModule = module {
-    single<TrackListInteractor>{
+    single<TrackListInteractor> {
         TrackListInteractorImpl(
-           trackListRepository = get())
+            trackListRepository = get()
+        )
     }
 
-    single<HistoryInteractor>{
+    single<HistoryInteractor> {
         HistoryInteractorImpl(
             trackManager = get()
         )

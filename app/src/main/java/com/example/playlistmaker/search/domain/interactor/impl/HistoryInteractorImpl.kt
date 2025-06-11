@@ -5,7 +5,7 @@ import com.example.playlistmaker.search.domain.interactor.HistoryInteractor
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import kotlinx.coroutines.flow.Flow
 
-class HistoryInteractorImpl(private val trackManager: HistoryRepository): HistoryInteractor {
+class HistoryInteractorImpl(private val trackManager: HistoryRepository) : HistoryInteractor {
     override fun addTrackListHistory(track: TrackSearchDomain) {
         trackManager.addTrackListHistory(track)
     }

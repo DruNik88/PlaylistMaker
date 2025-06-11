@@ -36,9 +36,10 @@ class MediaLibraryFragment : Fragment() {
 
         binding.viewPager.adapter = MediaLibraryPagerAdapter(
             fragmentManager = childFragmentManager,
-            lifecycle = lifecycle)
-        tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) {tab, position ->
-            when(position){
+            lifecycle = lifecycle
+        )
+        tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            when (position) {
                 0 -> tab.text = getString(R.string.favourite_track)
                 1 -> tab.text = getString(R.string.playlist)
             }

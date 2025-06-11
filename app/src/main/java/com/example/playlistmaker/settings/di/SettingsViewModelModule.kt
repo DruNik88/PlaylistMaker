@@ -7,7 +7,7 @@ import org.koin.dsl.module
 val settingsViewModelModule = module {
 
     viewModel {
-    SettingsViewModel(
+        SettingsViewModel(
             settingsInteractor = get(),
             sharingInteractor = get()
         )

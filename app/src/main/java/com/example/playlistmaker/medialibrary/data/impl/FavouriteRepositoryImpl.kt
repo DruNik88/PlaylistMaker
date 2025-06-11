@@ -17,7 +17,8 @@ class FavouriteRepositoryImpl(
         return dataBase.getTrackDao().getTrackListEntity()
             .map { list ->
                 val sortedList = list.sortedByDescending { it.timeAdded }
-                converterTrackEntityToTrackFavourite(sortedList) }
+                converterTrackEntityToTrackFavourite(sortedList)
+            }
     }
 
     private fun converterTrackEntityToTrackFavourite(trackListEntity: List<TrackEntity>): List<TrackFavourite> {

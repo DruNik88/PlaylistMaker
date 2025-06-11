@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "track_table")
-data class TrackEntity (
+data class TrackEntity(
     @PrimaryKey
     val trackId: Long,
     val trackName: String?, // Название композиции
@@ -14,8 +14,8 @@ data class TrackEntity (
     val collectionName: String?, //Название альбома
     val releaseDate: String?, //Год релиза трека
     val primaryGenreName: String?, //Жанр трека
-    val country:String?, //Страна исполнителя
-    val previewUrl:String?, //Ссылка на отрывок песни
+    val country: String?, //Страна исполнителя
+    val previewUrl: String?, //Ссылка на отрывок песни
     var isFavourite: Boolean = false, //Нахождение в "Избранном"
     val timeAdded: Long = System.currentTimeMillis(), //Время добавления трека
 )

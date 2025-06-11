@@ -39,8 +39,8 @@ class TrackListRepositoryImpl(
                     networkResponse as ItunesResponse
                     val trackList = TrackListApiInTrackListMapper.map(networkResponse.results)
                     emitAll(
-                        database.getTrackDao().getTrackListIdEntity().map{ listId ->
-                            val favouriteList = trackList.map{
+                        database.getTrackDao().getTrackListIdEntity().map { listId ->
+                            val favouriteList = trackList.map {
                                 it.copy(isFavourite = it.trackId in listId)
                             }
                             Resource.Success(favouriteList)

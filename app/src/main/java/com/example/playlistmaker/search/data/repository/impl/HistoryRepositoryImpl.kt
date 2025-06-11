@@ -68,19 +68,19 @@ class HistoryRepositoryImpl(
                 )
     }
 
-        override fun clearHistory() {
-            sharedPrefs.edit()
-                .remove(KEY_HISTORY_LIST)
-                .apply()
-            trackListHistory.clear()
-        }
+    override fun clearHistory() {
+        sharedPrefs.edit()
+            .remove(KEY_HISTORY_LIST)
+            .apply()
+        trackListHistory.clear()
+    }
 
-        override fun saveSharedPrefs() {
-            if (trackListHistory.isNotEmpty()) {
-                val json = gson.toJson(trackListHistory)
-                sharedPrefs.edit()
-                    .putString(KEY_HISTORY_LIST, json)
-                    .apply()
-            }
+    override fun saveSharedPrefs() {
+        if (trackListHistory.isNotEmpty()) {
+            val json = gson.toJson(trackListHistory)
+            sharedPrefs.edit()
+                .putString(KEY_HISTORY_LIST, json)
+                .apply()
         }
     }
+}

@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 class TrackFavouriteRepositoryImpl(
     private val database: DatabaseTrackEntity,
     private val dataBaseConvertor: DataBaseConvertor
-): TrackFavouriteRepository {
+) : TrackFavouriteRepository {
     override suspend fun insertTrackInFavourite(trackPlayerDomain: TrackPlayerDomain) {
         val trackEntity = converterTrackDomainToTrackEntity(trackPlayerDomain)
         withContext(Dispatchers.IO) { database.getTrackDao().insertTrackEntity(trackEntity) }
@@ -19,7 +19,7 @@ class TrackFavouriteRepositoryImpl(
 
     override suspend fun deleteTrackInFavourite(trackPlayerDomain: TrackPlayerDomain) {
         val trackEntity = converterTrackDomainToTrackEntity(trackPlayerDomain)
-        withContext(Dispatchers.IO) {database.getTrackDao().deleteTrackEntity(trackEntity)}
+        withContext(Dispatchers.IO) { database.getTrackDao().deleteTrackEntity(trackEntity) }
     }
 
     private fun converterTrackDomainToTrackEntity(trackPlayerDomain: TrackPlayerDomain): TrackEntity {

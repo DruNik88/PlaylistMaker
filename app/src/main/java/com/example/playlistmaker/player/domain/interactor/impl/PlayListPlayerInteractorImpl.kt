@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.domain.interactor.impl
 
-import com.example.playlistmaker.application.db.entity.PlayListWithTracks
 import com.example.playlistmaker.player.data.repository.PlayListPlayerRepository
 import com.example.playlistmaker.player.domain.interactor.PlayListPlayerInteractor
 import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefDomain
@@ -11,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 class PlayListPlayerInteractorImpl(
     private val playListPlayerRepository: PlayListPlayerRepository
-):PlayListPlayerInteractor {
+) : PlayListPlayerInteractor {
     override suspend fun getPlayList(): Flow<List<PlayListWithTrack>> {
         return playListPlayerRepository.getPlayList()
     }

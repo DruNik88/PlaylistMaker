@@ -111,14 +111,14 @@ class AudioPlayerViewModel(
 
     fun addPlayList() {
         viewModelScope.launch {
-            playListPlayerInteractor.getPlayList().collect{ list ->
+            playListPlayerInteractor.getPlayList().collect { list ->
                 addShowPlaylist(list)
             }
         }
     }
 
-    private fun addShowPlaylist(list: List<PlayListWithTrack>){
-        if (list.isEmpty()){
+    private fun addShowPlaylist(list: List<PlayListWithTrack>) {
+        if (list.isEmpty()) {
             _showPlaylist.postValue(ShowPlaylist.Empty)
         } else {
             _showPlaylist.postValue(ShowPlaylist.Content(playListData = list))
@@ -128,14 +128,14 @@ class AudioPlayerViewModel(
     fun updatePlayListTableAndAddTrackInTrackTable(playerList: PlayerList) {
 
         val playList = findPlayListWithTrackById(playerList.id)
-        val containsTrack = playList?.let{findTrack(playList)}
+        val containsTrack = playList?.let { findTrack(playList) }
 
         playListTrackCrossRefDomain = PlayListTrackCrossRefDomain(
             playlistId = playerList.id,
             trackId = trackPlayerDomain.trackId
         )
 
-        if (containsTrack == true){
+        if (containsTrack == true) {
             _containsTrack.postValue(true)
         } else {
             _containsTrack.postValue(false)
@@ -147,7 +147,7 @@ class AudioPlayerViewModel(
         }
     }
 
-    private fun findPlayListWithTrackById(id: Long): PlayListWithTrack?{
+    private fun findPlayListWithTrackById(id: Long): PlayListWithTrack? {
         val state = _showPlaylist.value
         return if (state is ShowPlaylist.Content) {
             state.playListData.find { it.playList.id == id }

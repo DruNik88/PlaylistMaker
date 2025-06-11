@@ -32,10 +32,10 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.observeStateSearch().observe(viewLifecycleOwner){ theme ->
+        viewModel.observeStateSearch().observe(viewLifecycleOwner) { theme ->
             binding.themeSwitcher.setOnCheckedChangeListener(null)
 
-            when(theme) {
+            when (theme) {
                 is SettingsState.LightMode -> binding.themeSwitcher.isChecked = theme.light
                 is SettingsState.DarkMode -> binding.themeSwitcher.isChecked = theme.dark
             }

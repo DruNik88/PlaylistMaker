@@ -12,12 +12,17 @@ private const val SHARED_PREFERENCES_PLAYLIST_MAKER = "shared_preferences_playli
 
 val appModule = module {
 
-    single<DatabaseTrackEntity>{
-        Room.databaseBuilder(androidContext(), DatabaseTrackEntity::class.java,"database_track.db").build()
+    single<DatabaseTrackEntity> {
+        Room.databaseBuilder(androidContext(), DatabaseTrackEntity::class.java, "database_track.db")
+            .build()
     }
 
     single<DatabasePlayListEntity> {
-        Room.databaseBuilder(androidContext(), DatabasePlayListEntity::class.java, "database_playlist.db").build()
+        Room.databaseBuilder(
+            androidContext(),
+            DatabasePlayListEntity::class.java,
+            "database_playlist.db"
+        ).build()
     }
 
     single {

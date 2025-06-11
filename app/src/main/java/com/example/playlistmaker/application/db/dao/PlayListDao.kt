@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PlayListDao {
-    
+
     @Insert(entity = PlayListEntity::class, onConflict = OnConflictStrategy.ABORT)
     fun insertPlayListEntity(playListEntity: PlayListEntity)
 
@@ -32,7 +32,7 @@ interface PlayListDao {
     fun getPlayListWithTrackEntity(): Flow<List<PlayListWithTracks>>
 
     @Transaction
-    @Insert (entity = PlayListTrackCrossRef::class, onConflict = OnConflictStrategy.ABORT)
+    @Insert(entity = PlayListTrackCrossRef::class, onConflict = OnConflictStrategy.ABORT)
     fun addPlayListTrackCrossRef(playListTrack: PlayListTrackCrossRef)
 
 

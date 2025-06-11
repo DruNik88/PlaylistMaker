@@ -16,20 +16,7 @@ class NewPlayListViewModel(
 
     val title = MutableLiveData<String>()
     val description = MutableLiveData<String?>()
-    val imageUri = MutableLiveData<Uri?>()
-
-    private val playList: LiveData<PlayList> = MediatorLiveData<PlayList>().apply {
-        fun update() {
-            value = PlayList(
-                title = title.value,
-                description = description.value,
-                imageInnerUri = imageUri.value
-            )
-        }
-        addSource(title) { update() }
-        addSource(description) { update() }
-        addSource(imageUri) { update() }
-    }
+    val imageLocalStoragePath = MutableLiveData<String?>()
 
     fun updateTitle(newTitle: String) {
         title.value = newTitle
@@ -41,9 +28,10 @@ class NewPlayListViewModel(
 
     fun updateImageUri(newImageUri: Uri) {
         viewModelScope.launch {
-            newPlayListInteractor.saveImageUri(newImageUri)
+            val imageName = newPlayListInteractor.saveImageUri(newImageUri)
+            this@NewPlayListViewModel.imageLocalStoragePath.value = imageName
         }
-        imageUri.value = newImageUri
+//        imageUri.value = imageName
     }
 
     fun saveDataBase() {
@@ -51,9 +39,9 @@ class NewPlayListViewModel(
             val data = PlayList(
                 title = title.value,
                 description = description.value,
-                imageInnerUri = imageUri.value
+                imageLocalStoragePath = imageLocalStoragePath.value
             )
-            data.let{newPlayListInteractor.saveDataBase(data)}
+            data.let { newPlayListInteractor.saveDataBase(data) }
         }
     }
 

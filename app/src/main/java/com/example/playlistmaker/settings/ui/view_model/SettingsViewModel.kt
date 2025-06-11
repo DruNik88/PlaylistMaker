@@ -47,7 +47,7 @@ class SettingsViewModel(
         renderThemeState(checked)
     }
 
-    private fun renderThemeState(theme: Boolean){
+    private fun renderThemeState(theme: Boolean) {
         if (!theme) {
             stateSettingsLiveData.postValue(SettingsState.LightMode(light = false))
         } else {

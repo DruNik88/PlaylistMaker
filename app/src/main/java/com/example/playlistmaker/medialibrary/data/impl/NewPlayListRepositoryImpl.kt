@@ -9,8 +9,6 @@ import com.example.playlistmaker.application.db.mapper.DataBaseConvertor
 import com.example.playlistmaker.medialibrary.data.NewPlayListRepository
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
@@ -23,7 +21,7 @@ class NewPlayListRepositoryImpl(
 
     private lateinit var imageName: String
 
-    override suspend fun saveImageUri(uri: Uri) {
+    override suspend fun saveImageUri(uri: Uri): String {
         imageName = "image_${System.currentTimeMillis()}.jpg"
         val file = File(context.filesDir, imageName)
         val inputStream = context.contentResolver.openInputStream(uri)
@@ -33,6 +31,8 @@ class NewPlayListRepositoryImpl(
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+
+        return file.absolutePath
     }
 
     override suspend fun saveDataBase(newPlayList: PlayList) {

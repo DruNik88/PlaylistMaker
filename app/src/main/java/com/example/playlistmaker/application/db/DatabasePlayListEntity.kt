@@ -11,7 +11,7 @@ import com.example.playlistmaker.application.db.entity.TrackEntity
     version = 1,
     entities = [PlayListEntity::class, TrackEntity::class, PlayListTrackCrossRef::class]
 )
-abstract class DatabasePlayListEntity: RoomDatabase(){
+abstract class DatabasePlayListEntity : RoomDatabase() {
 
     abstract fun getPlayListDao(): PlayListDao
 

@@ -2,7 +2,7 @@ package com.example.playlistmaker.medialibrary.domain.model
 
 import com.example.playlistmaker.application.TrackGeneric
 
-data class TrackFavourite (
+data class TrackFavourite(
     override val trackId: Long,
     override val trackName: String?, // Название композиции
     override val artistName: String?, // Имя исполнителя
@@ -14,4 +14,4 @@ data class TrackFavourite (
     override val country: String?, //Страна исполнителя
     override val previewUrl: String?, //Ссылка на отрывок песни
     var isFavourite: Boolean = false, //Нахождение в "Избранном"
-): TrackGeneric
+) : TrackGeneric

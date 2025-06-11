@@ -1,5 +1,6 @@
 package com.example.playlistmaker.medialibrary.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.example.playlistmaker.medialibrary.ui.viewmodel.NewPlayListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.markodevcic.peko.PermissionRequester
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 
 class NewPlayListFragment : Fragment() {
 
@@ -139,9 +141,15 @@ class NewPlayListFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        viewModel.imageUri.observe(viewLifecycleOwner) { uri ->
-            binding.artworkNewPlaylist.setImageURI(uri)
-            binding.addPhotoNewPlaylist.isVisible = false
+        viewModel.imageLocalStoragePath.observe(viewLifecycleOwner) { imageLocalStoragePath ->
+            val file = imageLocalStoragePath?.let { File(it) }
+            if (file?.exists() == true) {
+                binding.artworkNewPlaylist.setImageURI(Uri.fromFile(file))
+                binding.addPhotoNewPlaylist.isVisible = false
+            } else {
+                binding.artworkNewPlaylist.setImageResource(R.drawable.ic_placeholder)
+                binding.addPhotoNewPlaylist.isVisible = false
+            }
         }
 
         confirmDialog = MaterialAlertDialogBuilder(requireContext())

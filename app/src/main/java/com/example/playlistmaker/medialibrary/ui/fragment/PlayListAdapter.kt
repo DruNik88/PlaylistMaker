@@ -3,7 +3,6 @@ package com.example.playlistmaker.medialibrary.ui.fragment
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,6 +13,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
+import java.io.File
 
 class PlayListAdapter() : RecyclerView.Adapter<PlayListViewHolder>() {
 
@@ -31,13 +31,13 @@ class PlayListAdapter() : RecyclerView.Adapter<PlayListViewHolder>() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun clearOrUpdatePlayList(){
+    fun clearOrUpdatePlayList() {
         playList.clear()
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun allUpdatePlayList(list: List<PlayList>){
+    fun allUpdatePlayList(list: List<PlayList>) {
         playList.clear()
         playList.addAll(list)
         notifyDataSetChanged()
@@ -51,17 +51,18 @@ class PlayListViewHolder(
         .inflate(R.layout.playlist_view, parent, false)
 ) {
 
-    private val imageInnerUri: ImageView = itemView.findViewById(R.id.imagePlaylist)
+    private val image: ImageView = itemView.findViewById(R.id.imagePlaylist)
     private val title: TextView = itemView.findViewById(R.id.titlePlaylist)
     private val count: TextView = itemView.findViewById(R.id.countTracksPlaylist)
 
     fun bind(playList: PlayList) {
-        val imageUri = playList.imageInnerUri
+        val imageUri = playList.imageLocalStoragePath?.let { File(playList.imageLocalStoragePath) }
+        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(imageUri) }
         Glide.with(itemView.context)
-            .load(imageUri)
+            .load(uri)
             .placeholder(R.drawable.ic_placeholder)
             .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, itemView.context)))
-            .into(imageInnerUri)
+            .into(image)
         title.text = playList.title
         count.text = trackEndings(playList.count)
     }
@@ -71,4 +72,3 @@ class PlayListViewHolder(
         const val RADIUS_IMAGE = 8.0F
     }
 }
-

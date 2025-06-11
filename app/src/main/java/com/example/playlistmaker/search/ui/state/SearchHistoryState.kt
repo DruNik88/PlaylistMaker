@@ -20,5 +20,5 @@ sealed class SearchHistoryState {
     ) : SearchHistoryState()
 
     data object HistoryEmpty : SearchHistoryState()
-    data object HistoryClear :SearchHistoryState()
+    data object HistoryClear : SearchHistoryState()
 }

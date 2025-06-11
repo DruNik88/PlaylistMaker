@@ -1,7 +1,5 @@
 package com.example.playlistmaker.application.db.mapper
 
-import android.net.Uri
-import com.example.playlistmaker.application.db.DatabasePlayListEntity
 import com.example.playlistmaker.application.db.entity.PlayListEntity
 import com.example.playlistmaker.application.db.entity.PlayListTrackCrossRef
 import com.example.playlistmaker.application.db.entity.PlayListWithTracks
@@ -15,7 +13,7 @@ import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
 class DataBaseConvertor {
 
-    fun playListTrackCrossRefDomainToPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefDomain): PlayListTrackCrossRef{
+    fun playListTrackCrossRefDomainToPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefDomain): PlayListTrackCrossRef {
         return PlayListTrackCrossRef(
             playlistId = playListTrackCrossRefDomain.playlistId,
             trackId = playListTrackCrossRefDomain.trackId
@@ -29,7 +27,7 @@ class DataBaseConvertor {
                     id = entity.playlist.id,
                     title = entity.playlist.title,
                     description = entity.playlist.description,
-                    imageInnerUri = entity.playlist.imageInnerUri?.let{stringToUri(entity.playlist.imageInnerUri)},
+                    imageLocalStoragePath = entity.playlist.imageLocalStoragePath,
                     count = entity.playlist.countTrack
                 ),
                 trackList = entity.tracks.map { trackListEntity ->
@@ -90,42 +88,34 @@ class DataBaseConvertor {
         }
     }
 
-    fun converterPlayListDomainToPlayListEntity(playListDomain: PlayList): PlayListEntity{
-      return  PlayListEntity(
-          id = 0L,
-          title = playListDomain.title,
-          description = playListDomain.description,
-          imageInnerUri = uriToString(playListDomain.imageInnerUri),
-          countTrack = 0
-      )
+    fun converterPlayListDomainToPlayListEntity(playListDomain: PlayList): PlayListEntity {
+        return PlayListEntity(
+            id = 0L,
+            title = playListDomain.title,
+            description = playListDomain.description,
+            imageLocalStoragePath = playListDomain.imageLocalStoragePath,
+            countTrack = playListDomain.count
+        )
     }
 
-    fun converterPlayListEntityToPlayListDomain(playList: List<PlayListEntity>): List<PlayList>{
+    fun converterPlayListEntityToPlayListDomain(playList: List<PlayListEntity>): List<PlayList> {
         return playList.map { entity ->
             PlayList(
                 title = entity.title,
                 description = entity.description,
-                imageInnerUri = entity.imageInnerUri?.let { stringToUri(it) },
+                imageLocalStoragePath = entity.imageLocalStoragePath,
                 count = entity.countTrack
             )
         }
     }
 
-
-    fun converterPlayerListDomainToPlayListEntity(playerList: PlayerList): PlayListEntity{
-        return  PlayListEntity(
+    fun converterPlayerListDomainToPlayListEntity(playerList: PlayerList): PlayListEntity {
+        return PlayListEntity(
             id = playerList.id,
             title = playerList.title,
             description = playerList.description,
-            imageInnerUri = uriToString(playerList.imageInnerUri),
+            imageLocalStoragePath = playerList.imageLocalStoragePath,
             countTrack = playerList.count
         )
-    }
-
-    private fun uriToString(uri: Uri?): String{
-        return uri.toString()
-    }
-    private fun stringToUri(string: String): Uri{
-        return string.let {Uri.parse(it)}
     }
 }

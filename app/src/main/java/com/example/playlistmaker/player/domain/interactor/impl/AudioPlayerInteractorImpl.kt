@@ -7,7 +7,7 @@ import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 class AudioPlayerInteractorImpl(
     private val audioPlayerRepository: AudioPlayerRepository
 ) : AudioPlayerInteractor {
-    
+
     override fun preparePlayer(
         track: TrackPlayerDomain,
         playerObserver: AudioPlayerInteractor.AudioPlayerObserver

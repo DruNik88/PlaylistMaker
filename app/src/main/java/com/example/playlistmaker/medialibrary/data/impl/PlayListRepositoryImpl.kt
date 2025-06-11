@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 class PlayListRepositoryImpl(
     private val converter: DataBaseConvertor,
     private val dataBase: DatabasePlayListEntity
-): PlayListRepository {
+) : PlayListRepository {
 
     override fun getPlayList(): Flow<List<PlayList>> {
         return dataBase.getPlayListDao().getPlayListEntity()

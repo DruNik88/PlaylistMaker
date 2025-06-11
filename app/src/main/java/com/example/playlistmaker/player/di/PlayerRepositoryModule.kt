@@ -7,7 +7,7 @@ import com.example.playlistmaker.player.data.repository.impl.AudioPlayerReposito
 import com.example.playlistmaker.player.data.repository.impl.TrackFavouriteRepositoryImpl
 import org.koin.dsl.module
 
-val playerRepositoryModule = module{
+val playerRepositoryModule = module {
 
     factory<AudioPlayerRepository> {
         AudioPlayerRepositoryImpl()
