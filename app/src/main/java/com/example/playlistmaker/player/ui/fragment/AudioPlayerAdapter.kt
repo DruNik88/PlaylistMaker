@@ -10,13 +10,17 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
+import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
+import com.example.playlistmaker.player.domain.model.PlayListWithTrack
 
 import com.example.playlistmaker.player.domain.model.PlayerList
 
-class AudioPlayerAdapter(): RecyclerView.Adapter<AudioPlayerViewHolder>() {
+class AudioPlayerAdapter(
+    private val onItemClickListener: ((PlayerList)-> Unit)? =null
+): RecyclerView.Adapter<AudioPlayerViewHolder>() {
 
-    val playerList: MutableList<PlayerList> = mutableListOf()
+    private val playerList: MutableList<PlayListWithTrack> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioPlayerViewHolder = AudioPlayerViewHolder(parent)
 
@@ -25,7 +29,11 @@ class AudioPlayerAdapter(): RecyclerView.Adapter<AudioPlayerViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: AudioPlayerViewHolder, position: Int) {
-        holder.bind(playerList[position])
+        val playerList = playerList[position].playList
+        holder.bind(playerList)
+        holder.itemView.setOnClickListener{
+            onItemClickListener?.invoke(playerList)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -35,7 +43,7 @@ class AudioPlayerAdapter(): RecyclerView.Adapter<AudioPlayerViewHolder>() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun allUpdatePlayerList(list: List<PlayerList>){
+    fun allUpdatePlayerList(list: List<PlayListWithTrack>){
         playerList.clear()
         playerList.addAll(list)
         notifyDataSetChanged()
@@ -60,11 +68,13 @@ class AudioPlayerViewHolder(
             .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, itemView.context)))
             .into(image)
         title.text = playerList.title
-        countTrack.text = playerList.description
+        countTrack.text = trackEndings(playerList.count)
     }
 
     companion object {
         const val RADIUS_IMAGE = 2.0F
     }
+
+
 
 }

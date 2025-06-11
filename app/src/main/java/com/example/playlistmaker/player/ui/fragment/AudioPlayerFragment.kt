@@ -5,17 +5,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
+import com.example.playlistmaker.player.domain.model.PlayListWithTrack
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 import com.example.playlistmaker.player.ui.model.PlayStatus
@@ -33,11 +37,13 @@ class AudioPlayerFragment : Fragment() {
         private const val KEY_TRACK = "track"
         private const val RADIUS_IMAGE = 8.0F
 
+         private const val CLICK_DEBOUNCE_DELAY = 1000L
+
         fun createArgs(track: TrackSearchDomain): Bundle =
             bundleOf(KEY_TRACK to track)
     }
 
-    private val viewModel: AudioPlayerViewModel by viewModel {
+    private val viewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel>{
         val trackSearch = requireArguments().getSerializable(KEY_TRACK) as? TrackSearchDomain
         trackSearch?.let {
             parametersOf(trackSearch)
@@ -47,7 +53,11 @@ class AudioPlayerFragment : Fragment() {
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter: AudioPlayerAdapter = AudioPlayerAdapter()
+    private var namePlayerList: String? = null
+
+    private var adapter: AudioPlayerAdapter? = null
+    private lateinit var onTrackClickDebounce: (PlayerList) -> Unit
+
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private fun toolBar() {
@@ -76,6 +86,20 @@ class AudioPlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         toolBar()
+
+        adapter = AudioPlayerAdapter { playerList ->
+            onTrackClickDebounce(playerList)
+        }
+
+        onTrackClickDebounce = debounce<PlayerList>(
+            delayMillis = CLICK_DEBOUNCE_DELAY,
+            coroutineScope = viewLifecycleOwner.lifecycleScope,
+            useLastParam = false,
+        ) { playerList->
+            namePlayerList = playerList.title?.let{playerList.title} ?: ""
+            viewModel.updatePlayListTableAndAddTrackInTrackTable(playerList)
+        }
+
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
@@ -122,12 +146,18 @@ class AudioPlayerFragment : Fragment() {
                     binding.recyclerPlayerList.isVisible = false
                 }
             }
+        }
 
+        viewModel.getContainsTrack().observe(viewLifecycleOwner){ state ->
+            when(state){
+                true -> { Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_LONG).show()}
+                false -> { Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_LONG).show()}
+            }
         }
 
         binding.buttonNewPlaylist.setOnClickListener {
             findNavController().navigate(
-            R.id.action_audioPlayerFragment_to_newPlayListFragment
+                R.id.action_audioPlayerFragment_to_newPlayListFragment
             )
         }
 
@@ -144,6 +174,10 @@ class AudioPlayerFragment : Fragment() {
         }
 
         binding.recyclerPlayerList.adapter = adapter
+    }
+
+    private fun stateContainsTrack(state: Boolean): String {
+        return if (state) "Трек уже добавлен в плейлист $namePlayerList" else "Добавлено в плейлист $namePlayerList"
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -167,10 +201,10 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
-    private fun showPlayerList(playerList: List<PlayerList>) {
-        adapter.clearOrUpdatePlayerList()
+    private fun showPlayerList(playerList: List<PlayListWithTrack>) {
+        adapter?.clearOrUpdatePlayerList()
         binding.recyclerPlayerList.isVisible = true
-        adapter.allUpdatePlayerList(playerList)
+        adapter?.allUpdatePlayerList(playerList)
     }
 
     private fun renderShowData(showData: ShowData) {

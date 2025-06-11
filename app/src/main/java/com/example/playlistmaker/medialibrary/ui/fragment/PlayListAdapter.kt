@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
+import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 
 class PlayListAdapter() : RecyclerView.Adapter<PlayListViewHolder>() {
@@ -62,7 +63,7 @@ class PlayListViewHolder(
             .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, itemView.context)))
             .into(imageInnerUri)
         title.text = playList.title
-        count.text = playList.description
+        count.text = trackEndings(playList.count)
     }
 
 
