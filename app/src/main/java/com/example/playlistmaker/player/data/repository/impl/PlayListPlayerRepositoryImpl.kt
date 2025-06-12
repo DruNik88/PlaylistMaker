@@ -27,9 +27,7 @@ class PlayListPlayerRepositoryImpl(
     override suspend fun updatePlayList(playerList: PlayerList) {
         withContext(Dispatchers.IO) {
             val playListEntity = converter.converterPlayerListDomainToPlayListEntity(playerList)
-            Log.d("playListEntity_1", "${playListEntity}")
             val newPlayListEntity = playListEntity.copy(countTrack = playListEntity.countTrack + 1)
-            Log.d("playListEntity_2", "${newPlayListEntity}")
             database.getPlayListDao().updatePlayListEntity(newPlayListEntity)
         }
     }

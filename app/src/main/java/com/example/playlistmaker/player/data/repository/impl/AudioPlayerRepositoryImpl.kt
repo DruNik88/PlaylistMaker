@@ -65,14 +65,16 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
         createUpdateTimerAudioPlayer()
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun pausePlayer() {
-        mediaPlayer.pause()
-
-        playerState = STATE_PAUSED
-
-        innerPlayerObserver.onPause()
-
+        try {
+            if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
+                mediaPlayer.pause()
+                playerState = STATE_PAUSED
+                innerPlayerObserver.onPause()
+            }
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
     }
 
     override fun release() {

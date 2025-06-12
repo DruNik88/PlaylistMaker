@@ -34,6 +34,4 @@ interface PlayListDao {
     @Transaction
     @Insert(entity = PlayListTrackCrossRef::class, onConflict = OnConflictStrategy.ABORT)
     fun addPlayListTrackCrossRef(playListTrack: PlayListTrackCrossRef)
-
-
 }

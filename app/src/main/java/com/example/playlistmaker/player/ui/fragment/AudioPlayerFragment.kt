@@ -151,12 +151,12 @@ class AudioPlayerFragment : Fragment() {
         viewModel.getContainsTrack().observe(viewLifecycleOwner) { state ->
             when (state) {
                 true -> {
-                    Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_LONG)
+                    Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_SHORT)
                         .show()
                 }
 
                 false -> {
-                    Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_LONG)
+                    Toast.makeText(requireContext(), stateContainsTrack(state), Toast.LENGTH_SHORT)
                         .show()
                 }
             }
@@ -184,7 +184,10 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private fun stateContainsTrack(state: Boolean): String {
-        return if (state) "Трек уже добавлен в плейлист $namePlayerList" else "Добавлено в плейлист $namePlayerList"
+        return if (state) getString(
+            R.string.track_added,
+            namePlayerList
+        ) else getString(R.string.added_playlist, namePlayerList)
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -267,8 +270,8 @@ class AudioPlayerFragment : Fragment() {
         binding.layoutProgressBar.isVisible = loading
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         viewModel.pause()
     }
 

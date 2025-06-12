@@ -67,7 +67,8 @@ class NewPlayListFragment : Fragment() {
     }
 
     private fun namePlaylist(): String {
-        return "Плейлист ${binding.titleNewPlaylist.text} создан"
+        val title = binding.titleNewPlaylist.text
+        return getString(R.string.playlist_created, title)
     }
 
 
@@ -125,7 +126,7 @@ class NewPlayListFragment : Fragment() {
 
         binding.buttonCreateNewPlaylist.setOnClickListener {
             viewModel.saveDataBase()
-            Toast.makeText(requireContext(), namePlaylist(), Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), namePlaylist(), Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
         }
 
