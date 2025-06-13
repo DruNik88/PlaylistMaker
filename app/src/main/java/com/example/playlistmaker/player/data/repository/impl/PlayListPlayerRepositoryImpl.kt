@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.data.repository.impl
 
-import android.util.Log
 import com.example.playlistmaker.application.db.DatabasePlayListEntity
 import com.example.playlistmaker.application.db.mapper.DataBaseConvertor
 import com.example.playlistmaker.player.data.repository.PlayListPlayerRepository

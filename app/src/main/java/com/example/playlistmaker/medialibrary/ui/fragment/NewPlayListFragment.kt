@@ -9,7 +9,9 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -57,7 +59,10 @@ class NewPlayListFragment : Fragment() {
                     !binding.addPhotoNewPlaylist.isVisible
 
         if (hasUnsavedChanges) {
-            confirmDialog.show()
+            val show = confirmDialog.show()
+            val ypBlue = ContextCompat.getColor(requireContext(), R.color.yp_blue)
+            show.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ypBlue)
+            show.getButton(AlertDialog.BUTTON_NEUTRAL)?.setTextColor(ypBlue)
         } else {
             if (shouldDisableCallback) {
                 callback?.isEnabled = false

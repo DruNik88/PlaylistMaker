@@ -260,5 +260,16 @@
         <item name="android:ellipsize">end</item>
         <item name="android:background">@color/white</item>
     </style>
+
+    <style name="CustomAlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <!-- Переопределяем стиль кнопок -->
+        <item name="buttonBarPositiveButtonStyle">@style/CustomDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/CustomDialogButtonStyle</item>
+    </style>
+
+    <style name="CustomDialogButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/yp_blue</item> <!-- Цвет текста кнопки -->
+    </style>
+
 </resources>
 <!--<item name="android:gravity">end|center</item>-->
