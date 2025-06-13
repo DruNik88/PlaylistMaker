@@ -13,29 +13,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:text="@string/new_playlist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/new_playlist" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_playList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_playList"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
 
-            android:visibility="visible"
+        android:layout_marginTop="8dp"
 
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            android:orientation="vertical"
-            app:spanCount="2"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
 
-            app:layout_constraintTop_toBottomOf="@+id/button_new_playlist"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_new_playlist"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
+        app:spanCount="2"
 
-            tools:listitem="@layout/playlist_view" />
+        tools:listitem="@layout/playlist_view" />
 
     <ImageView
         android:id="@+id/error_image"

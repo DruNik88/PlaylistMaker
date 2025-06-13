@@ -48,12 +48,3 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--<ImageView-->
-    <!--android:id="@+id/imagePlaylist"-->
-    <!--android:layout_width="160dp"-->
-    <!--android:layout_height="160dp"-->
-    <!--android:background="@drawable/ic_image_playlist"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent"-->
-    <!--tools:src="@drawable/album" />-->
