@@ -43,4 +43,7 @@
     <string name="playlist_created">Плейлист %1$s создан</string>
     <string name="track_added">Трек уже добавлен в плейлист %1$s</string>
     <string name="added_playlist">Добавлено в плейлист %1$s</string>
+    <string name="playlist_detail_share">Поделиться</string>
+    <string name="playlist_detail_edit">Редактировать информацию</string>
+    <string name="playlist_detail_remove">Удалить плейлист</string>
 </resources>
