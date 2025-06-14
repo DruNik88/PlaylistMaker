@@ -73,5 +73,7 @@ dependencies {
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
 
+    implementation ("com.markodevcic:peko:3.0.5")
+
 
 }

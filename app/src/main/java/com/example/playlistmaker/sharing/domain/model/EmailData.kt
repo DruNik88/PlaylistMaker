@@ -5,6 +5,6 @@ class EmailData(
     val subject: String,
     val text: String,
     val uri: String
-    )
+)
 
 

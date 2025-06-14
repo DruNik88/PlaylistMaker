@@ -39,7 +39,6 @@ object TrackOrListMapper {
     }
 
 
-
     fun listDataToListDomain(list: MutableList<TrackHistory>): List<TrackSearchDomain> {
         return list.map {
             TrackSearchDomain(

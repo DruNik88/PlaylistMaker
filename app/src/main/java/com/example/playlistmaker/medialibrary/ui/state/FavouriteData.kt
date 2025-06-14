@@ -5,7 +5,8 @@ import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 sealed class FavouriteData {
     data class Content(
         val favouriteTrackList: List<TrackFavourite>
-    ): FavouriteData()
+    ) : FavouriteData()
+
     data object Empty : FavouriteData()
 }
 

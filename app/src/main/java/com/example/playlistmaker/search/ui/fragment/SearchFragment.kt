@@ -142,8 +142,8 @@ class SearchFragment : Fragment() {
             is SearchHistoryState.HistoryContent -> showHistoryContent(state.trackList)
             is SearchHistoryState.HistoryEmpty -> showHistoryEmpty()
             is SearchHistoryState.HistoryClear -> showHistoryClear()
-            }
         }
+    }
 
     private fun showHistoryContent(trackList: List<TrackSearchDomain>) {
         adapter?.clearOrUpdateTracks()

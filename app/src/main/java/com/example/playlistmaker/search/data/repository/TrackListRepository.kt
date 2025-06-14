@@ -5,6 +5,6 @@ import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import kotlinx.coroutines.flow.Flow
 
 interface TrackListRepository {
-        fun searchTrackList (expression: String): Flow<Resource<List<TrackSearchDomain>>>
+    fun searchTrackList(expression: String): Flow<Resource<List<TrackSearchDomain>>>
 }
 

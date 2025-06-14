@@ -5,11 +5,11 @@ import com.example.playlistmaker.player.domain.interactor.TrackFavouriteInteract
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
 
-class TrackFavouriteInteractorImpl (
+class TrackFavouriteInteractorImpl(
     private val trackFavouriteRepository: TrackFavouriteRepository
-): TrackFavouriteInteractor {
+) : TrackFavouriteInteractor {
     override suspend fun insertTrackInFavourite(trackPlayerDomain: TrackPlayerDomain) {
-       trackFavouriteRepository.insertTrackInFavourite(trackPlayerDomain)
+        trackFavouriteRepository.insertTrackInFavourite(trackPlayerDomain)
     }
 
     override suspend fun deleteTrackInFavourite(trackPlayerDomain: TrackPlayerDomain) {

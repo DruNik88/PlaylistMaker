@@ -1,6 +1,6 @@
 package com.example.playlistmaker.search.data.model
 
-data class TrackHistory (
+data class TrackHistory(
     val trackId: Long,
     val trackName: String?, // Название композиции
     val artistName: String?, // Имя исполнителя
@@ -9,7 +9,7 @@ data class TrackHistory (
     val collectionName: String?, //Название альбома
     val releaseDate: String?, //Год релиза трека
     val primaryGenreName: String?, //Жанр трека
-    val country:String?, //Страна исполнителя
-    val previewUrl:String?, //Ссылка на отрывок песни
+    val country: String?, //Страна исполнителя
+    val previewUrl: String?, //Ссылка на отрывок песни
     var isFavourite: Boolean = false, //Нахождение в "Избранном"
 )

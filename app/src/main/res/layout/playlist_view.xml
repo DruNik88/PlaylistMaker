@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/playlist_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_art"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        app:cardBackgroundColor="?attr/colorOnPrimary"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imagePlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/album" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/titlePlaylist"
+        style="@style/TitleCountTracksPlaylist"
+        android:layout_width="160dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_art"
+        tools:text="Best of the best" />
+
+    <TextView
+        android:id="@+id/countTracksPlaylist"
+        style="@style/TitleCountTracksPlaylist"
+        android:layout_width="160dp"
+        android:layout_height="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titlePlaylist"
+        tools:text="58 треков" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,7 @@ val settingsInteractorModel = module {
         )
     }
 
-    single<SharingInteractor>{
+    single<SharingInteractor> {
         SharingInteractorImpl(
             externalNavigator = get()
         )
