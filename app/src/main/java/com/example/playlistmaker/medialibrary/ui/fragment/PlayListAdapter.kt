@@ -13,9 +13,13 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
+import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
+import com.example.playlistmaker.player.domain.model.PlayerList
 import java.io.File
 
-class PlayListAdapter() : RecyclerView.Adapter<PlayListViewHolder>() {
+class PlayListAdapter(
+    private val onItemClickListener: ((PlayList) -> Unit)? = null
+) : RecyclerView.Adapter<PlayListViewHolder>() {
 
     private val playList: MutableList<PlayList> = mutableListOf()
 
@@ -28,6 +32,9 @@ class PlayListAdapter() : RecyclerView.Adapter<PlayListViewHolder>() {
 
     override fun onBindViewHolder(holder: PlayListViewHolder, position: Int) {
         holder.bind(playList[position])
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.invoke(playList[position])
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

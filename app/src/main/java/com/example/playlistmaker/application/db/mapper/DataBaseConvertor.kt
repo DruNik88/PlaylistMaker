@@ -5,9 +5,11 @@ import com.example.playlistmaker.application.db.entity.PlayListTrackCrossRef
 import com.example.playlistmaker.application.db.entity.PlayListWithTracks
 import com.example.playlistmaker.application.db.entity.TrackEntity
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
+import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
+import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
 import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefDomain
-import com.example.playlistmaker.player.domain.model.PlayListWithTrack
+import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
@@ -20,22 +22,56 @@ class DataBaseConvertor {
         )
     }
 
-    fun converterPlayListWithTrackEntityToPlayListWithTrack(playListEntity: List<PlayListWithTracks>): List<PlayListWithTrack> {
+    fun converterPlayListWithTrackEntityToPlayListWithTrack(playListEntity: PlayListWithTracks): PlayListWithTrackMediaLibrary {
+        return PlayListWithTrackMediaLibrary(
+            playList = PlayList(
+                id = playListEntity.playlist.id,
+                title = playListEntity.playlist.title,
+                description = playListEntity.playlist.description,
+                imageLocalStoragePath = playListEntity.playlist.imageLocalStoragePath,
+                count = playListEntity.playlist.countTrack,
+                durationPlayList = playListEntity.playlist.durationPlayList,
+            ),
+            trackList = playListEntity.tracks.map { trackListEntity ->
+                converterTrackEntityToTrackMediaLibraryDomain(trackListEntity)
+            }
+        )
+    }
+
+
+    private fun converterTrackEntityToTrackMediaLibraryDomain(trackEntity: TrackEntity): TrackMediaLibraryDomain {
+        return TrackMediaLibraryDomain(
+            trackId = trackEntity.trackId,
+            trackName = trackEntity.trackName,
+            artistName = trackEntity.artistName,
+            trackTimeMillis = trackEntity.trackTimeMillis,
+            artworkUrl100 = trackEntity.artworkUrl100,
+            collectionName = trackEntity.collectionName,
+            releaseDate = trackEntity.releaseDate,
+            primaryGenreName = trackEntity.primaryGenreName,
+            country = trackEntity.country,
+            previewUrl = trackEntity.previewUrl,
+            isFavourite = trackEntity.isFavourite,
+        )
+    }
+
+
+    fun converterPlayListWithTrackEntityToPlayListWithTrack(playListEntity: List<PlayListWithTracks>): List<PlayListWithTrackPlayer> {
         return playListEntity.map { entity ->
-            PlayListWithTrack(
+            PlayListWithTrackPlayer(
                 playList = PlayerList(
                     id = entity.playlist.id,
                     title = entity.playlist.title,
                     description = entity.playlist.description,
                     imageLocalStoragePath = entity.playlist.imageLocalStoragePath,
-                    count = entity.playlist.countTrack
+                    count = entity.playlist.countTrack,
+                    durationPlayList = entity.playlist.durationPlayList
                 ),
                 trackList = entity.tracks.map { trackListEntity ->
                     converterTrackEntityToTrackDomain(trackListEntity)
                 }
             )
         }
-
     }
 
     private fun converterTrackEntityToTrackDomain(trackEntity: TrackEntity): TrackPlayerDomain {
@@ -94,17 +130,20 @@ class DataBaseConvertor {
             title = playListDomain.title,
             description = playListDomain.description,
             imageLocalStoragePath = playListDomain.imageLocalStoragePath,
-            countTrack = playListDomain.count
+            countTrack = playListDomain.count,
+            durationPlayList = playListDomain.durationPlayList
         )
     }
 
     fun converterPlayListEntityToPlayListDomain(playList: List<PlayListEntity>): List<PlayList> {
         return playList.map { entity ->
             PlayList(
+                id = entity.id,
                 title = entity.title,
                 description = entity.description,
                 imageLocalStoragePath = entity.imageLocalStoragePath,
-                count = entity.countTrack
+                count = entity.countTrack,
+                durationPlayList = entity.durationPlayList
             )
         }
     }
@@ -115,7 +154,8 @@ class DataBaseConvertor {
             title = playerList.title,
             description = playerList.description,
             imageLocalStoragePath = playerList.imageLocalStoragePath,
-            countTrack = playerList.count
+            countTrack = playerList.count,
+            durationPlayList = playerList.durationPlayList
         )
     }
 }

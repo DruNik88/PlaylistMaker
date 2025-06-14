@@ -16,10 +16,11 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.TrackGeneric
 import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
-import com.example.playlistmaker.player.domain.model.PlayListWithTrack
+import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 import com.example.playlistmaker.player.ui.model.PlayStatus
@@ -39,7 +40,7 @@ class AudioPlayerFragment : Fragment() {
 
         private const val CLICK_DEBOUNCE_DELAY = 1000L
 
-        fun createArgs(track: TrackSearchDomain): Bundle =
+        fun createArgs(track: TrackGeneric): Bundle =
             bundleOf(KEY_TRACK to track)
     }
 
@@ -211,7 +212,7 @@ class AudioPlayerFragment : Fragment() {
         }
     }
 
-    private fun showPlayerList(playerList: List<PlayListWithTrack>) {
+    private fun showPlayerList(playerList: List<PlayListWithTrackPlayer>) {
         adapter?.clearOrUpdatePlayerList()
         binding.recyclerPlayerList.isVisible = true
         adapter?.allUpdatePlayerList(playerList)
