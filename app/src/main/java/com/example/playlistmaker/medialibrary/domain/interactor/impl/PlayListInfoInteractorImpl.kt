@@ -1,9 +1,10 @@
 package com.example.playlistmaker.medialibrary.domain.interactor.impl
 
-import com.example.playlistmaker.medialibrary.data.impl.PlayListInfoRepository
+import com.example.playlistmaker.medialibrary.data.PlayListInfoRepository
 import com.example.playlistmaker.medialibrary.domain.interactor.PlayListInfoInteractor
+import com.example.playlistmaker.medialibrary.domain.model.PlayListTrackCrossRefMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
-import com.example.playlistmaker.medialibrary.ui.state.PlayListWithTrackDetail
+import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
 import kotlinx.coroutines.flow.Flow
 
 class PlayListInfoInteractorImpl(
@@ -11,5 +12,12 @@ class PlayListInfoInteractorImpl(
 ): PlayListInfoInteractor {
     override suspend fun getPlayListWithTrackDetail(playListId: Long): Flow<PlayListWithTrackMediaLibrary> {
         return playListInfoRepository.getPlayListWithTrackDetail(playListId)
+    }
+
+    override suspend fun deleteTrackFromPlaylist(
+        crossRef: PlayListTrackCrossRefMediaLibraryDomain,
+        track: TrackMediaLibraryDomain
+    ) {
+        playListInfoRepository.deleteTrackFromPlaylist(crossRef, track)
     }
 }

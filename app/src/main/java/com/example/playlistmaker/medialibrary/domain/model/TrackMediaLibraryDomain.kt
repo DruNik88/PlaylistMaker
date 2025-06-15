@@ -1,6 +1,7 @@
 package com.example.playlistmaker.medialibrary.domain.model
 
 import com.example.playlistmaker.application.TrackGeneric
+import java.io.Serializable
 
 data class TrackMediaLibraryDomain(
     override val trackId: Long,
@@ -13,5 +14,5 @@ data class TrackMediaLibraryDomain(
     override val primaryGenreName: String?, //Жанр трека
     override val country: String?, //Страна исполнителя
     override val previewUrl: String?, //Ссылка на отрывок песни
-    var isFavourite: Boolean = false, //Нахождение в "Избранном"
-): TrackGeneric
+    override var isFavourite: Boolean = false, //Нахождение в "Избранном"
+): Serializable, TrackGeneric

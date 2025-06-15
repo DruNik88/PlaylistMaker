@@ -53,9 +53,10 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter { track ->
-            onTrackClickDebounce(track)
-        }
+        adapter = TrackAdapter(
+            onItemClickListener ={ track -> onTrackClickDebounce(track)},
+            showDialog = null
+        )
 
         onTrackClickDebounce = debounce<TrackSearchDomain>(
             delayMillis = CLICK_DEBOUNCE_DELAY,

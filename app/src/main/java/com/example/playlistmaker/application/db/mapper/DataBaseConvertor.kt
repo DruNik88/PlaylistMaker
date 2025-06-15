@@ -5,20 +5,28 @@ import com.example.playlistmaker.application.db.entity.PlayListTrackCrossRef
 import com.example.playlistmaker.application.db.entity.PlayListWithTracks
 import com.example.playlistmaker.application.db.entity.TrackEntity
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
+import com.example.playlistmaker.medialibrary.domain.model.PlayListTrackCrossRefMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
-import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefDomain
+import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefPlayerDomain
 import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 
 class DataBaseConvertor {
 
-    fun playListTrackCrossRefDomainToPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefDomain): PlayListTrackCrossRef {
+    fun playListTrackCrossRefDomainToPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefPlayerDomain): PlayListTrackCrossRef {
         return PlayListTrackCrossRef(
             playlistId = playListTrackCrossRefDomain.playlistId,
             trackId = playListTrackCrossRefDomain.trackId
+        )
+    }
+
+    fun playListTrackCrossRefMediaLibraryDomainToPlayListTrackCrossRef(playListTrackCrossRefMediaLibraryDomain: PlayListTrackCrossRefMediaLibraryDomain): PlayListTrackCrossRef {
+        return PlayListTrackCrossRef(
+            playlistId = playListTrackCrossRefMediaLibraryDomain.playlistId,
+            trackId = playListTrackCrossRefMediaLibraryDomain.trackId
         )
     }
 

@@ -163,14 +163,14 @@
     <LinearLayout
         android:id="@+id/bottom_sheet_track"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingTop="8dp"
         android:background="@drawable/ic_bottom_sheet_bg"
         android:gravity="center_horizontal"
 
         app:behavior_hideable="false"
-        app:behavior_peekHeight="266dp"
+        app:behavior_peekHeight="232dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <LinearLayout

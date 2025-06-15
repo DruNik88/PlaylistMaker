@@ -1,6 +1,7 @@
 package com.example.playlistmaker.application.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -37,4 +38,23 @@ interface PlayListDao {
 
     @Query("SELECT * FROM playlist_table WHERE id = :playListId")
     fun getPlayListWithTrackDetailEntity(playListId: Long): Flow<PlayListWithTracks>
+
+
+    @Delete
+    fun deleteTrackFromPlaylist(crossRef: PlayListTrackCrossRef)
+
+    @Query("SELECT * FROM playlist_track_cross_ref WHERE trackId = :trackId")
+    fun getCrossRefsByTrackId(trackId: Long): List<PlayListTrackCrossRef>
+
+    @Query("DELETE FROM track_table WHERE trackId = :trackId")
+    fun deleteTrack(trackId: Long)
+
+    @Query("""UPDATE playlist_table
+         SET 
+            countTrack = countTrack -1,
+            durationPlayList = durationPlayList - :durationTrack 
+        WHERE id = :playlistId
+        """)
+    fun updateCountTrackAndDurationPlayList(playlistId: Long, durationTrack: Int)
+
 }

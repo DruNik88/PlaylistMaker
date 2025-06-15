@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.medialibrary.domain.interactor.PlayListInfoInteractor
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
+import com.example.playlistmaker.medialibrary.domain.model.PlayListTrackCrossRefMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
+import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.ui.state.PlayListWithTrackDetail
 import kotlinx.coroutines.launch
 
@@ -17,10 +19,11 @@ class PlayListInfoViewModel(
 
     private val _showLiveData = MutableLiveData<PlayListWithTrackDetail>()
     fun getShowLiveData(): LiveData<PlayListWithTrackDetail> = _showLiveData
+    private var playListId = 0L
 
     init {
         _showLiveData.postValue(PlayListWithTrackDetail.Loading)
-        val playListId = playList.id
+        playListId = playList.id
         viewModelScope.launch {
             playListInfoInteractor.getPlayListWithTrackDetail(playListId).collect{ playlist->
                 addShowLiveData(playlist)
@@ -30,11 +33,24 @@ class PlayListInfoViewModel(
 
     private fun addShowLiveData(playList: PlayListWithTrackMediaLibrary){
         if (playList.trackList.isEmpty()){
-            _showLiveData.postValue(PlayListWithTrackDetail.Empty)
+            _showLiveData.postValue(PlayListWithTrackDetail.Empty(playList = playList.playList))
         } else {
             _showLiveData.postValue(PlayListWithTrackDetail.Content(playListData = playList))
         }
     }
 
+    fun deleteTrackFromPlaylist(track: TrackMediaLibraryDomain){
+
+        val crossRef = PlayListTrackCrossRefMediaLibraryDomain(
+            trackId = track.trackId,
+            playlistId = playListId
+        )
+
+        viewModelScope.launch {
+            playListInfoInteractor.deleteTrackFromPlaylist(crossRef, track)
+        }
+
+
+    }
 
 }

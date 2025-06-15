@@ -40,12 +40,13 @@ class AudioPlayerFragment : Fragment() {
 
         private const val CLICK_DEBOUNCE_DELAY = 1000L
 
-        fun createArgs(track: TrackGeneric): Bundle =
-            bundleOf(KEY_TRACK to track)
+        fun createArgs(track: TrackGeneric): Bundle {
+            return bundleOf(KEY_TRACK to track)
+        }
     }
 
     private val viewModel: AudioPlayerViewModel by viewModel<AudioPlayerViewModel> {
-        val trackSearch = requireArguments().getSerializable(KEY_TRACK) as? TrackSearchDomain
+        val trackSearch = requireArguments().getSerializable(KEY_TRACK) as? TrackGeneric
         trackSearch?.let {
             parametersOf(trackSearch)
         } ?: throw IllegalArgumentException("Track is null")

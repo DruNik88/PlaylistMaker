@@ -3,17 +3,14 @@ package com.example.playlistmaker.player.data.repository.impl
 import com.example.playlistmaker.application.db.DatabasePlayListEntity
 import com.example.playlistmaker.application.db.mapper.DataBaseConvertor
 import com.example.playlistmaker.player.data.repository.PlayListPlayerRepository
-import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefDomain
+import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefPlayerDomain
 import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
-import com.example.playlistmaker.search.data.model.TrackSearchData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class PlayListPlayerRepositoryImpl(
     val database: DatabasePlayListEntity,
@@ -44,7 +41,7 @@ class PlayListPlayerRepositoryImpl(
         }
     }
 
-    override suspend fun addPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefDomain) {
+    override suspend fun addPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefPlayerDomain) {
         withContext(Dispatchers.IO) {
             val playListTrackCrossRef =
                 converter.playListTrackCrossRefDomainToPlayListTrackCrossRef(

@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.domain.interactor.impl
 
 import com.example.playlistmaker.player.data.repository.PlayListPlayerRepository
 import com.example.playlistmaker.player.domain.interactor.PlayListPlayerInteractor
-import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefDomain
+import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefPlayerDomain
 import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
@@ -23,7 +23,7 @@ class PlayListPlayerInteractorImpl(
         playListPlayerRepository.addTrackInTrackInPlayListTable(track)
     }
 
-    override suspend fun addPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefDomain) {
+    override suspend fun addPlayListTrackCrossRef(playListTrackCrossRefDomain: PlayListTrackCrossRefPlayerDomain) {
         playListPlayerRepository.addPlayListTrackCrossRef(playListTrackCrossRefDomain)
     }
 }

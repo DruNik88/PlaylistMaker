@@ -47,7 +47,10 @@ class FavouriteTrackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter { track -> onTrackClickDebounce(track) }
+        adapter = TrackAdapter(
+            onItemClickListener ={ track -> onTrackClickDebounce(track)},
+            showDialog = null
+        )
 
         onTrackClickDebounce = debounce<TrackFavourite>(
             delayMillis = CLICK_DEBOUNCE_DELAY,
@@ -56,7 +59,7 @@ class FavouriteTrackFragment : Fragment() {
         ) { track ->
             findNavController().navigate(
                 R.id.action_mediaLibraryFragment_to_audioPlayerFragment2,
-                AudioPlayerFragment.createArgs(convertTrackFavouriteToTrackSearchDomain(track))
+                AudioPlayerFragment.createArgs(track)
             )
         }
 

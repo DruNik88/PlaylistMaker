@@ -5,7 +5,7 @@ import com.example.playlistmaker.medialibrary.data.NewPlayListRepository
 import com.example.playlistmaker.medialibrary.data.PlayListRepository
 import com.example.playlistmaker.medialibrary.data.impl.FavouriteRepositoryImpl
 import com.example.playlistmaker.medialibrary.data.impl.NewPlayListRepositoryImpl
-import com.example.playlistmaker.medialibrary.data.impl.PlayListInfoRepository
+import com.example.playlistmaker.medialibrary.data.PlayListInfoRepository
 import com.example.playlistmaker.medialibrary.data.impl.PlayListInfoRepositoryImpl
 import com.example.playlistmaker.medialibrary.data.impl.PlayListRepositoryImpl
 import com.example.playlistmaker.player.data.repository.PlayListPlayerRepository

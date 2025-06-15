@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -27,6 +30,8 @@ import com.example.playlistmaker.medialibrary.ui.fragment.PlayListViewHolder.Com
 import com.example.playlistmaker.medialibrary.ui.state.PlayListWithTrackDetail
 import com.example.playlistmaker.medialibrary.ui.viewmodel.PlayListInfoViewModel
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
@@ -55,6 +60,10 @@ class PlayListInfoFragment : Fragment() {
     private var adapter: TrackAdapter<TrackMediaLibraryDomain>? = null
     private lateinit var onTrackClickDebounce: (TrackMediaLibraryDomain) -> Unit
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
+    private lateinit var confirmDialog: MaterialAlertDialogBuilder
+
     private fun toolBar() {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarPlaylistInfo)
 
@@ -81,9 +90,15 @@ class PlayListInfoFragment : Fragment() {
 
         toolBar()
 
-        adapter = TrackAdapter { track ->
-            onTrackClickDebounce(track)
-        }
+        adapter = TrackAdapter(
+            onItemClickListener = { track -> onTrackClickDebounce(track) },
+            showDialog = { track -> showDialog(track) }
+        )
+
+//        adapter = TrackAdapter { track ->
+//            onTrackClickDebounce(track),
+//            showDialog(track)
+//        }
 
         onTrackClickDebounce = debounce<TrackMediaLibraryDomain>(
             delayMillis = CLICK_DEBOUNCE_DELAY,
@@ -96,14 +111,45 @@ class PlayListInfoFragment : Fragment() {
             )
         }
 
-        viewModel.getShowLiveData().observe(viewLifecycleOwner) { playList ->
-            when (playList) {
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetTrack).apply {
+            state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                    }
+
+                    else -> {
+                        binding.overlay.isVisible = true
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        viewModel.getShowLiveData().observe(viewLifecycleOwner) { playListData ->
+            when (playListData) {
                 is PlayListWithTrackDetail.Content -> {
-                    val playListWithTrack = playList.playListData
-                    showContent(playListWithTrack)
+                    val playList = playListData.playListData.playList
+                    val trackList = playListData.playListData.trackList
+                    parsePlayListData(playList)
+                    adapter?.clearOrUpdateTracks()
+                    adapter?.allUpdateTracks(trackList)
                 }
 
-                is PlayListWithTrackDetail.Empty -> {}
+                is PlayListWithTrackDetail.Empty -> {
+                    val playList = playListData.playList
+                    parsePlayListData(playList)
+                    binding.emptyPlaylist.isVisible = true
+                }
+
                 is PlayListWithTrackDetail.Loading -> {
                     binding.containerPlaylistInfo.isVisible = false
                     binding.progressBar.isVisible = true
@@ -111,19 +157,33 @@ class PlayListInfoFragment : Fragment() {
             }
 
         }
+
         binding.playlistTracks.adapter = adapter
+
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun showContent(playListWithTrack: PlayListWithTrackMediaLibrary) {
+    private fun showDialog(track: TrackMediaLibraryDomain) {
+        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.dialog_title_delete)
+            .setNegativeButton(R.string.no) { dialog, which ->
+                viewModel.deleteTrackFromPlaylist(track)
+            }
+            .setPositiveButton(R.string.yes) { dialog, which ->
+                findNavController().navigateUp()
+            }
+        val show = confirmDialog.show()
+        val ypBlue = ContextCompat.getColor(requireContext(), R.color.yp_blue)
+        show.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ypBlue)
+        show.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ypBlue)
+    }
+
+    private fun parsePlayListData(playLis: PlayList) {
 
         binding.containerPlaylistInfo.isVisible = true
         binding.progressBar.isVisible = false
 
-        val playList = playListWithTrack.playList
-        val trackList = playListWithTrack.trackList
-
-        val imageUri = playList.imageLocalStoragePath?.let { File(playList.imageLocalStoragePath) }
+        val imageUri =
+            playLis.imageLocalStoragePath?.let { File(playLis.imageLocalStoragePath) }
         val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(imageUri) }
         Glide.with(requireContext())
             .load(uri)
@@ -131,13 +191,10 @@ class PlayListInfoFragment : Fragment() {
             .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, requireContext())))
             .into(binding.poster)
 
-        binding.playlistTitle.text = playList.title
-        binding.playlistDescription.text = playList.description
-        binding.playlistTimeTotal.text = playList.durationPlayList.toString() + " секунд(Не забудь)"
-        binding.playlistCountTotal.text = trackEndings(playList.count)
-
-        adapter?.clearOrUpdateTracks()
-        adapter?.allUpdateTracks(trackList)
+        binding.playlistTitle.text = playLis.title
+        binding.playlistDescription.text = playLis.description
+        binding.playlistTimeTotal.text =
+            playLis.durationPlayList.toString() + " секунд(Не забудь)"
+        binding.playlistCountTotal.text = trackEndings(playLis.count)
     }
-
 }
