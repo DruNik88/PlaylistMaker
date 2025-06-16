@@ -49,4 +49,6 @@
     <string name="dialog_title_delete">"Хотите удалить трек?"</string>
     <string name="yes">"НЕТ"</string>
     <string name="no">"ДА"</string>
+    <string name="playlist_empty_tracks">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="share_apk">Share APK</string>
 </resources>

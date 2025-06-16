@@ -20,4 +20,8 @@ class PlayListInfoInteractorImpl(
     ) {
         playListInfoRepository.deleteTrackFromPlaylist(crossRef, track)
     }
+
+    override fun sharePlayList(infoPlaylist: String) {
+        playListInfoRepository.sharePlayList(infoPlaylist)
+    }
 }

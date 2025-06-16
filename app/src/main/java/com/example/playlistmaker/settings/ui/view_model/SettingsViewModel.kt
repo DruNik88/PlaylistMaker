@@ -31,10 +31,6 @@ class SettingsViewModel(
         sharingInteractor.openSupport(context)
     }
 
-//    fun getTheme(): Boolean {
-//        return settingsInteractor.getSettingTheme()
-//    }
-
     private fun getTheme() {
 
         val lightOrDarkTheme = settingsInteractor.getSettingTheme()

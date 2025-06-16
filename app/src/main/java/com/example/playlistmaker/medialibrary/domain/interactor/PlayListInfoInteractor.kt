@@ -12,4 +12,5 @@ interface PlayListInfoInteractor {
         crossRef: PlayListTrackCrossRefMediaLibraryDomain,
         track: TrackMediaLibraryDomain
     )
+    fun sharePlayList(infoPlaylist: String)
 }

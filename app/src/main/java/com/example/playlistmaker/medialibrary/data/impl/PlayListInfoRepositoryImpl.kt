@@ -1,5 +1,8 @@
 package com.example.playlistmaker.medialibrary.data.impl
 
+import android.content.Context
+import android.content.Intent
+import com.example.playlistmaker.R
 import com.example.playlistmaker.application.db.DatabasePlayListEntity
 import com.example.playlistmaker.application.db.mapper.DataBaseConvertor
 import com.example.playlistmaker.medialibrary.data.PlayListInfoRepository
@@ -13,8 +16,14 @@ import kotlinx.coroutines.withContext
 
 class PlayListInfoRepositoryImpl(
     val database: DatabasePlayListEntity,
-    private val convertor: DataBaseConvertor
+    private val convertor: DataBaseConvertor,
+    private val context: Context
 ) : PlayListInfoRepository {
+
+    companion object {
+        private const val MIME_TYPE = "text/plain"
+    }
+
     override fun getPlayListWithTrackDetail(playListId: Long): Flow<PlayListWithTrackMediaLibrary> {
         return database.getPlayListDao().getPlayListWithTrackDetailEntity(playListId)
             .map { playList ->
@@ -41,6 +50,17 @@ class PlayListInfoRepositoryImpl(
             }
         }
     }
+
+    override fun sharePlayList(infoPlaylist: String) {
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, infoPlaylist)
+            type = MIME_TYPE
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(shareIntent)
+    }
+
 
     private fun converterTime(track: TrackMediaLibraryDomain): Int {
         val trackTime = track.trackTimeMillis

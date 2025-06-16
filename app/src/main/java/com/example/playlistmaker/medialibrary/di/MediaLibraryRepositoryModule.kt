@@ -10,6 +10,7 @@ import com.example.playlistmaker.medialibrary.data.impl.PlayListInfoRepositoryIm
 import com.example.playlistmaker.medialibrary.data.impl.PlayListRepositoryImpl
 import com.example.playlistmaker.player.data.repository.PlayListPlayerRepository
 import com.example.playlistmaker.player.data.repository.impl.PlayListPlayerRepositoryImpl
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -31,6 +32,6 @@ val mediaLibraryRepositoryModule = module {
     }
 
     single<PlayListInfoRepository> {
-        PlayListInfoRepositoryImpl(get(), get())
+        PlayListInfoRepositoryImpl(get(), get(), androidContext())
     }
 }

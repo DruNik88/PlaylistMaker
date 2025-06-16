@@ -9,5 +9,7 @@ interface PlayListInfoRepository {
     fun getPlayListWithTrackDetail(playListId: Long): Flow<PlayListWithTrackMediaLibrary>
     suspend fun  deleteTrackFromPlaylist(
         crossRef: PlayListTrackCrossRefMediaLibraryDomain,
-        track: TrackMediaLibraryDomain)
+        track: TrackMediaLibraryDomain
+    )
+    fun sharePlayList(infoPlaylist: String)
 }

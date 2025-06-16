@@ -57,10 +57,11 @@ class PlayListInfoFragment : Fragment() {
     private var _binding: FragmentPlaylistInfoBinding? = null
     private val binding get() = _binding!!
 
-    private var adapter: TrackAdapter<TrackMediaLibraryDomain>? = null
+    private var adapter: TrackAdapter<TrackMediaLibraryDomain> = TrackAdapter()
     private lateinit var onTrackClickDebounce: (TrackMediaLibraryDomain) -> Unit
 
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetBehaviorTrackList: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetBehaviorTrackMenu: BottomSheetBehavior<LinearLayout>
 
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
@@ -95,11 +96,6 @@ class PlayListInfoFragment : Fragment() {
             showDialog = { track -> showDialog(track) }
         )
 
-//        adapter = TrackAdapter { track ->
-//            onTrackClickDebounce(track),
-//            showDialog(track)
-//        }
-
         onTrackClickDebounce = debounce<TrackMediaLibraryDomain>(
             delayMillis = CLICK_DEBOUNCE_DELAY,
             coroutineScope = viewLifecycleOwner.lifecycleScope,
@@ -111,11 +107,15 @@ class PlayListInfoFragment : Fragment() {
             )
         }
 
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetTrack).apply {
+        bottomSheetBehaviorTrackList = BottomSheetBehavior.from(binding.bottomSheetTrack).apply {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        bottomSheetBehavior.addBottomSheetCallback(object :
+        bottomSheetBehaviorTrackMenu = BottomSheetBehavior.from(binding.bottomSheetMenu).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetBehaviorTrackMenu.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -139,7 +139,12 @@ class PlayListInfoFragment : Fragment() {
                 is PlayListWithTrackDetail.Content -> {
                     val playList = playListData.playListData.playList
                     val trackList = playListData.playListData.trackList
+
+                    binding.containerPlaylistInfo.isVisible = true
+                    binding.progressBar.isVisible = false
+                    binding.share.isEnabled = true
                     parsePlayListData(playList)
+                    parsePlayListMenu(playList)
                     adapter?.clearOrUpdateTracks()
                     adapter?.allUpdateTracks(trackList)
                 }
@@ -147,6 +152,7 @@ class PlayListInfoFragment : Fragment() {
                 is PlayListWithTrackDetail.Empty -> {
                     val playList = playListData.playList
                     parsePlayListData(playList)
+                    parsePlayListMenu(playList)
                     binding.emptyPlaylist.isVisible = true
                 }
 
@@ -156,6 +162,29 @@ class PlayListInfoFragment : Fragment() {
                 }
             }
 
+        }
+        binding.share.setOnClickListener {
+
+            if(adapter.tracks.isEmpty()) {
+                binding.emptyPlaylist.isVisible = true
+                binding.emptyPlaylist.setText(R.string.playlist_empty_tracks)
+            } else {
+                viewModel.sharePlayList()
+            }
+        }
+
+        binding.menu.setOnClickListener {
+            bottomSheetBehaviorTrackMenu.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        binding.shareBtn.setOnClickListener{
+            if(adapter.tracks.isEmpty()) {
+                bottomSheetBehaviorTrackMenu.state = BottomSheetBehavior.STATE_HIDDEN
+                binding.emptyPlaylist.isVisible = true
+                binding.emptyPlaylist.setText(R.string.playlist_empty_tracks)
+            } else {
+                viewModel.sharePlayList()
+            }
         }
 
         binding.playlistTracks.adapter = adapter
@@ -196,5 +225,20 @@ class PlayListInfoFragment : Fragment() {
         binding.playlistTimeTotal.text =
             playLis.durationPlayList.toString() + " секунд(Не забудь)"
         binding.playlistCountTotal.text = trackEndings(playLis.count)
+    }
+
+    private fun parsePlayListMenu(playLis: PlayList) {
+
+        val imageUri =
+            playLis.imageLocalStoragePath?.let { File(playLis.imageLocalStoragePath) }
+        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(imageUri) }
+        Glide.with(requireContext())
+            .load(uri)
+            .placeholder(R.drawable.ic_placeholder)
+            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, requireContext())))
+            .into(binding.posterBottomSheet)
+
+        binding.posterTitle.text = playLis.title
+        binding.trackCount.text = trackEndings(playLis.count)
     }
 }
