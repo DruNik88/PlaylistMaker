@@ -1,6 +1,5 @@
 package com.example.playlistmaker.medialibrary.ui.fragment
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +20,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.application.TrackAdapter
 import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.application.dpToPx
+import com.example.playlistmaker.application.durationEndings
 import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.databinding.FragmentPlaylistInfoBinding
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
@@ -93,7 +93,10 @@ class PlayListInfoFragment : Fragment() {
 
         adapter = TrackAdapter(
             onItemClickListener = { track -> onTrackClickDebounce(track) },
-            showDialog = { track -> showDialog(track) }
+            showDialog = { track ->
+                val title = getString(R.string.dialog_title_delete_track)
+                showDialog(title) {viewModel.deleteTrackFromPlaylist(track)}
+            }
         )
 
         onTrackClickDebounce = debounce<TrackMediaLibraryDomain>(
@@ -145,8 +148,8 @@ class PlayListInfoFragment : Fragment() {
                     binding.share.isEnabled = true
                     parsePlayListData(playList)
                     parsePlayListMenu(playList)
-                    adapter?.clearOrUpdateTracks()
-                    adapter?.allUpdateTracks(trackList)
+                    adapter.clearOrUpdateTracks()
+                    adapter.allUpdateTracks(trackList)
                 }
 
                 is PlayListWithTrackDetail.Empty -> {
@@ -187,17 +190,24 @@ class PlayListInfoFragment : Fragment() {
             }
         }
 
+        binding.removeBtn.setOnClickListener {
+            val playList = requireArguments().getSerializable(KEY_PLAYLIST) as PlayList
+            val title = getString(R.string.dialog_title_delete_playlist, playList.title)
+            showDialog(title) {viewModel.deletePlayList()}
+        }
+
         binding.playlistTracks.adapter = adapter
 
     }
 
-    private fun showDialog(track: TrackMediaLibraryDomain) {
+    private fun showDialog(title: String, onConfirm: () -> Unit) {
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.dialog_title_delete)
-            .setNegativeButton(R.string.no) { dialog, which ->
-                viewModel.deleteTrackFromPlaylist(track)
+            .setTitle(title)
+            .setNegativeButton(R.string.no) { _, _ ->
+                onConfirm()
+                findNavController().navigateUp()
             }
-            .setPositiveButton(R.string.yes) { dialog, which ->
+            .setPositiveButton(R.string.yes) { _, _ ->
                 findNavController().navigateUp()
             }
         val show = confirmDialog.show()
@@ -206,13 +216,13 @@ class PlayListInfoFragment : Fragment() {
         show.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ypBlue)
     }
 
-    private fun parsePlayListData(playLis: PlayList) {
+    private fun parsePlayListData(playList: PlayList) {
 
         binding.containerPlaylistInfo.isVisible = true
         binding.progressBar.isVisible = false
 
         val imageUri =
-            playLis.imageLocalStoragePath?.let { File(playLis.imageLocalStoragePath) }
+            playList.imageLocalStoragePath?.let { File(playList.imageLocalStoragePath) }
         val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(imageUri) }
         Glide.with(requireContext())
             .load(uri)
@@ -220,11 +230,10 @@ class PlayListInfoFragment : Fragment() {
             .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, requireContext())))
             .into(binding.poster)
 
-        binding.playlistTitle.text = playLis.title
-        binding.playlistDescription.text = playLis.description
-        binding.playlistTimeTotal.text =
-            playLis.durationPlayList.toString() + " секунд(Не забудь)"
-        binding.playlistCountTotal.text = trackEndings(playLis.count)
+        binding.playlistTitle.text = playList.title
+        binding.playlistDescription.text = playList.description
+        binding.playlistTimeTotal.text = durationEndings(playList.durationPlayList)
+        binding.playlistCountTotal.text = trackEndings(playList.count)
     }
 
     private fun parsePlayListMenu(playLis: PlayList) {

@@ -72,4 +72,10 @@ class PlayListInfoViewModel(
         playListInfoInteractor.sharePlayList(infoPlaylist)
     }
 
+    fun deletePlayList(){
+        viewModelScope.launch {
+            playListInfoInteractor.deletePlayList(playList)
+        }
+    }
+
 }

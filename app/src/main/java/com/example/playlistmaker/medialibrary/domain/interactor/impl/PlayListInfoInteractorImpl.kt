@@ -2,6 +2,7 @@ package com.example.playlistmaker.medialibrary.domain.interactor.impl
 
 import com.example.playlistmaker.medialibrary.data.PlayListInfoRepository
 import com.example.playlistmaker.medialibrary.domain.interactor.PlayListInfoInteractor
+import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.domain.model.PlayListTrackCrossRefMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
 import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
@@ -23,5 +24,9 @@ class PlayListInfoInteractorImpl(
 
     override fun sharePlayList(infoPlaylist: String) {
         playListInfoRepository.sharePlayList(infoPlaylist)
+    }
+
+    override suspend fun deletePlayList(playList: PlayList) {
+        playListInfoRepository.deletePlayList(playList)
     }
 }

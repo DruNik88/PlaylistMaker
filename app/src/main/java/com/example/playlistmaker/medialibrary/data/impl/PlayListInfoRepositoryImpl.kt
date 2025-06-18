@@ -3,9 +3,11 @@ package com.example.playlistmaker.medialibrary.data.impl
 import android.content.Context
 import android.content.Intent
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.converterTime
 import com.example.playlistmaker.application.db.DatabasePlayListEntity
 import com.example.playlistmaker.application.db.mapper.DataBaseConvertor
 import com.example.playlistmaker.medialibrary.data.PlayListInfoRepository
+import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.domain.model.PlayListTrackCrossRefMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
 import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
@@ -61,14 +63,11 @@ class PlayListInfoRepositoryImpl(
         context.startActivity(shareIntent)
     }
 
-
-    private fun converterTime(track: TrackMediaLibraryDomain): Int {
-        val trackTime = track.trackTimeMillis
-        val listTime = trackTime?.split(":")
-        val minuteToSeconds = listTime?.get(0)?.toInt()?.times(60) ?: 0
-        val seconds = listTime?.get(1)?.toInt() ?: 0
-        val durationTrackInSeconds = minuteToSeconds + seconds
-        return durationTrackInSeconds
+    override suspend fun deletePlayList(playList: PlayList) {
+        val playListEntity = convertor.converterPlayListDomainToPlayListEntity(playList)
+        withContext(Dispatchers.IO){
+            database.getPlayListDao().deletePlayList(playListEntity)
+        }
     }
 }
 

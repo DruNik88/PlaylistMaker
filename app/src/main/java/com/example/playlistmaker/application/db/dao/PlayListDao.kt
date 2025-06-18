@@ -57,4 +57,17 @@ interface PlayListDao {
         """)
     fun updateCountTrackAndDurationPlayList(playlistId: Long, durationTrack: Int)
 
+    @Delete
+    fun deletePlayListEntity(playListEntity: PlayListEntity)
+
+    @Query("DELETE FROM track_table WHERE trackId NOT IN (SELECT DISTINCT trackId FROM playlist_track_cross_ref)")
+    fun deleteUnusedTracks()
+
+    @Transaction
+    fun deletePlayList(playListEntity: PlayListEntity){
+        deletePlayListEntity(playListEntity)
+        deleteUnusedTracks()
+    }
+
+
 }

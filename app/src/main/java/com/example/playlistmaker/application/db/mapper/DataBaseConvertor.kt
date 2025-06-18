@@ -1,5 +1,6 @@
 package com.example.playlistmaker.application.db.mapper
 
+import com.example.playlistmaker.application.converterSecondsToMinutesAndEnding
 import com.example.playlistmaker.application.db.entity.PlayListEntity
 import com.example.playlistmaker.application.db.entity.PlayListTrackCrossRef
 import com.example.playlistmaker.application.db.entity.PlayListWithTracks
@@ -38,7 +39,7 @@ class DataBaseConvertor {
                 description = playListEntity.playlist.description,
                 imageLocalStoragePath = playListEntity.playlist.imageLocalStoragePath,
                 count = playListEntity.playlist.countTrack,
-                durationPlayList = playListEntity.playlist.durationPlayList,
+                durationPlayList = converterSecondsToMinutesAndEnding(playListEntity.playlist.durationPlayList),
             ),
             trackList = playListEntity.tracks.map { trackListEntity ->
                 converterTrackEntityToTrackMediaLibraryDomain(trackListEntity)
@@ -134,7 +135,7 @@ class DataBaseConvertor {
 
     fun converterPlayListDomainToPlayListEntity(playListDomain: PlayList): PlayListEntity {
         return PlayListEntity(
-            id = 0L,
+            id = playListDomain.id,
             title = playListDomain.title,
             description = playListDomain.description,
             imageLocalStoragePath = playListDomain.imageLocalStoragePath,

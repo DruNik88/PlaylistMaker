@@ -1,5 +1,6 @@
 package com.example.playlistmaker.medialibrary.data
 
+import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.domain.model.PlayListTrackCrossRefMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
 import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
@@ -12,4 +13,6 @@ interface PlayListInfoRepository {
         track: TrackMediaLibraryDomain
     )
     fun sharePlayList(infoPlaylist: String)
+
+    suspend fun deletePlayList(playList: PlayList)
 }
