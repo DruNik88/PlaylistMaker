@@ -159,6 +159,9 @@ class PlayListInfoFragment : Fragment() {
                 is PlayListWithTrackDetail.Empty -> {
                     adapter.clearOrUpdateTracks()
                     val playList = playListData.playList
+
+                    playListActual = playList
+
                     parsePlayListData(playList)
                     parsePlayListMenu(playList)
                     binding.emptyPlaylist.isVisible = true
