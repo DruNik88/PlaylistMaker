@@ -54,7 +54,7 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = TrackAdapter(
-            onItemClickListener ={ track -> onTrackClickDebounce(track)},
+            onItemClickListener = { track -> onTrackClickDebounce(track) },
             showDialog = null
         )
 

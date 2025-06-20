@@ -2,7 +2,6 @@ package com.example.playlistmaker.medialibrary.data.impl
 
 import android.content.Context
 import android.content.Intent
-import com.example.playlistmaker.R
 import com.example.playlistmaker.application.converterTime
 import com.example.playlistmaker.application.db.DatabasePlayListEntity
 import com.example.playlistmaker.application.db.mapper.DataBaseConvertor
@@ -65,7 +64,7 @@ class PlayListInfoRepositoryImpl(
 
     override suspend fun deletePlayList(playList: PlayList) {
         val playListEntity = convertor.converterPlayListDomainToPlayListEntity(playList)
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             database.getPlayListDao().deletePlayList(playListEntity)
         }
     }

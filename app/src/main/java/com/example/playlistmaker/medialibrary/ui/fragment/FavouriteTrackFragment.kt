@@ -48,7 +48,7 @@ class FavouriteTrackFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = TrackAdapter(
-            onItemClickListener ={ track -> onTrackClickDebounce(track)},
+            onItemClickListener = { track -> onTrackClickDebounce(track) },
             showDialog = null
         )
 
@@ -76,10 +76,6 @@ class FavouriteTrackFragment : Fragment() {
         }
 
         binding.recyclerTrackView.adapter = adapter
-    }
-
-    private fun convertTrackFavouriteToTrackSearchDomain(track: TrackFavourite): TrackSearchDomain {
-        return TrackOrListMapper.trackDataInToTrackDomain(track)
     }
 
     private fun showPlaceHolder() {

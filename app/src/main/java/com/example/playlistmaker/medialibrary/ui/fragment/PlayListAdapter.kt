@@ -13,8 +13,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
-import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
-import com.example.playlistmaker.player.domain.model.PlayerList
 import java.io.File
 
 class PlayListAdapter(

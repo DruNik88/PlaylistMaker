@@ -18,13 +18,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.TrackAdapter
+import com.example.playlistmaker.application.converterSecondsToMinutesAndEnding
 import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.application.durationEndings
 import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.databinding.FragmentPlaylistInfoBinding
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
-import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMediaLibrary
 import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.ui.fragment.PlayListViewHolder.Companion.RADIUS_IMAGE
 import com.example.playlistmaker.medialibrary.ui.state.PlayListWithTrackDetail
@@ -63,6 +63,8 @@ class PlayListInfoFragment : Fragment() {
     private lateinit var bottomSheetBehaviorTrackList: BottomSheetBehavior<LinearLayout>
     private lateinit var bottomSheetBehaviorTrackMenu: BottomSheetBehavior<LinearLayout>
 
+    private var playListActual: PlayList? = null
+
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
     private fun toolBar() {
@@ -95,7 +97,7 @@ class PlayListInfoFragment : Fragment() {
             onItemClickListener = { track -> onTrackClickDebounce(track) },
             showDialog = { track ->
                 val title = getString(R.string.dialog_title_delete_track)
-                showDialog(title) {viewModel.deleteTrackFromPlaylist(track)}
+                showDialog(title) { viewModel.deleteTrackFromPlaylist(track) }
             }
         )
 
@@ -143,6 +145,8 @@ class PlayListInfoFragment : Fragment() {
                     val playList = playListData.playListData.playList
                     val trackList = playListData.playListData.trackList
 
+                    playListActual = playList
+
                     binding.containerPlaylistInfo.isVisible = true
                     binding.progressBar.isVisible = false
                     binding.share.isEnabled = true
@@ -153,6 +157,7 @@ class PlayListInfoFragment : Fragment() {
                 }
 
                 is PlayListWithTrackDetail.Empty -> {
+                    adapter.clearOrUpdateTracks()
                     val playList = playListData.playList
                     parsePlayListData(playList)
                     parsePlayListMenu(playList)
@@ -168,7 +173,7 @@ class PlayListInfoFragment : Fragment() {
         }
         binding.share.setOnClickListener {
 
-            if(adapter.tracks.isEmpty()) {
+            if (adapter.tracks.isEmpty()) {
                 binding.emptyPlaylist.isVisible = true
                 binding.emptyPlaylist.setText(R.string.playlist_empty_tracks)
             } else {
@@ -180,8 +185,8 @@ class PlayListInfoFragment : Fragment() {
             bottomSheetBehaviorTrackMenu.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        binding.shareBtn.setOnClickListener{
-            if(adapter.tracks.isEmpty()) {
+        binding.shareBtn.setOnClickListener {
+            if (adapter.tracks.isEmpty()) {
                 bottomSheetBehaviorTrackMenu.state = BottomSheetBehavior.STATE_HIDDEN
                 binding.emptyPlaylist.isVisible = true
                 binding.emptyPlaylist.setText(R.string.playlist_empty_tracks)
@@ -191,9 +196,16 @@ class PlayListInfoFragment : Fragment() {
         }
 
         binding.removeBtn.setOnClickListener {
-            val playList = requireArguments().getSerializable(KEY_PLAYLIST) as PlayList
-            val title = getString(R.string.dialog_title_delete_playlist, playList.title)
-            showDialog(title) {viewModel.deletePlayList()}
+            val title =
+                getString(R.string.dialog_title_delete_playlist, playListActual?.title ?: "")
+            showDialog(title) { viewModel.deletePlayList() }
+        }
+
+        binding.editBtn.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_playListInfoFragment_to_newPlayListRedactFragment,
+                playListActual?.let { NewPlayListRedactFragment.createArgs(it) }
+            )
         }
 
         binding.playlistTracks.adapter = adapter
@@ -205,10 +217,8 @@ class PlayListInfoFragment : Fragment() {
             .setTitle(title)
             .setNegativeButton(R.string.no) { _, _ ->
                 onConfirm()
-                findNavController().navigateUp()
             }
             .setPositiveButton(R.string.yes) { _, _ ->
-                findNavController().navigateUp()
             }
         val show = confirmDialog.show()
         val ypBlue = ContextCompat.getColor(requireContext(), R.color.yp_blue)
@@ -232,7 +242,8 @@ class PlayListInfoFragment : Fragment() {
 
         binding.playlistTitle.text = playList.title
         binding.playlistDescription.text = playList.description
-        binding.playlistTimeTotal.text = durationEndings(playList.durationPlayList)
+        binding.playlistTimeTotal.text =
+            durationEndings(converterSecondsToMinutesAndEnding(playList.durationPlayList))
         binding.playlistCountTotal.text = trackEndings(playList.count)
     }
 

@@ -57,18 +57,18 @@ fun converterTime(track: TrackMediaLibraryDomain): Int {
     return durationTrackInSeconds
 }
 
-fun durationEndings(minutes: Int): String{
+fun durationEndings(minutes: Int): String {
     val remain100 = minutes % 100
     val remain10 = minutes % 10
     return if (remain100 in 11..14) {
         "$minutes минут"
-    } else when(remain10){
+    } else when (remain10) {
         1 -> "$minutes минута"
-        2,3,4 -> "$minutes минуты"
+        2, 3, 4 -> "$minutes минуты"
         else -> "$minutes минут"
     }
 }
 
-fun converterSecondsToMinutesAndEnding(time: Int): Int{
-    return  time / 60
+fun converterSecondsToMinutesAndEnding(time: Int): Int {
+    return time / 60
 }

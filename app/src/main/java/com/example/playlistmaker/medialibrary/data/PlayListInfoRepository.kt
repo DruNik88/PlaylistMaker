@@ -8,10 +8,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface PlayListInfoRepository {
     fun getPlayListWithTrackDetail(playListId: Long): Flow<PlayListWithTrackMediaLibrary>
-    suspend fun  deleteTrackFromPlaylist(
+    suspend fun deleteTrackFromPlaylist(
         crossRef: PlayListTrackCrossRefMediaLibraryDomain,
         track: TrackMediaLibraryDomain
     )
+
     fun sharePlayList(infoPlaylist: String)
 
     suspend fun deletePlayList(playList: PlayList)

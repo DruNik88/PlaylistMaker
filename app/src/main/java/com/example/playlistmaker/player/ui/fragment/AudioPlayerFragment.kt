@@ -27,7 +27,6 @@ import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.player.ui.state.ShowPlaylist
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

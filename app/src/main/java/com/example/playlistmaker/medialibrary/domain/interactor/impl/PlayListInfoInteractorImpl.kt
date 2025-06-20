@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 class PlayListInfoInteractorImpl(
     private val playListInfoRepository: PlayListInfoRepository
-): PlayListInfoInteractor {
+) : PlayListInfoInteractor {
     override suspend fun getPlayListWithTrackDetail(playListId: Long): Flow<PlayListWithTrackMediaLibrary> {
         return playListInfoRepository.getPlayListWithTrackDetail(playListId)
     }

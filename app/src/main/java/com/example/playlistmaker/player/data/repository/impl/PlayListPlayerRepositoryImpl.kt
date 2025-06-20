@@ -29,7 +29,8 @@ class PlayListPlayerRepositoryImpl(
             val playListEntity = converter.converterPlayerListDomainToPlayListEntity(playerList)
             val newPlayListEntity = playListEntity.copy(
                 countTrack = playListEntity.countTrack + 1,
-                durationPlayList = playListEntity.durationPlayList + durationTrack)
+                durationPlayList = playListEntity.durationPlayList + durationTrack
+            )
             database.getPlayListDao().updatePlayListEntity(newPlayListEntity)
         }
     }

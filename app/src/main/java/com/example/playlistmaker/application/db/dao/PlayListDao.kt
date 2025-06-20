@@ -49,12 +49,14 @@ interface PlayListDao {
     @Query("DELETE FROM track_table WHERE trackId = :trackId")
     fun deleteTrack(trackId: Long)
 
-    @Query("""UPDATE playlist_table
+    @Query(
+        """UPDATE playlist_table
          SET 
             countTrack = countTrack -1,
             durationPlayList = durationPlayList - :durationTrack 
         WHERE id = :playlistId
-        """)
+        """
+    )
     fun updateCountTrackAndDurationPlayList(playlistId: Long, durationTrack: Int)
 
     @Delete
@@ -64,7 +66,7 @@ interface PlayListDao {
     fun deleteUnusedTracks()
 
     @Transaction
-    fun deletePlayList(playListEntity: PlayListEntity){
+    fun deletePlayList(playListEntity: PlayListEntity) {
         deletePlayListEntity(playListEntity)
         deleteUnusedTracks()
     }

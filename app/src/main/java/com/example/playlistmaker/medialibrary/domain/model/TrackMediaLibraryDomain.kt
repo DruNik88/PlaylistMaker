@@ -15,4 +15,4 @@ data class TrackMediaLibraryDomain(
     override val country: String?, //Страна исполнителя
     override val previewUrl: String?, //Ссылка на отрывок песни
     override var isFavourite: Boolean = false, //Нахождение в "Избранном"
-): Serializable, TrackGeneric
+) : Serializable, TrackGeneric

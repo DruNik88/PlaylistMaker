@@ -15,4 +15,8 @@ class NewPlayListInteractorImpl(
     override suspend fun saveDataBase(newPlayList: PlayList) {
         newPlayListRepository.saveDataBase(newPlayList)
     }
+
+    override suspend fun updateDataBase(playList: PlayList) {
+        newPlayListRepository.updateDataBase(playList)
+    }
 }

@@ -36,7 +36,11 @@ class PlayListInfoViewModel(
         if (playList.trackList.isEmpty()) {
             _showLiveData.postValue(PlayListWithTrackDetail.Empty(playList = playList.playList))
         } else {
-            _showLiveData.postValue(PlayListWithTrackDetail.Content(playListData = playList))
+            _showLiveData.postValue(
+                PlayListWithTrackDetail.Content(
+                    playListData = playList
+                )
+            )
         }
     }
 
@@ -61,18 +65,20 @@ class PlayListInfoViewModel(
                 null
 
 
-        val infoPlaylist = playlistWithTrack?.let{buildString {
-            appendLine(playlistWithTrack.playList.title)
-            appendLine(playlistWithTrack.playList.description)
-            appendLine(trackEndings(playlistWithTrack.playList.count))
-            appendLine(playlistWithTrack.trackList.mapIndexed { index, trackList ->
-                "${index + 1}. ${trackList.artistName} - ${trackList.trackName} (${trackList.trackTimeMillis})"
-            })
-        }} ?:""
+        val infoPlaylist = playlistWithTrack?.let {
+            buildString {
+                appendLine(playlistWithTrack.playList.title)
+                appendLine(playlistWithTrack.playList.description)
+                appendLine(trackEndings(playlistWithTrack.playList.count))
+                appendLine(playlistWithTrack.trackList.mapIndexed { index, trackList ->
+                    "${index + 1}. ${trackList.artistName} - ${trackList.trackName} (${trackList.trackTimeMillis})"
+                })
+            }
+        } ?: ""
         playListInfoInteractor.sharePlayList(infoPlaylist)
     }
 
-    fun deletePlayList(){
+    fun deletePlayList() {
         viewModelScope.launch {
             playListInfoInteractor.deletePlayList(playList)
         }
