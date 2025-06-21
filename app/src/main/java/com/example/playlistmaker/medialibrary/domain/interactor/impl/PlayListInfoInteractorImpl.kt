@@ -1,5 +1,6 @@
 package com.example.playlistmaker.medialibrary.domain.interactor.impl
 
+import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.medialibrary.data.PlayListInfoRepository
 import com.example.playlistmaker.medialibrary.domain.interactor.PlayListInfoInteractor
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
@@ -22,7 +23,17 @@ class PlayListInfoInteractorImpl(
         playListInfoRepository.deleteTrackFromPlaylist(crossRef, track)
     }
 
-    override fun sharePlayList(infoPlaylist: String) {
+    override fun sharePlayList(playListWithTrackMediaLibrary: PlayListWithTrackMediaLibrary) {
+
+
+        val infoPlaylist = buildString {
+            appendLine(playListWithTrackMediaLibrary.playList.title)
+            appendLine(playListWithTrackMediaLibrary.playList.description)
+            appendLine(trackEndings(playListWithTrackMediaLibrary.playList.count))
+            appendLine(playListWithTrackMediaLibrary.trackList.mapIndexed { index, trackList ->
+                "${index + 1}. ${trackList.artistName} - ${trackList.trackName} (${trackList.trackTimeMillis})"
+            })
+        }
         playListInfoRepository.sharePlayList(infoPlaylist)
     }
 

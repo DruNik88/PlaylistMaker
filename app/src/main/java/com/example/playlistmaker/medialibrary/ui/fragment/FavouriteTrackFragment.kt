@@ -16,8 +16,6 @@ import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.medialibrary.ui.state.FavouriteData
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavouriteTrackViewModel
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
-import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteTrackFragment : Fragment() {

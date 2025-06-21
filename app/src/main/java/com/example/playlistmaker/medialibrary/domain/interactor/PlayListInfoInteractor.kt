@@ -13,7 +13,9 @@ interface PlayListInfoInteractor {
         track: TrackMediaLibraryDomain
     )
 
-    fun sharePlayList(infoPlaylist: String)
+//    fun sharePlayList(infoPlaylist: String)
+
+    fun sharePlayList(playListWithTrackMediaLibrary: PlayListWithTrackMediaLibrary)
 
     suspend fun deletePlayList(playList: PlayList)
 }

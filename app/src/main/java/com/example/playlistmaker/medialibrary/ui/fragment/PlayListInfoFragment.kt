@@ -65,7 +65,6 @@ class PlayListInfoFragment : Fragment() {
 
     private var playListActual: PlayList? = null
 
-    private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
     private fun toolBar() {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarPlaylistInfo)
@@ -216,7 +215,7 @@ class PlayListInfoFragment : Fragment() {
     }
 
     private fun showDialog(title: String, delete: Boolean = false, onConfirm: () -> Unit) {
-        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+        val confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(title)
             .setNegativeButton(R.string.no) { _, _ ->
                 onConfirm()
@@ -226,10 +225,10 @@ class PlayListInfoFragment : Fragment() {
             }
             .setPositiveButton(R.string.yes) { _, _ ->
             }
-        val show = confirmDialog.show()
+            .create()
         val ypBlue = ContextCompat.getColor(requireContext(), R.color.yp_blue)
-        show.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ypBlue)
-        show.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ypBlue)
+        confirmDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ypBlue)
+        confirmDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ypBlue)
     }
 
     private fun parsePlayListData(playList: PlayList) {

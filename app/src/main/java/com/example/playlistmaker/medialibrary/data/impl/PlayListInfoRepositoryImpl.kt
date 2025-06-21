@@ -13,7 +13,6 @@ import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDoma
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class PlayListInfoRepositoryImpl(
@@ -32,8 +31,9 @@ class PlayListInfoRepositoryImpl(
 
 
         return combine(playListFlow, sortedTracksFlow) { playlistWithTracks, sortedTracks ->
-            val playListWithTrackMediaLibrary = convertor.converterPlayListWithTrackEntityToPlayListWithTrack(playlistWithTracks)
-            val sortedList = sortedTracks.map { list->
+            val playListWithTrackMediaLibrary =
+                convertor.converterPlayListWithTrackEntityToPlayListWithTrack(playlistWithTracks)
+            val sortedList = sortedTracks.map { list ->
                 convertor.converterTrackEntityToTrackMediaLibraryDomain(list)
             }
             playListWithTrackMediaLibrary.copy(trackList = sortedList)
