@@ -79,9 +79,18 @@ class PlayListInfoViewModel(
     }
 
     fun deletePlayList() {
-        viewModelScope.launch {
-            playListInfoInteractor.deletePlayList(playList)
+        if (_showLiveData.value is PlayListWithTrackDetail.Content) {
+            val actualPlayList =
+                (_showLiveData.value as PlayListWithTrackDetail.Content).playListData.playList
+            viewModelScope.launch {
+                playListInfoInteractor.deletePlayList(actualPlayList)
+            }
+        } else {
+            val actualPlayList =
+                (_showLiveData.value as PlayListWithTrackDetail.Empty).playList
+            viewModelScope.launch {
+                playListInfoInteractor.deletePlayList(actualPlayList)
+            }
         }
     }
-
 }

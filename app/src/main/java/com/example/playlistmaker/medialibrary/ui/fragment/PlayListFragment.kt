@@ -81,8 +81,8 @@ class PlayListFragment : Fragment() {
     }
 
     private fun showPlaceHolder() {
-        binding.recyclerPlayList.isVisible = false
         adapter?.clearOrUpdatePlayList()
+        binding.recyclerPlayList.isVisible = false
         binding.errorImage.isVisible = true
         binding.errorMessage.isVisible = true
     }

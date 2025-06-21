@@ -201,7 +201,7 @@ class PlayListInfoFragment : Fragment() {
         binding.removeBtn.setOnClickListener {
             val title =
                 getString(R.string.dialog_title_delete_playlist, playListActual?.title ?: "")
-            showDialog(title) { viewModel.deletePlayList() }
+            showDialog(title, true) { viewModel.deletePlayList() }
         }
 
         binding.editBtn.setOnClickListener {
@@ -215,11 +215,14 @@ class PlayListInfoFragment : Fragment() {
 
     }
 
-    private fun showDialog(title: String, onConfirm: () -> Unit) {
+    private fun showDialog(title: String, delete: Boolean = false, onConfirm: () -> Unit) {
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(title)
             .setNegativeButton(R.string.no) { _, _ ->
                 onConfirm()
+                if (delete) {
+                    findNavController().navigateUp()
+                }
             }
             .setPositiveButton(R.string.yes) { _, _ ->
             }

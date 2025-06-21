@@ -32,7 +32,7 @@ class NewPlayListRedactFragment : NewPlayListFragment() {
     override fun toolBar() {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarNewPlaylist)
 
-        binding.toolbarNewPlaylist.setTitle("Редактировать")
+        binding.toolbarNewPlaylist.setTitle(getString(R.string.edit))
         binding.toolbarNewPlaylist.setNavigationIcon(R.drawable.vector_arrow_back)
         binding.toolbarNewPlaylist.setNavigationOnClickListener {
             findNavController().navigateUp()
