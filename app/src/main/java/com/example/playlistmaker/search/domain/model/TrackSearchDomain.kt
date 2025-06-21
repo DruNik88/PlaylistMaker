@@ -14,5 +14,5 @@ data class TrackSearchDomain(
     override val primaryGenreName: String?, //Жанр трека
     override val country: String?, //Страна исполнителя
     override val previewUrl: String?, //Ссылка на отрывок песни
-    var isFavourite: Boolean = false, //Нахождение в "Избранном"
+    override var isFavourite: Boolean = false, //Нахождение в "Избранном"
 ) : Serializable, TrackGeneric

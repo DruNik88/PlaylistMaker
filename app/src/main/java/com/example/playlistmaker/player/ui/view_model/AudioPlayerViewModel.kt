@@ -4,22 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.application.TrackGeneric
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.interactor.PlayListPlayerInteractor
 import com.example.playlistmaker.player.domain.interactor.TrackFavouriteInteractor
-import com.example.playlistmaker.player.domain.mapper.TrackSearchDomainInToTrackPlayerDomain
-import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefDomain
-import com.example.playlistmaker.player.domain.model.PlayListWithTrack
+import com.example.playlistmaker.player.domain.mapper.TrackGenericInToTrackPlayerDomain
+import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefPlayerDomain
+import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
 import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.player.ui.state.ShowPlaylist
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
-    trackSearch: TrackSearchDomain,
+    trackSearch: TrackGeneric,
     private val audioPlayerInteractor: AudioPlayerInteractor,
     private val trackFavouriteInteractor: TrackFavouriteInteractor,
     private val playListPlayerInteractor: PlayListPlayerInteractor
@@ -37,8 +37,8 @@ class AudioPlayerViewModel(
     private val _containsTrack = MutableLiveData<Boolean>()
     fun getContainsTrack(): LiveData<Boolean> = _containsTrack
 
-    private val trackPlayerDomain = convertSearchTrackToDomainTrack(trackSearch)
-    lateinit var playListTrackCrossRefDomain: PlayListTrackCrossRefDomain
+    private val trackPlayerDomain = convertTrackGenericToDomainTrack(trackSearch)
+    private lateinit var playListTrackCrossRefDomain: PlayListTrackCrossRefPlayerDomain
 
     init {
         _showDataLiveData.postValue(ShowData.Loading)
@@ -103,11 +103,17 @@ class AudioPlayerViewModel(
         }
     }
 
-    private fun convertSearchTrackToDomainTrack(trackSearch: TrackSearchDomain): TrackPlayerDomain {
-        return TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(
+    private fun convertTrackGenericToDomainTrack(trackSearch: TrackGeneric): TrackPlayerDomain {
+        return TrackGenericInToTrackPlayerDomain.trackGenericToTrackPlayerDomain(
             trackSearch
         )
     }
+
+//    private fun convertSearchTrackToDomainTrack(trackSearch: TrackSearchDomain): TrackPlayerDomain {
+//        return TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(
+//            trackSearch
+//        )
+//    }
 
     fun addPlayList() {
         viewModelScope.launch {
@@ -117,7 +123,7 @@ class AudioPlayerViewModel(
         }
     }
 
-    private fun addShowPlaylist(list: List<PlayListWithTrack>) {
+    private fun addShowPlaylist(list: List<PlayListWithTrackPlayer>) {
         if (list.isEmpty()) {
             _showPlaylist.postValue(ShowPlaylist.Empty)
         } else {
@@ -130,7 +136,7 @@ class AudioPlayerViewModel(
         val playList = findPlayListWithTrackById(playerList.id)
         val containsTrack = playList?.let { findTrack(playList) }
 
-        playListTrackCrossRefDomain = PlayListTrackCrossRefDomain(
+        playListTrackCrossRefDomain = PlayListTrackCrossRefPlayerDomain(
             playlistId = playerList.id,
             trackId = trackPlayerDomain.trackId
         )
@@ -140,14 +146,14 @@ class AudioPlayerViewModel(
         } else {
             _containsTrack.postValue(false)
             viewModelScope.launch {
-                playListPlayerInteractor.updatePlayList(playerList)
+                playListPlayerInteractor.updatePlayList(playerList, trackPlayerDomain)
                 playListPlayerInteractor.addTrackInTrackInPlayListTable(trackPlayerDomain)
                 playListPlayerInteractor.addPlayListTrackCrossRef(playListTrackCrossRefDomain)
             }
         }
     }
 
-    private fun findPlayListWithTrackById(id: Long): PlayListWithTrack? {
+    private fun findPlayListWithTrackById(id: Long): PlayListWithTrackPlayer? {
         val state = _showPlaylist.value
         return if (state is ShowPlaylist.Content) {
             state.playListData.find { it.playList.id == id }
@@ -156,7 +162,7 @@ class AudioPlayerViewModel(
         }
     }
 
-    private fun findTrack(track: PlayListWithTrack): Boolean {
+    private fun findTrack(track: PlayListWithTrackPlayer): Boolean {
         val trackList = track.trackList
         return trackList.contains(trackPlayerDomain)
 

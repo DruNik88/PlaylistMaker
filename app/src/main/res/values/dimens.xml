@@ -29,4 +29,7 @@
     <dimen name="recyclerview_media_library_width">120dp</dimen>
     <dimen name="recyclerview_media_library_height">120dp</dimen>
 
+    <dimen name="setting_padding_s">16dp</dimen>
+    <dimen name="setting_padding_e">12dp</dimen>
+
 </resources>

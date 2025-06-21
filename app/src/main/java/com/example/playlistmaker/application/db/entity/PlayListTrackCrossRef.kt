@@ -25,5 +25,6 @@ import androidx.room.Index
 )
 data class PlayListTrackCrossRef(
     val playlistId: Long,
-    val trackId: Long
+    val trackId: Long,
+    val timeAdded: Long = System.currentTimeMillis()
 )

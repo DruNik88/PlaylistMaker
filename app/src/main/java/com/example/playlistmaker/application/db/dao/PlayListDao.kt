@@ -1,6 +1,7 @@
 package com.example.playlistmaker.application.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -34,4 +35,52 @@ interface PlayListDao {
     @Transaction
     @Insert(entity = PlayListTrackCrossRef::class, onConflict = OnConflictStrategy.ABORT)
     fun addPlayListTrackCrossRef(playListTrack: PlayListTrackCrossRef)
+
+
+    @Query("SELECT * FROM playlist_table WHERE id = :playListId")
+    fun getPlayListWithTrackDetailEntity(playListId: Long): Flow<PlayListWithTracks>
+
+    @Query(
+        """
+        SELECT t.* FROM track_table t
+        INNER JOIN playlist_track_cross_ref ref ON t.trackId = ref.trackId
+        WHERE ref.playlistId = :playlistId
+        ORDER BY ref.timeAdded DESC
+    """
+    )
+    fun getSortedTracksForPlaylistFlow(playlistId: Long): Flow<List<TrackEntity>>
+
+
+    @Delete
+    fun deleteTrackFromPlaylist(crossRef: PlayListTrackCrossRef)
+
+    @Query("SELECT * FROM playlist_track_cross_ref WHERE trackId = :trackId")
+    fun getCrossRefsByTrackId(trackId: Long): List<PlayListTrackCrossRef>
+
+    @Query("DELETE FROM track_table WHERE trackId = :trackId")
+    fun deleteTrack(trackId: Long)
+
+    @Query(
+        """UPDATE playlist_table
+         SET 
+            countTrack = countTrack -1,
+            durationPlayList = durationPlayList - :durationTrack 
+        WHERE id = :playlistId
+        """
+    )
+    fun updateCountTrackAndDurationPlayList(playlistId: Long, durationTrack: Int)
+
+    @Delete
+    fun deletePlayListEntity(playListEntity: PlayListEntity)
+
+    @Query("DELETE FROM track_table WHERE trackId NOT IN (SELECT DISTINCT trackId FROM playlist_track_cross_ref)")
+    fun deleteUnusedTracks()
+
+    @Transaction
+    fun deletePlayList(playListEntity: PlayListEntity) {
+        deletePlayListEntity(playListEntity)
+        deleteUnusedTracks()
+    }
+
+
 }

@@ -24,24 +24,21 @@ import com.markodevcic.peko.PermissionRequester
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
-class NewPlayListFragment : Fragment() {
+open class NewPlayListFragment : Fragment() {
 
-    val viewModel: NewPlayListViewModel by viewModel<NewPlayListViewModel>()
+    open val viewModel: NewPlayListViewModel by viewModel<NewPlayListViewModel>()
 
     private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     val requestPermission = PermissionRequester.instance()
 
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
-    private fun toolBar() {
+    open fun toolBar() {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbarNewPlaylist)
 
         binding.toolbarNewPlaylist.setNavigationIcon(R.drawable.vector_arrow_back)
-        binding.toolbarNewPlaylist.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(true)
         binding.toolbarNewPlaylist.setNavigationOnClickListener {
             handleBackPressed()
@@ -76,6 +73,43 @@ class NewPlayListFragment : Fragment() {
         return getString(R.string.playlist_created, title)
     }
 
+    fun showTitle(title: String) {
+        val isNotEmpty = !title.isNullOrBlank()
+        binding.buttonCreateNewPlaylist.isEnabled = isNotEmpty
+        binding.titleNewPlaylistMiddle.isVisible = isNotEmpty
+        if (binding.titleNewPlaylist.text.toString() != title)
+            binding.titleNewPlaylist.setText(title)
+        if (isNotEmpty) {
+            binding.titleNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_blue)
+        } else {
+            binding.titleNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_gray)
+        }
+    }
+
+    fun showDescription(description: String) {
+        val isNotEmpty = !description.isNullOrBlank()
+        binding.descriptionNewPlaylistMiddle.isVisible = isNotEmpty
+        if (binding.descriptionNewPlaylist.text.toString() != description) {
+            binding.descriptionNewPlaylist.setText(description)
+        }
+        if (isNotEmpty) {
+            binding.descriptionNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_blue)
+        } else {
+            binding.descriptionNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_gray)
+        }
+    }
+
+    fun showImage(imageLocalStoragePath: String) {
+        val file = File(imageLocalStoragePath)
+        if (file.exists()) {
+            binding.artworkNewPlaylist.setImageURI(Uri.fromFile(file))
+            binding.addPhotoNewPlaylist.isVisible = false
+        } else {
+            binding.artworkNewPlaylist.setImageResource(R.drawable.ic_placeholder)
+            binding.addPhotoNewPlaylist.isVisible = false
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -100,16 +134,7 @@ class NewPlayListFragment : Fragment() {
         }
 
         viewModel.title.observe(viewLifecycleOwner) { title ->
-            val isNotEmpty = !title.isNullOrBlank()
-            binding.buttonCreateNewPlaylist.isEnabled = isNotEmpty
-            binding.titleNewPlaylistMiddle.isVisible = isNotEmpty
-            if (binding.titleNewPlaylist.text.toString() != title)
-                binding.titleNewPlaylist.setText(title)
-            if (isNotEmpty) {
-                binding.titleNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_blue)
-            } else {
-                binding.titleNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_gray)
-            }
+            title?.let { showTitle(it) }
         }
 
         binding.descriptionNewPlaylist.addTextChangedListener { text ->
@@ -117,16 +142,7 @@ class NewPlayListFragment : Fragment() {
         }
 
         viewModel.description.observe(viewLifecycleOwner) { description ->
-            val isNotEmpty = !description.isNullOrBlank()
-            binding.descriptionNewPlaylistMiddle.isVisible = isNotEmpty
-            if (binding.descriptionNewPlaylist.text.toString() != description) {
-                binding.descriptionNewPlaylist.setText(description)
-            }
-            if (isNotEmpty) {
-                binding.descriptionNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_blue)
-            } else {
-                binding.descriptionNewPlaylist.setBackgroundResource(R.drawable.ic_rectangle_gray)
-            }
+            description?.let { showDescription(it) }
         }
 
         binding.buttonCreateNewPlaylist.setOnClickListener {
@@ -148,14 +164,7 @@ class NewPlayListFragment : Fragment() {
         }
 
         viewModel.imageLocalStoragePath.observe(viewLifecycleOwner) { imageLocalStoragePath ->
-            val file = imageLocalStoragePath?.let { File(it) }
-            if (file?.exists() == true) {
-                binding.artworkNewPlaylist.setImageURI(Uri.fromFile(file))
-                binding.addPhotoNewPlaylist.isVisible = false
-            } else {
-                binding.artworkNewPlaylist.setImageResource(R.drawable.ic_placeholder)
-                binding.addPhotoNewPlaylist.isVisible = false
-            }
+            imageLocalStoragePath?.let { showImage(it) }
         }
 
         confirmDialog = MaterialAlertDialogBuilder(requireContext())

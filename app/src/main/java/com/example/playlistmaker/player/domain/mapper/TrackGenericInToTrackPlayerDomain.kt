@@ -1,10 +1,10 @@
 package com.example.playlistmaker.player.domain.mapper
 
+import com.example.playlistmaker.application.TrackGeneric
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
-object TrackSearchDomainInToTrackPlayerDomain {
-    fun trackSearchDomainInToTrackPlayerDomain(track: TrackSearchDomain): TrackPlayerDomain {
+object TrackGenericInToTrackPlayerDomain {
+    fun trackGenericToTrackPlayerDomain(track: TrackGeneric): TrackPlayerDomain {
         return TrackPlayerDomain(
             trackId = track.trackId,
             trackName = track.trackName, // Название композиции
@@ -20,9 +20,7 @@ object TrackSearchDomainInToTrackPlayerDomain {
         )
     }
 
-    private fun getCoverArtwork(track: TrackSearchDomain) =
+    private fun getCoverArtwork(track: TrackGeneric) =
         track.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
 
 }
-
-

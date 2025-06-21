@@ -12,7 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.application.trackEndings
-import com.example.playlistmaker.player.domain.model.PlayListWithTrack
+import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import java.io.File
 
@@ -20,7 +20,7 @@ class AudioPlayerAdapter(
     private val onItemClickListener: ((PlayerList) -> Unit)? = null
 ) : RecyclerView.Adapter<AudioPlayerViewHolder>() {
 
-    private val playerList: MutableList<PlayListWithTrack> = mutableListOf()
+    private val playerList: MutableList<PlayListWithTrackPlayer> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioPlayerViewHolder =
         AudioPlayerViewHolder(parent)
@@ -44,7 +44,7 @@ class AudioPlayerAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun allUpdatePlayerList(list: List<PlayListWithTrack>) {
+    fun allUpdatePlayerList(list: List<PlayListWithTrackPlayer>) {
         playerList.clear()
         playerList.addAll(list)
         notifyDataSetChanged()

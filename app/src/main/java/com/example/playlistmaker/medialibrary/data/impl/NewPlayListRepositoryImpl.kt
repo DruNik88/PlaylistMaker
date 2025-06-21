@@ -40,4 +40,11 @@ class NewPlayListRepositoryImpl(
         withContext(Dispatchers.IO) { dataBase.getPlayListDao().insertPlayListEntity(converter) }
     }
 
+    override suspend fun updateDataBase(playList: PlayList) {
+        val playListEntity = converter.converterPlayListDomainToPlayListEntity(playList)
+        withContext(Dispatchers.IO) {
+            dataBase.getPlayListDao().updatePlayListEntity(playListEntity)
+        }
+    }
+
 }

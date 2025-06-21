@@ -8,13 +8,13 @@ import com.example.playlistmaker.medialibrary.domain.interactor.NewPlayListInter
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import kotlinx.coroutines.launch
 
-class NewPlayListViewModel(
+open class NewPlayListViewModel(
     private val newPlayListInteractor: NewPlayListInteractor
 ) : ViewModel() {
 
-    val title = MutableLiveData<String>()
-    val description = MutableLiveData<String?>()
-    val imageLocalStoragePath = MutableLiveData<String?>()
+    open val title = MutableLiveData<String?>()
+    open val description = MutableLiveData<String?>()
+    open val imageLocalStoragePath = MutableLiveData<String?>()
 
     fun updateTitle(newTitle: String) {
         title.value = newTitle
@@ -29,7 +29,6 @@ class NewPlayListViewModel(
             val imageName = newPlayListInteractor.saveImageUri(newImageUri)
             this@NewPlayListViewModel.imageLocalStoragePath.value = imageName
         }
-//        imageUri.value = imageName
     }
 
     fun saveDataBase() {
