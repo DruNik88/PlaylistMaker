@@ -12,6 +12,7 @@ import com.example.playlistmaker.medialibrary.domain.model.PlayListWithTrackMedi
 import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -26,11 +27,17 @@ class PlayListInfoRepositoryImpl(
     }
 
     override fun getPlayListWithTrackDetail(playListId: Long): Flow<PlayListWithTrackMediaLibrary> {
-        return database.getPlayListDao().getPlayListWithTrackDetailEntity(playListId)
-            .map { playList ->
-                convertor.converterPlayListWithTrackEntityToPlayListWithTrack(playList)
-            }
+        val playListFlow = database.getPlayListDao().getPlayListWithTrackDetailEntity(playListId)
+        val sortedTracksFlow = database.getPlayListDao().getSortedTracksForPlaylistFlow(playListId)
 
+
+        return combine(playListFlow, sortedTracksFlow) { playlistWithTracks, sortedTracks ->
+            val playListWithTrackMediaLibrary = convertor.converterPlayListWithTrackEntityToPlayListWithTrack(playlistWithTracks)
+            val sortedList = sortedTracks.map { list->
+                convertor.converterTrackEntityToTrackMediaLibraryDomain(list)
+            }
+            playListWithTrackMediaLibrary.copy(trackList = sortedList)
+        }
     }
 
     override suspend fun deleteTrackFromPlaylist(

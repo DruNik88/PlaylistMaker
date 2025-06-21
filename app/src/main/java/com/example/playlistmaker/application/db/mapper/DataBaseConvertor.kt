@@ -49,7 +49,7 @@ class DataBaseConvertor {
     }
 
 
-    private fun converterTrackEntityToTrackMediaLibraryDomain(trackEntity: TrackEntity): TrackMediaLibraryDomain {
+    fun converterTrackEntityToTrackMediaLibraryDomain(trackEntity: TrackEntity): TrackMediaLibraryDomain {
         return TrackMediaLibraryDomain(
             trackId = trackEntity.trackId,
             trackName = trackEntity.trackName,

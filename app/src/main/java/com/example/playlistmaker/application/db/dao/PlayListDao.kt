@@ -36,8 +36,17 @@ interface PlayListDao {
     @Insert(entity = PlayListTrackCrossRef::class, onConflict = OnConflictStrategy.ABORT)
     fun addPlayListTrackCrossRef(playListTrack: PlayListTrackCrossRef)
 
+
     @Query("SELECT * FROM playlist_table WHERE id = :playListId")
     fun getPlayListWithTrackDetailEntity(playListId: Long): Flow<PlayListWithTracks>
+
+    @Query("""
+        SELECT t.* FROM track_table t
+        INNER JOIN playlist_track_cross_ref ref ON t.trackId = ref.trackId
+        WHERE ref.playlistId = :playlistId
+        ORDER BY ref.timeAdded DESC
+    """)
+    fun getSortedTracksForPlaylistFlow(playlistId: Long): Flow<List<TrackEntity>>
 
 
     @Delete
