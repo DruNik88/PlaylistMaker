@@ -65,17 +65,6 @@ class PlayListInfoFragment : Fragment() {
 
     private var playListActual: PlayList? = null
 
-
-    private fun toolBar() {
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarPlaylistInfo)
-
-        binding.toolbarPlaylistInfo.setNavigationIcon(R.drawable.vector_arrow_back)
-        binding.toolbarPlaylistInfo.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
-        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,7 +79,34 @@ class PlayListInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolBar()
+        setupToolBar()
+
+        setupAdapter()
+
+        setupDebounce()
+
+        setupBottomSheet()
+
+        observeViewModel()
+
+        setupOnClickListener()
+
+        binding.playlistTracks.adapter = adapter
+
+    }
+
+
+    private fun setupToolBar() {
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbarPlaylistInfo)
+
+        binding.toolbarPlaylistInfo.setNavigationIcon(R.drawable.vector_arrow_back)
+        binding.toolbarPlaylistInfo.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+        (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
+    }
+
+    private fun setupAdapter() {
 
         adapter = TrackAdapter(
             onItemClickListener = { track -> onTrackClickDebounce(track) },
@@ -99,6 +115,9 @@ class PlayListInfoFragment : Fragment() {
                 showDialog(title) { viewModel.deleteTrackFromPlaylist(track) }
             }
         )
+    }
+
+    private fun setupDebounce() {
 
         onTrackClickDebounce = debounce<TrackMediaLibraryDomain>(
             delayMillis = CLICK_DEBOUNCE_DELAY,
@@ -110,6 +129,9 @@ class PlayListInfoFragment : Fragment() {
                 AudioPlayerFragment.createArgs(track)
             )
         }
+    }
+
+    private fun setupBottomSheet() {
 
         bottomSheetBehaviorTrackList = BottomSheetBehavior.from(binding.bottomSheetTrack).apply {
             state = BottomSheetBehavior.STATE_COLLAPSED
@@ -137,6 +159,9 @@ class PlayListInfoFragment : Fragment() {
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
+    }
+
+    private fun observeViewModel() {
 
         viewModel.getShowLiveData().observe(viewLifecycleOwner) { playListData ->
             when (playListData) {
@@ -173,6 +198,10 @@ class PlayListInfoFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun setupOnClickListener() {
+
         binding.share.setOnClickListener {
 
             if (adapter.tracks.isEmpty()) {
@@ -209,9 +238,6 @@ class PlayListInfoFragment : Fragment() {
                 playListActual?.let { NewPlayListRedactFragment.createArgs(it) }
             )
         }
-
-        binding.playlistTracks.adapter = adapter
-
     }
 
     private fun showDialog(title: String, delete: Boolean = false, onConfirm: () -> Unit) {
