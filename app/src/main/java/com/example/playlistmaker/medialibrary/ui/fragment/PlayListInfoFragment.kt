@@ -226,6 +226,7 @@ class PlayListInfoFragment : Fragment() {
             .setPositiveButton(R.string.yes) { _, _ ->
             }
             .create()
+        confirmDialog.show()
         val ypBlue = ContextCompat.getColor(requireContext(), R.color.yp_blue)
         confirmDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ypBlue)
         confirmDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ypBlue)
