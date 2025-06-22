@@ -10,48 +10,48 @@
         android:id="@+id/card_art"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        app:cardCornerRadius="2dp"
         android:layout_margin="8dp"
-        app:cardElevation="0dp"
+        android:clipChildren="true"
+        android:clipToPadding="true"
         app:cardBackgroundColor="?attr/colorOnPrimary"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/playlist_player_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:clipChildren="true"
-        android:clipToPadding="true">
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/image_playlist"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/album" />
-</androidx.cardview.widget.CardView>
+        <ImageView
+            android:id="@+id/image_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/album" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/title_playlist"
         style="@style/TitlePlayerPlaylist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Best of the best"
-        tools:ignore="MissingConstraints"
-        app:layout_constraintStart_toEndOf="@+id/card_art"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/card_art"
         app:layout_constraintTop_toTopOf="@+id/card_art"
-        android:layout_marginTop="4dp" />
+        tools:ignore="MissingConstraints"
+        tools:text="Best of the best" />
 
     <TextView
         android:id="@+id/count_tack_player_playlist"
+        style="@style/CountPlayerPlaylist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/CountPlayerPlaylist"
-        tools:ignore="MissingConstraints"
-        tools:text="98 треков"
-        app:layout_constraintStart_toEndOf="@+id/card_art"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/card_art"
         app:layout_constraintTop_toBottomOf="@+id/title_playlist"
-        android:layout_marginTop="4dp"/>
+        tools:ignore="MissingConstraints"
+        tools:text="98 треков" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
