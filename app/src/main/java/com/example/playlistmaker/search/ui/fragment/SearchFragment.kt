@@ -20,7 +20,11 @@ import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.ui.state.SearchHistoryState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class SearchFragment : Fragment() {
@@ -53,6 +57,8 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val analytics = Firebase.analytics
+
         adapter = TrackAdapter(
             onItemClickListener = { track -> onTrackClickDebounce(track) },
             showDialog = null
@@ -64,6 +70,14 @@ class SearchFragment : Fragment() {
             useLastParam = false,
         ) { track ->
             viewModel.addTrackListHistory(track)
+
+            val bundle = Bundle().apply {
+                putString(FirebaseAnalytics.Param.ITEM_ID, track.trackId.toString())
+                putString(FirebaseAnalytics.Param.ITEM_NAME, track.trackName)
+                putString(FirebaseAnalytics.Param.CONTENT_TYPE, "track")
+            }
+            analytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle)
+
             findNavController().navigate(
                 R.id.action_searchFragment_to_audioPlayerFragment,
                 AudioPlayerFragment.createArgs(track)
