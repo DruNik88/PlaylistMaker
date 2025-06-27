@@ -16,8 +16,6 @@ import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.medialibrary.ui.state.FavouriteData
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavouriteTrackViewModel
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
-import com.example.playlistmaker.search.data.mapper.TrackOrListMapper
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteTrackFragment : Fragment() {
@@ -47,7 +45,10 @@ class FavouriteTrackFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = TrackAdapter { track -> onTrackClickDebounce(track) }
+        adapter = TrackAdapter(
+            onItemClickListener = { track -> onTrackClickDebounce(track) },
+            showDialog = null
+        )
 
         onTrackClickDebounce = debounce<TrackFavourite>(
             delayMillis = CLICK_DEBOUNCE_DELAY,
@@ -56,7 +57,7 @@ class FavouriteTrackFragment : Fragment() {
         ) { track ->
             findNavController().navigate(
                 R.id.action_mediaLibraryFragment_to_audioPlayerFragment2,
-                AudioPlayerFragment.createArgs(convertTrackFavouriteToTrackSearchDomain(track))
+                AudioPlayerFragment.createArgs(track)
             )
         }
 
@@ -73,10 +74,6 @@ class FavouriteTrackFragment : Fragment() {
         }
 
         binding.recyclerTrackView.adapter = adapter
-    }
-
-    private fun convertTrackFavouriteToTrackSearchDomain(track: TrackFavourite): TrackSearchDomain {
-        return TrackOrListMapper.trackDataInToTrackDomain(track)
     }
 
     private fun showPlaceHolder() {

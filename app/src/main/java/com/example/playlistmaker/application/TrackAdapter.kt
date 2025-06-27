@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class TrackAdapter<T : TrackGeneric>(
-    private val onItemClickListener: ((T) -> Unit)? = null
+    private val onItemClickListener: ((T) -> Unit)? = null,
+    private val showDialog: ((T) -> Unit)? = null
 ) : RecyclerView.Adapter<TrackViewHolder<T>>() {
 
     val tracks: MutableList<T> = mutableListOf()
@@ -15,8 +16,14 @@ class TrackAdapter<T : TrackGeneric>(
 
     override fun onBindViewHolder(holder: TrackViewHolder<T>, position: Int) {
         holder.bind(tracks[position])
+
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(tracks[position])
+        }
+
+        holder.itemView.setOnLongClickListener {
+            showDialog?.invoke(tracks[position])
+            true
         }
     }
 

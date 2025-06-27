@@ -11,4 +11,5 @@ data class PlayListEntity(
     val description: String?, //Описание плейлиста
     val imageLocalStoragePath: String?, //Путь до локальной картинки изображения
     val countTrack: Int = 0, //Количество треков, добавленных в плейлист
+    val durationPlayList: Int = 0, //Длительность плейлиста
 )

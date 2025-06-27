@@ -11,4 +11,5 @@ interface TrackGeneric {
     val primaryGenreName: String? //Жанр трека
     val country: String? //Страна исполнителя
     val previewUrl: String? //Ссылка на отрывок песни
+    val isFavourite: Boolean //Нахождение в "Избранном"
 }

@@ -1,6 +1,6 @@
 package com.example.playlistmaker.player.domain.model
 
-class PlayListTrackCrossRefDomain(
+class PlayListTrackCrossRefPlayerDomain(
     val playlistId: Long,
     val trackId: Long
 )

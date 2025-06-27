@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.ui.state.PlayListData
@@ -18,6 +20,7 @@ class PlayListFragment : Fragment() {
 
     companion object {
         fun newInstance() = PlayListFragment()
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     val viewModel: PlayListViewModel by viewModel<PlayListViewModel>()
@@ -25,7 +28,8 @@ class PlayListFragment : Fragment() {
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
 
-    private var adapter: PlayListAdapter = PlayListAdapter()
+    private var adapter: PlayListAdapter? = null
+    private lateinit var onTrackClickDebounce: (PlayList) -> Unit
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +44,21 @@ class PlayListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        adapter = PlayListAdapter { playList ->
+            onTrackClickDebounce(playList)
+        }
+
+        onTrackClickDebounce = debounce<PlayList>(
+            delayMillis = CLICK_DEBOUNCE_DELAY,
+            coroutineScope = viewLifecycleOwner.lifecycleScope,
+            useLastParam = false,
+        ) { playList ->
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_playListInfoFragment,
+                PlayListInfoFragment.createArgs(playList)
+            )
+        }
 
         viewModel.getPlaylist.observe(viewLifecycleOwner) { playListData ->
             when (playListData) {
@@ -62,16 +81,18 @@ class PlayListFragment : Fragment() {
     }
 
     private fun showPlaceHolder() {
+        adapter?.clearOrUpdatePlayList()
+        binding.recyclerPlayList.isVisible = false
         binding.errorImage.isVisible = true
         binding.errorMessage.isVisible = true
     }
 
     private fun showContent(playlist: List<PlayList>) {
-        adapter.clearOrUpdatePlayList()
+        adapter?.clearOrUpdatePlayList()
         binding.errorImage.isVisible = false
         binding.errorMessage.isVisible = false
         binding.recyclerPlayList.isVisible = true
-        adapter.allUpdatePlayList(playlist)
+        adapter?.allUpdatePlayList(playlist)
     }
 
     override fun onDestroyView() {
