@@ -109,12 +109,6 @@ class AudioPlayerViewModel(
         )
     }
 
-//    private fun convertSearchTrackToDomainTrack(trackSearch: TrackSearchDomain): TrackPlayerDomain {
-//        return TrackSearchDomainInToTrackPlayerDomain.trackSearchDomainInToTrackPlayerDomain(
-//            trackSearch
-//        )
-//    }
-
     fun addPlayList() {
         viewModelScope.launch {
             playListPlayerInteractor.getPlayList().collect { list ->

@@ -195,19 +195,8 @@ class AudioPlayerFragment : Fragment() {
     private fun renderPlayStatus(playStatus: PlayStatus) {
         if (!playStatus.isPlaying) {
             binding.playbackControl.isEnabled = true
-            binding.playbackControl.setImageDrawable(
-                resources.getDrawable(
-                    R.drawable.ic_playback_control,
-                    null
-                )
-            )
+            binding.playbackControl.updateStatusButton(playStatus.isPlaying)
         } else {
-            binding.playbackControl.setImageDrawable(
-                resources.getDrawable(
-                    R.drawable.ic_pause_control,
-                    null
-                )
-            )
             binding.playbackProgress.text = playStatus.formatProgress()
         }
     }
