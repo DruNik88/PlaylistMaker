@@ -17,6 +17,7 @@ import com.example.playlistmaker.settings.di.settingsInteractorModel
 import com.example.playlistmaker.settings.di.settingsRepositoryModule
 import com.example.playlistmaker.settings.di.settingsViewModelModule
 import com.example.playlistmaker.settings.domain.interactor.SettingsInteractor
+import com.google.firebase.FirebaseApp
 import com.markodevcic.peko.PermissionRequester
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
@@ -55,5 +56,5 @@ class App : Application() {
         }
 
         PermissionRequester.initialize(applicationContext)
-    }
+        FirebaseApp.initializeApp(this)}
 }

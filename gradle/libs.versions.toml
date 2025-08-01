@@ -6,7 +6,7 @@ fragmentKtx = "1.8.6"
 glide = "4.16.0"
 compiler = "4.16.0"
 koinAndroid = "3.3.0"
-kotlin = "1.9.21"
+kotlin = "2.0.21"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -48,3 +48,4 @@ androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "l
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
+#kotlin = "1.9.21"
