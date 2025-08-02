@@ -1,6 +1,9 @@
 package com.example.playlistmaker.search.ui.fragment
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -20,9 +24,11 @@ import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
 import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.ui.state.SearchHistoryState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import com.example.playlistmaker.utils.InternetAccessibility
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
+
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -30,6 +36,8 @@ import org.koin.core.parameter.parametersOf
 class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
+
+    private var internetAccessibility: InternetAccessibility? = null
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
@@ -225,14 +233,30 @@ class SearchFragment : Fragment() {
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        viewModel.saveSharedPrefs()
-    }
+    override fun onResume() {
+        super.onResume()
+        internetAccessibility = InternetAccessibility()
+        requireContext().registerReceiver(
+            internetAccessibility,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+        )
+}
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+override fun onPause() {
+    super.onPause()
+    internetAccessibility?.let {
+        requireContext().unregisterReceiver(internetAccessibility)
     }
+}
+
+override fun onStop() {
+    super.onStop()
+    viewModel.saveSharedPrefs()
+}
+
+override fun onDestroyView() {
+    super.onDestroyView()
+    _binding = null
+}
 
 }

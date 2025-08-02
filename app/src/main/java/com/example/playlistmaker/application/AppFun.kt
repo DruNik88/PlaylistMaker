@@ -1,6 +1,8 @@
 package com.example.playlistmaker.application
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.TypedValue
 import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
 import kotlinx.coroutines.CoroutineScope
@@ -72,3 +74,27 @@ fun durationEndings(minutes: Int): String {
 fun converterSecondsToMinutesAndEnding(time: Int): Int {
     return time / 60
 }
+
+fun isConnected(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    return true
+                }
+
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    return true
+                }
+
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    return true
+                }
+            }
+        }
+        return false
+    }

@@ -1,6 +1,8 @@
 package com.example.playlistmaker.player.ui.fragment
 
 import android.annotation.SuppressLint
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +29,7 @@ import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.player.ui.state.ShowPlaylist
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
+import com.example.playlistmaker.utils.InternetAccessibility
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -50,6 +53,8 @@ class AudioPlayerFragment : Fragment() {
             parametersOf(trackSearch)
         } ?: throw IllegalArgumentException("Track is null")
     }
+
+    private var internetAccessibility: InternetAccessibility? = null
 
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
@@ -258,6 +263,22 @@ class AudioPlayerFragment : Fragment() {
     private fun loading(loading: Boolean) {
         binding.audioPlayer.isVisible = !loading
         binding.layoutProgressBar.isVisible = loading
+    }
+
+    override fun onResume() {
+        super.onResume()
+        internetAccessibility = InternetAccessibility()
+        requireContext().registerReceiver(
+            internetAccessibility,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        internetAccessibility?.let {
+            requireContext().unregisterReceiver(internetAccessibility)
+        }
     }
 
     override fun onStop() {

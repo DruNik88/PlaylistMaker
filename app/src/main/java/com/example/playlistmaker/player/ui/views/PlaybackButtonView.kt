@@ -74,8 +74,6 @@ class PlaybackButtonView @JvmOverloads constructor(
         return true
     }
 
-
-    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         imageBitmap = if (isPlaying) pauseControl else playbackControl
         imageBitmap?.let {
