@@ -22,32 +22,37 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
     private lateinit var innerPlayerObserver: AudioPlayerInteractor.AudioPlayerObserver
 
     private var playerState = STATE_DEFAULT
-    private var mediaPlayer: MediaPlayer = MediaPlayer()
+    private var mediaPlayer: MediaPlayer? = null
 
     private suspend fun createUpdateTimerAudioPlayer() {
-        while (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
-            val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
-            delay(DELAY)
-            innerPlayerObserver.onProgress(progress = reverseTimer)
+        mediaPlayer?.let {
+            while (playerState == STATE_PLAYING && it.isPlaying) {
+                val reverseTimer = AVAILABLE_TIME - it.currentPosition
+                delay(DELAY)
+                innerPlayerObserver.onProgress(progress = reverseTimer)
+            }
         }
     }
-
     override fun preparePlayer(
         track: TrackPlayerDomain,
         playerObserver: AudioPlayerInteractor.AudioPlayerObserver
     ) {
-
         val trackPlayerData =
             TrackPlayerDomainInToTrackPlayerData.trackPlayerDomainInToTrackPlayerData(track)
 
         innerPlayerObserver = playerObserver
-        mediaPlayer.setDataSource(trackPlayerData.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
+
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer()
+        }
+
+        mediaPlayer?.setDataSource(trackPlayerData.previewUrl)
+        mediaPlayer?.prepareAsync()
+        mediaPlayer?.setOnPreparedListener {
             playerState = STATE_PREPARED
             playerObserver.onLoad()
         }
-        mediaPlayer.setOnCompletionListener {
+        mediaPlayer?.setOnCompletionListener {
             playerState = STATE_PREPARED
             playerObserver.onComplete()
             playerObserver.onPause()
@@ -56,7 +61,7 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     suspend fun startPlayer() {
-        mediaPlayer.start()
+        mediaPlayer?.start()
 
         playerState = STATE_PLAYING
 
@@ -68,12 +73,13 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
     override fun pausePlayer() {
 
         try {
-            if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
-                mediaPlayer.pause()
-                playerState = STATE_PAUSED
-                innerPlayerObserver.onPause()
+            mediaPlayer?.let {
+                if (playerState == STATE_PLAYING && it.isPlaying) {
+                    mediaPlayer?.pause()
+                    playerState = STATE_PAUSED
+                    innerPlayerObserver.onPause()
+                }
             }
-
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -82,10 +88,10 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
     override fun release() {
 
         playerState = STATE_DEFAULT
-        mediaPlayer.setOnPreparedListener(null)
-        mediaPlayer.setOnCompletionListener(null)
-        mediaPlayer.release()
-
+        mediaPlayer?.setOnPreparedListener(null)
+        mediaPlayer?.setOnCompletionListener(null)
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 
     override suspend fun playbackControl() {

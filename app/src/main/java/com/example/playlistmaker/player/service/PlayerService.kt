@@ -5,17 +5,16 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
@@ -141,7 +140,7 @@ class PlayerService() : Service() {
                 .build()
         } ?: NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
-            .setContentText("Track info unavailable")
+            .setContentText(getString(R.string.track_notification))
             .setSmallIcon(android.R.drawable.ic_media_play)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -159,7 +158,7 @@ class PlayerService() : Service() {
             /* name= */ "Music service",
             /* importance= */ NotificationManager.IMPORTANCE_DEFAULT
         )
-        channel.description = "Service for playing music"
+        channel.description = getString(R.string.channel_description)
 
         val notificationManager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -191,15 +190,32 @@ class PlayerService() : Service() {
 
 
     fun appCollapsed() {
-        when {
-            isStarted -> startForegroundService()
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            if (!isStarted && playStatus.value.isPlaying) {
+                startForegroundService()
+                isStarted = true
+            }
+        } else {
+            Toast.makeText(
+                this,
+                getString(R.string.no_permission),
+                Toast.LENGTH_LONG
+            ).show()
         }
 
     }
 
     fun appUnfold() {
-        when {
-            isStarted -> stopForegroundService()
+
+        if (isStarted && playStatus.value.isPlaying) {
+            stopForegroundService()
+            isStarted = false
         }
 
     }

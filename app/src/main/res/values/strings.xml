@@ -55,4 +55,8 @@
     <string name="save">Сохранить</string>
     <string name="edit">Редактировать</string>
     <string name="disabled_internet">Отсутствует подключение к интернету</string>
+    <string name="no_permission">Нет разрешения POST_NOTIFICATIONS — foreground не стартуем</string>
+    <string name="channel_description">Service for playing music</string>
+    <string name="track_notification">Track info unavailable</string>
+    <string name="without_notifications_without_background.">Без уведомлений — плеер работает, но без фона</string>
 </resources>
