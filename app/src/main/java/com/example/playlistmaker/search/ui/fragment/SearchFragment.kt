@@ -1,17 +1,16 @@
 package com.example.playlistmaker.search.ui.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -28,9 +27,7 @@ import com.example.playlistmaker.utils.InternetAccessibility
 import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
-
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 
 class SearchFragment : Fragment() {
@@ -85,11 +82,11 @@ class SearchFragment : Fragment() {
                 putString(FirebaseAnalytics.Param.CONTENT_TYPE, "track")
             }
             analytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle)
-
+            Log.d("текущее состояние_трек", "${track.artistName}")
             findNavController().navigate(
                 R.id.action_searchFragment_to_audioPlayerFragment,
                 AudioPlayerFragment.createArgs(track)
-            )
+                 )
         }
 
         binding.clearIcon.setOnClickListener {
@@ -240,23 +237,23 @@ class SearchFragment : Fragment() {
             internetAccessibility,
             IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
         )
-}
-
-override fun onPause() {
-    super.onPause()
-    internetAccessibility?.let {
-        requireContext().unregisterReceiver(internetAccessibility)
     }
-}
 
-override fun onStop() {
-    super.onStop()
-    viewModel.saveSharedPrefs()
-}
+    override fun onPause() {
+        super.onPause()
+        internetAccessibility?.let {
+            requireContext().unregisterReceiver(internetAccessibility)
+        }
+    }
 
-override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
-}
+    override fun onStop() {
+        super.onStop()
+        viewModel.saveSharedPrefs()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 }

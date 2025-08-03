@@ -22,10 +22,10 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
     private lateinit var innerPlayerObserver: AudioPlayerInteractor.AudioPlayerObserver
 
     private var playerState = STATE_DEFAULT
-    private var mediaPlayer = MediaPlayer()
+    private var mediaPlayer: MediaPlayer = MediaPlayer()
 
     private suspend fun createUpdateTimerAudioPlayer() {
-        while (mediaPlayer.isPlaying) {
+        while (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
             val reverseTimer = AVAILABLE_TIME - mediaPlayer.currentPosition
             delay(DELAY)
             innerPlayerObserver.onProgress(progress = reverseTimer)
@@ -45,11 +45,11 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             playerState = STATE_PREPARED
-            playerObserver.onComplete()
             playerObserver.onLoad()
         }
         mediaPlayer.setOnCompletionListener {
             playerState = STATE_PREPARED
+            playerObserver.onComplete()
             playerObserver.onPause()
         }
     }
@@ -66,22 +66,30 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
     }
 
     override fun pausePlayer() {
+
         try {
             if (playerState == STATE_PLAYING && mediaPlayer.isPlaying) {
                 mediaPlayer.pause()
                 playerState = STATE_PAUSED
                 innerPlayerObserver.onPause()
             }
+
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
     }
 
     override fun release() {
+
+        playerState = STATE_DEFAULT
+        mediaPlayer.setOnPreparedListener(null)
+        mediaPlayer.setOnCompletionListener(null)
         mediaPlayer.release()
+
     }
 
     override suspend fun playbackControl() {
+
         when (playerState) {
             STATE_PLAYING -> {
                 pausePlayer()
@@ -89,6 +97,7 @@ class AudioPlayerRepositoryImpl : AudioPlayerRepository {
 
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
+
             }
         }
     }
