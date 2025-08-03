@@ -37,6 +37,7 @@ class PlayerService() : Service() {
 
     private val audioPlayerInteractor: AudioPlayerInteractor by inject()
     private var isStarted = false
+    private var isAppCollapsed = false
 
     private val _playStatus = MutableStateFlow<PlayStatus>(
         PlayStatus(
@@ -67,6 +68,10 @@ class PlayerService() : Service() {
                     override fun onComplete() {
                         _playStatus.value =
                             getCurrentPlayStatus().copy(progress = 0L, isPlaying = false)
+                        if (isAppCollapsed) {
+                            stopForegroundService()
+                            isStarted = false
+                        }
                     }
 
                     override fun onPause() {
@@ -191,6 +196,8 @@ class PlayerService() : Service() {
 
     fun appCollapsed() {
 
+        isAppCollapsed = true
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
             ContextCompat.checkSelfPermission(
                 this,
@@ -212,6 +219,8 @@ class PlayerService() : Service() {
     }
 
     fun appUnfold() {
+
+        isAppCollapsed = false
 
         if (isStarted && playStatus.value.isPlaying) {
             stopForegroundService()
