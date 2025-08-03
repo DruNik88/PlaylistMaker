@@ -1,5 +1,6 @@
 package com.example.playlistmaker.player.service
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,8 +11,11 @@ import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
@@ -33,6 +37,7 @@ class PlayerService() : Service() {
     }
 
     private val audioPlayerInteractor: AudioPlayerInteractor by inject()
+    private var isStarted = false
 
     private val _playStatus = MutableStateFlow<PlayStatus>(
         PlayStatus(
@@ -81,7 +86,8 @@ class PlayerService() : Service() {
             )
         }
     }
-// region Service
+
+    // region Service
     inner class PlayerServiceBinder : Binder() {
         fun getService(): PlayerService = this@PlayerService
     }
@@ -91,7 +97,7 @@ class PlayerService() : Service() {
     }
 // endregion
 
-    private fun startForegroundService(){
+    private fun startForegroundService() {
         createNotificationChannel()
 
         ServiceCompat.startForeground(
@@ -102,7 +108,7 @@ class PlayerService() : Service() {
         )
     }
 
-    private fun stopForegroundService(){
+    private fun stopForegroundService() {
         ServiceCompat.stopForeground(
             this,
             ServiceCompat.STOP_FOREGROUND_REMOVE
@@ -179,16 +185,27 @@ class PlayerService() : Service() {
 
     }
 
-    fun appCollapsed(){
-        startForegroundService()
+    fun startedForegroundService() {
+        isStarted = true
     }
 
-    fun appUnfold(){
-        stopForegroundService()
+
+    fun appCollapsed() {
+        when {
+            isStarted -> startForegroundService()
+        }
+
+    }
+
+    fun appUnfold() {
+        when {
+            isStarted -> stopForegroundService()
+        }
+
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-              return super.onUnbind(intent)
+        return super.onUnbind(intent)
     }
 
 }

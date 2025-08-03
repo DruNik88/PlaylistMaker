@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -85,7 +87,7 @@ class AudioPlayerFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
-// region Service
+    // region Service
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             val binder = service as PlayerService.PlayerServiceBinder
@@ -128,13 +130,9 @@ class AudioPlayerFragment : Fragment() {
 
         toolBar()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            // На версиях ниже Android 13 —
-            // можно сразу привязаться к сервису.
-            bindPlayerService()
-        }
+        bindPlayerService()
+
+        permissionStartedForegroundService()
 
         adapter = AudioPlayerAdapter { playerList ->
             onTrackClickDebounce(playerList)
@@ -232,13 +230,27 @@ class AudioPlayerFragment : Fragment() {
         binding.recyclerPlayerList.adapter = adapter
     }
 
+    private fun permissionStartedForegroundService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+
+        } else {
+            viewModel.startedForegroundService()
+        }
+    }
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            bindPlayerService()
+            viewModel.startedForegroundService()
         } else {
-            Toast.makeText(requireContext(), "Can't bind service!", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                "Без уведомлений — плеер работает, но без фона",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 

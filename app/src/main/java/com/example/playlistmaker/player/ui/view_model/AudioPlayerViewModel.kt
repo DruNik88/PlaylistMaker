@@ -61,6 +61,10 @@ class AudioPlayerViewModel(
         }
     }
 
+    fun startedForegroundService(){
+        playerService?.startedForegroundService()
+    }
+
     fun collapsed(){
         playerService?.appCollapsed()
     }
