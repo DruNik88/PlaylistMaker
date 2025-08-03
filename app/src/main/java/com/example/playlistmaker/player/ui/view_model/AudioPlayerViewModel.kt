@@ -1,11 +1,11 @@
 package com.example.playlistmaker.player.ui.view_model
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.application.TrackGeneric
-import com.example.playlistmaker.player.domain.interactor.AudioPlayerInteractor
 import com.example.playlistmaker.player.domain.interactor.PlayListPlayerInteractor
 import com.example.playlistmaker.player.domain.interactor.TrackFavouriteInteractor
 import com.example.playlistmaker.player.domain.mapper.TrackGenericInToTrackPlayerDomain
@@ -13,6 +13,7 @@ import com.example.playlistmaker.player.domain.model.PlayListTrackCrossRefPlayer
 import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
+import com.example.playlistmaker.player.service.PlayerService
 import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.player.ui.state.ShowPlaylist
@@ -20,7 +21,6 @@ import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     trackSearch: TrackGeneric,
-    private val audioPlayerInteractor: AudioPlayerInteractor,
     private val trackFavouriteInteractor: TrackFavouriteInteractor,
     private val playListPlayerInteractor: PlayListPlayerInteractor
 ) : ViewModel() {
@@ -28,8 +28,8 @@ class AudioPlayerViewModel(
     private val _showDataLiveData = MutableLiveData<ShowData>()
     fun getShowDataLiveData(): LiveData<ShowData> = _showDataLiveData
 
-    private val playStatusLiveData = MutableLiveData<PlayStatus>()
-    fun getPlayStatusLiveData(): LiveData<PlayStatus> = playStatusLiveData
+    private val _playStatusLiveData = MutableLiveData<PlayStatus>()
+    fun getPlayStatusLiveData(): LiveData<PlayStatus> = _playStatusLiveData
 
     private val _showPlaylist = MutableLiveData<ShowPlaylist>()
     fun getPlayListLiveData(): LiveData<ShowPlaylist> = _showPlaylist
@@ -37,56 +37,53 @@ class AudioPlayerViewModel(
     private val _containsTrack = MutableLiveData<Boolean>()
     fun getContainsTrack(): LiveData<Boolean> = _containsTrack
 
+    @SuppressLint("StaticFieldLeak")
+    private var playerService: PlayerService? = null
+
     private val trackPlayerDomain = convertTrackGenericToDomainTrack(trackSearch)
     private lateinit var playListTrackCrossRefDomain: PlayListTrackCrossRefPlayerDomain
 
-    init {
-        _showDataLiveData.postValue(ShowData.Loading)
-        val trackPlayer = trackPlayerDomain
 
-        audioPlayerInteractor.preparePlayer(
-            track = trackPlayer,
-            playerObserver = object : AudioPlayerInteractor.AudioPlayerObserver {
-                override fun onProgress(progress: Long) {
-                    playStatusLiveData.value = getCurrentPlayStatus().copy(progress = progress)
-                }
+    fun setAudioPlayerControl(playerService: PlayerService) {
+        this.playerService = playerService
 
-                override fun onComplete() {
-                    playStatusLiveData.value =
-                        getCurrentPlayStatus().copy(progress = 0L, isPlaying = false)
-                }
+        playerService.getTrack(trackPlayerDomain)
 
-                override fun onPause() {
-                    playStatusLiveData.value = getCurrentPlayStatus().copy(isPlaying = false)
-                }
-
-                override fun onPlay() {
-                    playStatusLiveData.value = getCurrentPlayStatus().copy(isPlaying = true)
-                }
-
-                override fun onLoad() {
-                    _showDataLiveData.postValue(ShowData.Content(trackModel = trackPlayer))
-                }
-            }
-        )
-    }
-
-    private fun getCurrentPlayStatus(): PlayStatus {
-        return playStatusLiveData.value ?: PlayStatus(progress = 0L, isPlaying = false)
-    }
-
-    fun playbackControl() {
         viewModelScope.launch {
-            audioPlayerInteractor.playbackControl()
+            playerService.playStatus.collect {
+                _playStatusLiveData.postValue(it)
+            }
+        }
+        viewModelScope.launch {
+            playerService.data.collect {
+                _showDataLiveData.postValue(it)
+            }
         }
     }
 
-    fun pause() {
-        audioPlayerInteractor.pausePlayer()
+    fun startedForegroundService(){
+        playerService?.startedForegroundService()
     }
 
-    fun release() {
-        audioPlayerInteractor.release()
+    fun collapsed(){
+        playerService?.appCollapsed()
+    }
+
+    fun unfold(){
+        playerService?.appUnfold()
+    }
+
+    fun removeAudioPlayerControl(){
+        playerService = null
+    }
+
+
+    fun playbackControl() {
+        playerService?.playbackControl()
+    }
+
+     fun release() {
+        playerService?.release()
     }
 
     fun addFavourite() {

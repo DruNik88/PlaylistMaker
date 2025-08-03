@@ -1,11 +1,21 @@
 package com.example.playlistmaker.player.ui.fragment
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.ServiceConnection
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
@@ -23,10 +33,12 @@ import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
+import com.example.playlistmaker.player.service.PlayerService
 import com.example.playlistmaker.player.ui.model.PlayStatus
 import com.example.playlistmaker.player.ui.state.ShowData
 import com.example.playlistmaker.player.ui.state.ShowPlaylist
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
+import com.example.playlistmaker.utils.InternetAccessibility
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -51,6 +63,8 @@ class AudioPlayerFragment : Fragment() {
         } ?: throw IllegalArgumentException("Track is null")
     }
 
+    private var internetAccessibility: InternetAccessibility? = null
+
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
@@ -71,6 +85,32 @@ class AudioPlayerFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
+    // region Service
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as PlayerService.PlayerServiceBinder
+            viewModel.setAudioPlayerControl(binder.getService())
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removeAudioPlayerControl()
+        }
+    }
+
+    private fun bindPlayerService() {
+
+        val intent = Intent(requireContext(), PlayerService::class.java)
+
+        requireContext().startService(intent)
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindPlayerService() {
+        requireContext().unbindService(serviceConnection)
+    }
+
+//endregion
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,6 +127,10 @@ class AudioPlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         toolBar()
+
+        bindPlayerService()
+
+        permissionStartedForegroundService()
 
         adapter = AudioPlayerAdapter { playerList ->
             onTrackClickDebounce(playerList)
@@ -184,6 +228,30 @@ class AudioPlayerFragment : Fragment() {
         binding.recyclerPlayerList.adapter = adapter
     }
 
+    private fun permissionStartedForegroundService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+
+        } else {
+            viewModel.startedForegroundService()
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            viewModel.startedForegroundService()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.without_notifications_without_background_),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     private fun stateContainsTrack(state: Boolean): String {
         return if (state) getString(
             R.string.track_added,
@@ -260,14 +328,37 @@ class AudioPlayerFragment : Fragment() {
         binding.layoutProgressBar.isVisible = loading
     }
 
+    override fun onResume() {
+        super.onResume()
+        internetAccessibility = InternetAccessibility()
+        requireContext().registerReceiver(
+            internetAccessibility,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
+        )
+        viewModel.unfold()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        internetAccessibility?.let {
+            requireContext().unregisterReceiver(internetAccessibility)
+        }
+    }
+
     override fun onStop() {
         super.onStop()
-        viewModel.pause()
+
+        val isBeingRemoved =
+            isRemoving || (activity?.isFinishing == true) || parentFragment?.isRemoving == true
+
+        if (!isBeingRemoved) viewModel.collapsed()
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.release()
+        unbindPlayerService()
     }
 
 }
