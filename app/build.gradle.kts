@@ -40,6 +40,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        compose = true
         viewBinding = true
     }
 }
@@ -82,4 +83,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.activity.compose)
 }
