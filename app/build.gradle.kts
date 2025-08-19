@@ -1,13 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("kotlin-kapt")
     id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.example.playlistmaker"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.playlistmaker"
@@ -43,6 +44,9 @@ android {
         compose = true
         viewBinding = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3" // для Compose 1.4.3
+    }
 }
 
 dependencies {
@@ -52,25 +56,23 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.viewmodel.android)
+    implementation(libs.androidx.ui.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
 
-    implementation (libs.androidx.core.ktx.v190)
+    implementation(libs.koin.android)
 
-    implementation (libs.koin.android)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.fragment.ktx)
 
-    implementation (libs.material.v180)
-    implementation (libs.androidx.viewpager2)
-    implementation (libs.androidx.fragment.ktx)
-
-    implementation (libs.androidx.navigation.fragment.ktx)
-    implementation (libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.kotlinx.coroutines.android)
 
@@ -78,12 +80,31 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
-    implementation (libs.peko)
+    implementation(libs.peko)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
-    implementation(libs.androidx.ui)
+
     implementation(libs.androidx.material)
     implementation(libs.androidx.activity.compose)
+
+    // UI Preview и tooling
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.ui.tooling.preview)
+
+// Compose foundation (базовые layout'ы, скроллы и т.д.)
+    implementation(libs.androidx.foundation)
+
+// Material 3 (новая библиотека Material Design)
+    implementation(libs.androidx.material3)
+
+// Навигация в Compose (если нужна)
+    implementation(libs.androidx.navigation.compose)
+
+// Жизненный цикл и ViewModel
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.androidx.runtime.livedata)
 }
