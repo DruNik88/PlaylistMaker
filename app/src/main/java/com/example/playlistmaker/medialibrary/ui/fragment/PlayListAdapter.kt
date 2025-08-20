@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil3.load
+import coil3.request.placeholder
+import coil3.request.transformations
+import coil3.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.application.trackEndings
@@ -61,19 +63,26 @@ class PlayListViewHolder(
     private val count: TextView = itemView.findViewById(R.id.countTracksPlaylist)
 
     fun bind(playList: PlayList) {
-        val imageUri = playList.imageLocalStoragePath?.let { File(playList.imageLocalStoragePath) }
-        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(imageUri) }
-        Glide.with(itemView.context)
-            .load(uri)
-            .placeholder(R.drawable.ic_placeholder)
-            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, itemView.context)))
-            .into(image)
+        val imageUri = playList.imageLocalStoragePath?.let { File(it) }
+        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(it) }
+
+        image.load(uri) {
+            placeholder(R.drawable.ic_placeholder)
+            transformations(
+                RoundedCornersTransformation(
+                    dpToPx(
+                        RADIUS_IMAGE,
+                        itemView.context
+                    ).toFloat()
+                )
+            )
+        }
+
         title.text = playList.title
         count.text = trackEndings(playList.count)
     }
 
-
     companion object {
-        const val RADIUS_IMAGE = 8.0F
+        const val RADIUS_IMAGE = 8.0F // dp
     }
 }

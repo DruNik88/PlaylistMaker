@@ -8,12 +8,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.playlistmaker.R
+
 import com.example.playlistmaker.application.debounce
-import com.example.playlistmaker.databinding.FragmentPlaylistBinding
+
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.ui.state.PlayListData
 import com.example.playlistmaker.medialibrary.ui.viewmodel.PlayListViewModel
+import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentPlaylistBinding
+
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayListFragment : Fragment() {

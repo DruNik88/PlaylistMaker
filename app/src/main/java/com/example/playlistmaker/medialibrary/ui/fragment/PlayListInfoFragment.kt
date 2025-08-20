@@ -14,16 +14,18 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.R
+import coil3.load
+import coil3.request.placeholder
+import coil3.request.transformations
+import coil3.transform.RoundedCornersTransformation
+
 import com.example.playlistmaker.application.TrackAdapter
 import com.example.playlistmaker.application.converterSecondsToMinutesAndEnding
 import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.application.durationEndings
 import com.example.playlistmaker.application.trackEndings
-import com.example.playlistmaker.databinding.FragmentPlaylistInfoBinding
+
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.domain.model.TrackMediaLibraryDomain
 import com.example.playlistmaker.medialibrary.ui.fragment.PlayListViewHolder.Companion.RADIUS_IMAGE
@@ -32,6 +34,9 @@ import com.example.playlistmaker.medialibrary.ui.viewmodel.PlayListInfoViewModel
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentPlaylistInfoBinding
+
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.File
@@ -263,14 +268,13 @@ class PlayListInfoFragment : Fragment() {
         binding.containerPlaylistInfo.isVisible = true
         binding.progressBar.isVisible = false
 
-        val imageUri =
-            playList.imageLocalStoragePath?.let { File(playList.imageLocalStoragePath) }
-        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(imageUri) }
-        Glide.with(requireContext())
-            .load(uri)
-            .placeholder(R.drawable.ic_placeholder)
-            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, requireContext())))
-            .into(binding.poster)
+        val imageUri = playList.imageLocalStoragePath?.let { File(it) }
+        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(it) }
+
+        binding.poster.load(uri) {
+            placeholder(R.drawable.ic_placeholder)
+            transformations(RoundedCornersTransformation(dpToPx(RADIUS_IMAGE, requireContext()).toFloat()))
+        }
 
         binding.playlistTitle.text = playList.title
         binding.playlistDescription.text = playList.description
@@ -279,16 +283,22 @@ class PlayListInfoFragment : Fragment() {
         binding.playlistCountTotal.text = trackEndings(playList.count)
     }
 
-    private fun parsePlayListMenu(playLis: PlayList) {
 
-        val imageUri =
-            playLis.imageLocalStoragePath?.let { File(playLis.imageLocalStoragePath) }
-        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(imageUri) }
-        Glide.with(requireContext())
-            .load(uri)
-            .placeholder(R.drawable.ic_placeholder)
-            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, requireContext())))
-            .into(binding.posterBottomSheet)
+    private fun parsePlayListMenu(playLis: PlayList) {
+        val imageUri = playLis.imageLocalStoragePath?.let { File(it) }
+        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(it) }
+
+        binding.posterBottomSheet.load(uri) {
+            placeholder(R.drawable.ic_placeholder)
+            transformations(
+                RoundedCornersTransformation(
+                    dpToPx(
+                        RADIUS_IMAGE,
+                        requireContext()
+                    ).toFloat()
+                )
+            )
+        }
 
         binding.posterTitle.text = playLis.title
         binding.trackCount.text = trackEndings(playLis.count)

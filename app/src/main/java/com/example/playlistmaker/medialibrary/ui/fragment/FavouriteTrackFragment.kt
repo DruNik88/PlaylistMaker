@@ -9,13 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+
 import com.example.playlistmaker.application.TrackAdapter
 import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.databinding.FragmentFavouriteTrackBinding
+
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.medialibrary.ui.state.FavouriteData
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavouriteTrackViewModel
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
+
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteTrackFragment : Fragment() {

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentMediaLibraryBinding
+
 import com.example.playlistmaker.medialibrary.ui.viewmodel.MediaLibraryViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentMediaLibraryBinding
+
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaLibraryFragment : Fragment() {

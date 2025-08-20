@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityRootBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 class RootActivity : AppCompatActivity() {
 
