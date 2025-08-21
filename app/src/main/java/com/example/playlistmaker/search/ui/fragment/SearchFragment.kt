@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -62,6 +63,7 @@ import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.theme.AppTextStyles
 import com.example.playlistmaker.application.theme.PlaylistMakerTheme
+import com.example.playlistmaker.application.theme.YP_Text_Gray
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
 
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -100,6 +102,7 @@ class SearchFragment : Fragment() {
         val focusRequester = remember { FocusRequester() }
 
         Scaffold(
+            containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 TopAppBar(
                     title = {
@@ -124,10 +127,11 @@ class SearchFragment : Fragment() {
                         .height(52.dp)
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.surface,
+                            color = MaterialTheme.colorScheme.primaryContainer,
                             shape = RoundedCornerShape(8.dp) // аналог твоего drawable
                         ),
                     contentAlignment = Alignment.CenterStart
+
                 ) {
                     Row(
                         modifier = Modifier
@@ -144,7 +148,7 @@ class SearchFragment : Fragment() {
                             modifier = Modifier
                                 .padding(12.dp)
                                 .size(14.dp),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
 
                         // Поле ввода
@@ -168,7 +172,7 @@ class SearchFragment : Fragment() {
                                 Text(
                                     text = stringResource(R.string.search),
                                     style = AppTextStyles.SearchStyle,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = YP_Text_Gray,
                                 )
                             }
                             innerTextField()

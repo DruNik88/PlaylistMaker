@@ -61,4 +61,12 @@ object AppTextStyles {
         lineHeight = 19.sp,
         letterSpacing = 0.sp
     )
+
+    val YouMediaLibraryIsEmptyStyle = TextStyle(
+        fontFamily = YsDisplay,
+        fontWeight = FontWeight.Medium,
+        fontSize = 19.sp,
+        lineHeight = 19.sp,
+        letterSpacing = 0.sp
+    )
 }

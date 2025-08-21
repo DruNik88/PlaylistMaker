@@ -131,6 +131,7 @@ class SettingsFragment : Fragment() {
         viewModel: SettingsViewModel
     ) {
         Scaffold(
+            containerColor = MaterialTheme.colorScheme.surface,
             topBar = {
                 TopAppBar(
                     title = {

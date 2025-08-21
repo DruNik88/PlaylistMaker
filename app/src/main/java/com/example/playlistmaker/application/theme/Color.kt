@@ -19,6 +19,7 @@ val Yp_Black = Color(0xFF1A1B22)
 val Yp_Blue_Light = Color(0xFF9FBBF3)
 val Yp_Red = Color(0xFFF56B6C)
 val Yp_Background = Color(0x00990000)
+val YP_Text_Gray: Color = Color(0xFF818C99)
 
 
 
