@@ -3,7 +3,6 @@ package com.example.playlistmaker.application.theme
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.playlistmaker.application.theme.YsDisplay
 
 object AppTextStyles {
     val BottomAppBarStyle = TextStyle(
@@ -67,6 +66,14 @@ object AppTextStyles {
         fontWeight = FontWeight.Medium,
         fontSize = 19.sp,
         lineHeight = 19.sp,
+        letterSpacing = 0.sp
+    )
+
+    val TabRowAndButtonStyle = TextStyle(
+        fontFamily = YsDisplay,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 14.sp,
         letterSpacing = 0.sp
     )
 }

@@ -194,14 +194,6 @@ class PlayListFragment : Fragment() {
     }
 
 
-//    val viewModel: PlayListViewModel by viewModel<PlayListViewModel>()
-//
-//    private var _binding: FragmentPlaylistBinding? = null
-//    private val binding get() = _binding!!
-//
-//    private var adapter: PlayListAdapter? = null
-//    private lateinit var onTrackClickDebounce: (PlayList) -> Unit
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -223,13 +215,6 @@ class PlayListFragment : Fragment() {
                 viewModel.getPlaylist.observe(viewLifecycleOwner, Observer { state ->
                     currentState = state
                 })
-
-//                fun PlayListScreen(
-//                    state: PlayListData,
-//                    onNewPlaylistClick: () -> Unit,
-//                    onPlaylistClick: (PlayList) -> Unit,
-//                    modifier: Modifier = Modifier
-//                )
 
                 PlayListScreen(
                     state = currentState,
