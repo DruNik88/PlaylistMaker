@@ -63,7 +63,6 @@ class PlayListFragment : Fragment() {
 
     companion object {
         fun newInstance() = PlayListFragment()
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     @Composable
