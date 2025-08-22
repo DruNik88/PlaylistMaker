@@ -44,7 +44,6 @@ fun ThemeSwitcher(
     )
 }
 
-
 @Composable
 fun SwitchMaterialClone(
     checked: Boolean,

@@ -5,13 +5,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 object AppTextStyles {
-    val BottomAppBarStyle = TextStyle(
-        fontFamily = YsDisplay,
-        fontWeight = FontWeight.W400,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp
-    )
 
     val TopAppBarStyle = TextStyle(
         fontFamily = YsDisplay,
@@ -53,7 +46,7 @@ object AppTextStyles {
         letterSpacing = 0.sp
     )
 
-    val YouFindStyle = TextStyle(
+    val SearchTextStyle = TextStyle(
         fontFamily = YsDisplay,
         fontWeight = FontWeight.Medium,
         fontSize = 19.sp,
@@ -76,4 +69,5 @@ object AppTextStyles {
         lineHeight = 14.sp,
         letterSpacing = 0.sp
     )
+
 }

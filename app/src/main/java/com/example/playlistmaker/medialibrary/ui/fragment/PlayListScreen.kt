@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.R
+import com.example.playlistmaker.application.compose.UpdateClearCreateButton
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.ui.state.PlayListData
 
@@ -35,15 +35,11 @@ fun PlayListScreen(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(top = 24.dp, bottom = 8.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(
-            onClick = onNewPlaylistClick
-        ) {
-            Text(text = stringResource(id = R.string.new_playlist))
-        }
+
+        UpdateClearCreateButton(stringResource(R.string.new_playlist)) { onNewPlaylistClick() }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -80,7 +76,8 @@ fun PlayListScreen(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 8.dp),
+                        .padding(top = 8.dp)
+                        .padding(start = 16.dp, end = 16.dp),
                     contentPadding = PaddingValues(bottom = 8.dp)
                 ) {
                     items(state.playListData) { playlist ->

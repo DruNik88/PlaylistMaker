@@ -13,8 +13,8 @@ class FavouriteTrackViewModel(
     private val favouriteInteractor: FavouriteInteractor
 ) : ViewModel() {
 
-    private var favouriteLiveData = MutableLiveData<FavouriteData>()
-    fun getFavouriteLiveData(): LiveData<FavouriteData> = favouriteLiveData
+    private var favouriteLiveData = MutableLiveData<FavouriteData>(FavouriteData.Empty)
+    val getFavouriteLiveData: LiveData<FavouriteData> = favouriteLiveData
 
     init {
         viewModelScope.launch {

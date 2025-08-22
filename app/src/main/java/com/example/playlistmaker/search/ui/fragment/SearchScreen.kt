@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,10 +36,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.TrackGeneric
+import com.example.playlistmaker.application.compose.AppTopBar
 import com.example.playlistmaker.application.compose.TrackList
+import com.example.playlistmaker.application.compose.UpdateClearCreateButton
 import com.example.playlistmaker.application.compose.theme.AppTextStyles
-import com.example.playlistmaker.application.compose.theme.YP_Text_Gray
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
+import com.example.playlistmaker.application.compose.theme.Yp_Black
 import com.example.playlistmaker.search.ui.state.SearchHistoryState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,22 +61,14 @@ fun SearchScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.search),
-                        style = AppTextStyles.TopAppBarStyle
-                    )
-                }
-            )
+            AppTopBar(stringResource(R.string.search))
         }
+
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-
-
             ) {
             Box(
                 modifier = Modifier
@@ -85,35 +77,31 @@ fun SearchScreen(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(8.dp) // аналог твоего drawable
+                        shape = RoundedCornerShape(8.dp)
                     ),
                 contentAlignment = Alignment.CenterStart
 
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxSize()
-//                            .padding(horizontal = 8.dp)
-                    ,
+                        .fillMaxSize(),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Лупа
                     Icon(
                         painter = painterResource(id = R.drawable.vector_loupe_14_14),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(12.dp)
                             .size(14.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.primary
                     )
 
-                    // Поле ввода
                     BasicTextField(
                         value = query,
                         onValueChange = { query = it; onQueryChange(it.text) },
                         singleLine = true,
-                        textStyle = AppTextStyles.SearchStyle.copy(color = MaterialTheme.colorScheme.onSurface),
+                        textStyle = AppTextStyles.SearchStyle.copy(color = Yp_Black),
                         modifier = Modifier
                             .weight(1f)
                             .padding(vertical = 8.dp)
@@ -129,27 +117,12 @@ fun SearchScreen(
                             Text(
                                 text = stringResource(R.string.search),
                                 style = AppTextStyles.SearchStyle,
-                                color = YP_Text_Gray,
+                                color = MaterialTheme.colorScheme.primary,
                             )
                         }
                         innerTextField()
                     }
-//                        TextField(
-//                            value = query,
-//                            onValueChange = {
-//                                query = it
-//                                onQueryChange(it.text)
-//                            },
-//                            modifier = Modifier
-//                                .fillMaxHeight()
-//                                .weight(1f),
-//                            placeholder = { Text(text = stringResource(R.string.search)) },
-//                            singleLine = true,
-//                            textStyle = AppTextStyles.SearchStyle,
-//                            colors = TextFieldDefaults.colors()
-//                        )
 
-                    // Очистка
                     if (query.text.isNotEmpty()) {
                         Icon(
                             painter = painterResource(id = R.drawable.vector_close_clear),
@@ -167,9 +140,6 @@ fun SearchScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-
-
 
             when (state) {
                 is SearchHistoryState.SearchLoading -> {
@@ -198,14 +168,14 @@ fun SearchScreen(
                             ) {
                                 Text(
                                     text = stringResource(R.string.you_find),
-                                    style = AppTextStyles.YouFindStyle
+                                    style = AppTextStyles.SearchTextStyle
                                 )
                             }
 
                             Spacer(modifier = Modifier.height(16.dp))
                             TrackList(state.trackList, onTrackClick)
                             Spacer(modifier = Modifier.height(8.dp))
-                            ClearHistoryButton { onClearHistory() }
+                            UpdateClearCreateButton(title = stringResource(R.string.clear_history)) { onClearHistory() }
                         }
                     }
                 }
@@ -220,7 +190,6 @@ fun SearchScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-//                                Text("No history available")
                         }
                     }
                 }
