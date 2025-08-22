@@ -1,6 +1,5 @@
 package com.example.playlistmaker.medialibrary.ui.fragment
 
-import android.R.attr.maxLines
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -65,8 +64,8 @@ import coil3.compose.AsyncImage
 
 import com.example.playlistmaker.medialibrary.ui.viewmodel.MediaLibraryViewModel
 import com.example.playlistmaker.R
-import com.example.playlistmaker.application.theme.AppTextStyles
-import com.example.playlistmaker.application.theme.PlaylistMakerTheme
+import com.example.playlistmaker.application.compose.theme.AppTextStyles
+import com.example.playlistmaker.application.compose.theme.PlaylistMakerTheme
 import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.medialibrary.domain.model.PlayList
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite

@@ -25,12 +25,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,26 +42,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil3.compose.AsyncImage
 import com.example.playlistmaker.R
 
-import com.example.playlistmaker.application.TrackAdapter
-import com.example.playlistmaker.application.debounce
-import com.example.playlistmaker.application.theme.AppTextStyles
-import com.example.playlistmaker.application.theme.PlaylistMakerTheme
-import com.example.playlistmaker.databinding.FragmentFavouriteTrackBinding
+import com.example.playlistmaker.application.compose.theme.AppTextStyles
+import com.example.playlistmaker.application.compose.theme.PlaylistMakerTheme
 
 import com.example.playlistmaker.medialibrary.domain.model.TrackFavourite
 import com.example.playlistmaker.medialibrary.ui.state.FavouriteData
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavouriteTrackViewModel
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
-import com.example.playlistmaker.search.ui.state.SearchHistoryState
 
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

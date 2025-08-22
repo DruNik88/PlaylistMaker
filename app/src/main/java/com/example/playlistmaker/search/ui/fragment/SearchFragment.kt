@@ -43,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -52,7 +51,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -61,9 +59,9 @@ import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 import com.example.playlistmaker.search.ui.state.SearchHistoryState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.example.playlistmaker.R
-import com.example.playlistmaker.application.theme.AppTextStyles
-import com.example.playlistmaker.application.theme.PlaylistMakerTheme
-import com.example.playlistmaker.application.theme.YP_Text_Gray
+import com.example.playlistmaker.application.compose.theme.AppTextStyles
+import com.example.playlistmaker.application.compose.theme.PlaylistMakerTheme
+import com.example.playlistmaker.application.compose.theme.YP_Text_Gray
 import com.example.playlistmaker.player.ui.fragment.AudioPlayerFragment
 
 import org.koin.androidx.viewmodel.ext.android.viewModel
