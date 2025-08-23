@@ -30,7 +30,6 @@ import coil3.compose.AsyncImage
 import com.example.playlistmaker.R
 import com.example.playlistmaker.application.TrackGeneric
 import com.example.playlistmaker.application.compose.theme.AppTextStyles
-import com.example.playlistmaker.search.domain.model.TrackSearchDomain
 
 @Composable
 fun TrackList(tracks: List<TrackGeneric>, onTrackClick: (TrackGeneric) -> Unit) {
@@ -92,6 +91,8 @@ fun TrackItem(track: TrackGeneric, onTrackClick: (TrackGeneric) -> Unit) {
             ) {
                 track.artistName?.let {
                     Text(
+                        modifier = Modifier
+                            .weight(1f, fill = false),
                         text = it,
                         style = AppTextStyles.TrackItemArtistNameAndTrackTime,
                         maxLines = 1,

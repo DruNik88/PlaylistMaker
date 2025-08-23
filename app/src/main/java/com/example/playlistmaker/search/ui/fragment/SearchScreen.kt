@@ -128,12 +128,13 @@ fun SearchScreen(
                             painter = painterResource(id = R.drawable.vector_close_clear),
                             contentDescription = null,
                             modifier = Modifier
+                                .padding(12.dp)
                                 .size(16.dp)
                                 .clickable {
                                     query = TextFieldValue("")
                                     onClearText()
                                 },
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
