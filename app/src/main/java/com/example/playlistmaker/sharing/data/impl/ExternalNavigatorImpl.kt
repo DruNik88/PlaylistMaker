@@ -3,11 +3,12 @@ package com.example.playlistmaker.sharing.data.impl
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.example.playlistmaker.R
+
 import com.example.playlistmaker.sharing.data.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.model.EmailData
 import com.example.playlistmaker.sharing.domain.model.ShareAppLink
 import com.example.playlistmaker.sharing.domain.model.TermsLink
+import com.example.playlistmaker.R
 
 class ExternalNavigatorImpl(val applicationContext: Context) : ExternalNavigator {
 

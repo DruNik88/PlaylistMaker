@@ -6,8 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.widget.Toast
-import com.example.playlistmaker.R
+
 import com.example.playlistmaker.application.isConnected
+import com.example.playlistmaker.R
 
 class InternetAccessibility: BroadcastReceiver() {
     @SuppressLint("RestrictedApi")

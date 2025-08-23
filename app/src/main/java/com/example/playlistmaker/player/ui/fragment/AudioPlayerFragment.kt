@@ -23,13 +23,16 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.R
+import coil3.load
+import coil3.request.placeholder
+import coil3.request.transformations
+import coil3.transform.RoundedCornersTransformation
+
+
 import com.example.playlistmaker.application.TrackGeneric
 import com.example.playlistmaker.application.debounce
 import com.example.playlistmaker.application.dpToPx
-import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
+
 import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
 import com.example.playlistmaker.player.domain.model.TrackPlayerDomain
@@ -40,6 +43,9 @@ import com.example.playlistmaker.player.ui.state.ShowPlaylist
 import com.example.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.example.playlistmaker.utils.InternetAccessibility
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
+
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -288,32 +294,41 @@ class AudioPlayerFragment : Fragment() {
 
     private fun showContent(trackPlayer: TrackPlayerDomain) {
         val imageUrl = trackPlayer.artworkUrl100
-        Glide.with(requireContext())
-            .load(imageUrl)
-            .placeholder(R.drawable.ic_placeholder_512)
-            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, requireContext())))
-            .into(binding.artworkApiAudioPlayer)
+        binding.artworkApiAudioPlayer.load(imageUrl) {
+            placeholder(R.drawable.ic_placeholder_512)
+            transformations(
+                RoundedCornersTransformation(
+                    dpToPx(
+                        RADIUS_IMAGE,
+                        requireContext()
+                    ).toFloat()
+                )
+            )
+        }
+
         binding.trackNameApiAudioPlayer.text = trackPlayer.trackName
         binding.artistNameApiAudioPlayer.text = trackPlayer.artistName
         binding.trackTimeApiAudioPlayer.text = trackPlayer.trackTimeMillis
-        trackPlayer.collectionName?.let { binding.collectionNameApiAudioPlayer.text = it }
-            ?: run { binding.collectionNameGroup.visibility = View.GONE }
 
-        trackPlayer.releaseDate?.let {
-            binding.releaseDateApiAudioPlayer.text = it.substringBefore("-")
+        trackPlayer.collectionName?.let {
+            binding.collectionNameApiAudioPlayer.text = it
+            binding.collectionNameGroup.visibility = View.VISIBLE
+        } ?: run {
+            binding.collectionNameGroup.visibility = View.GONE
         }
-            ?: run { getString(R.string.something_went_wrong) }
 
-        trackPlayer.primaryGenreName?.let { binding.primaryGenreNameApiAudioPlayer.text = it }
-            ?: run {
-                binding.primaryGenreNameApiAudioPlayer.text =
-                    getString(R.string.something_went_wrong)
-            }
+        binding.releaseDateApiAudioPlayer.text = trackPlayer.releaseDate?.substringBefore("-")
+            ?: getString(R.string.something_went_wrong)
 
-        trackPlayer.country?.let { binding.countryApiAudioPlayer.text = it }
-            ?: run { binding.countryApiAudioPlayer.text = getString(R.string.something_went_wrong) }
+        binding.primaryGenreNameApiAudioPlayer.text = trackPlayer.primaryGenreName
+            ?: getString(R.string.something_went_wrong)
+
+        binding.countryApiAudioPlayer.text = trackPlayer.country
+            ?: getString(R.string.something_went_wrong)
+
         favourite(trackPlayer)
     }
+
 
     private fun favourite(trackPlayer: TrackPlayerDomain) {
         if (trackPlayer.isFavourite) {

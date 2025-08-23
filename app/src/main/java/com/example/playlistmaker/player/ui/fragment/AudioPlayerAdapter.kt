@@ -7,13 +7,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.R
+import coil3.load
+import coil3.request.placeholder
+import coil3.request.transformations
+import coil3.transform.RoundedCornersTransformation
+
 import com.example.playlistmaker.application.dpToPx
 import com.example.playlistmaker.application.trackEndings
 import com.example.playlistmaker.player.domain.model.PlayListWithTrackPlayer
 import com.example.playlistmaker.player.domain.model.PlayerList
+import com.example.playlistmaker.R
 import java.io.File
 
 class AudioPlayerAdapter(
@@ -62,14 +65,21 @@ class AudioPlayerViewHolder(
     private val countTrack: TextView = itemView.findViewById(R.id.count_tack_player_playlist)
 
     fun bind(playerList: PlayerList) {
-        val imageUri =
-            playerList.imageLocalStoragePath?.let { File(playerList.imageLocalStoragePath) }
-        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(imageUri) }
-        Glide.with(itemView.context)
-            .load(uri)
-            .placeholder(R.drawable.ic_placeholder)
-            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, itemView.context)))
-            .into(image)
+        val imageUri = playerList.imageLocalStoragePath?.let { File(it) }
+        val uri = imageUri?.takeIf { it.exists() }?.let { Uri.fromFile(it) }
+
+        image.load(uri) {
+            placeholder(R.drawable.ic_placeholder)
+            transformations(
+                RoundedCornersTransformation(
+                    dpToPx(
+                        RADIUS_IMAGE,
+                        itemView.context
+                    ).toFloat()
+                )
+            )
+        }
+
         title.text = playerList.title
         countTrack.text = trackEndings(playerList.count)
     }
@@ -77,6 +87,4 @@ class AudioPlayerViewHolder(
     companion object {
         const val RADIUS_IMAGE = 2.0F
     }
-
-
 }

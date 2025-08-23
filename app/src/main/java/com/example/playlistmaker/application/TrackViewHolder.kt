@@ -5,8 +5,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import coil3.load
+import coil3.request.placeholder
+import coil3.request.transformations
+import coil3.transform.RoundedCornersTransformation
 import com.example.playlistmaker.R
 
 
@@ -22,12 +24,19 @@ class TrackViewHolder<T : TrackGeneric>(
     private val sourceTrackTime: TextView = itemView.findViewById(R.id.trackTime)
 
     fun bind(model: T) {
-        val imageUrl = model.artworkUrl100
-        Glide.with(itemView.context)
-            .load(imageUrl)
-            .placeholder(R.drawable.ic_placeholder)
-            .transform(RoundedCorners(dpToPx(RADIUS_IMAGE, itemView.context)))
-            .into(sourceArtwork)
+        // Установка изображения с помощью Coil
+        sourceArtwork.load(model.artworkUrl100) {
+            placeholder(R.drawable.ic_placeholder)
+            transformations(
+                RoundedCornersTransformation(
+                    dpToPx(
+                        RADIUS_IMAGE,
+                        itemView.context
+                    ).toFloat()
+                )
+            )
+        }
+
         sourceTrackName.text = model.trackName
         sourceArtistName.text = model.artistName
         sourceTrackTime.text = model.trackTimeMillis
@@ -35,7 +44,6 @@ class TrackViewHolder<T : TrackGeneric>(
     }
 
     companion object {
-        const val RADIUS_IMAGE = 2.0F
+        const val RADIUS_IMAGE = 2.0F // радиус в dp
     }
-
 }

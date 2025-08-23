@@ -16,11 +16,13 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
+
 import com.example.playlistmaker.medialibrary.ui.viewmodel.NewPlayListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.markodevcic.peko.PermissionRequester
+import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.FragmentNewPlaylistBinding
+
+//import com.markodevcic.peko.PermissionRequester
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -31,7 +33,7 @@ open class NewPlayListFragment : Fragment() {
     private var _binding: FragmentNewPlaylistBinding? = null
     val binding get() = _binding!!
 
-    val requestPermission = PermissionRequester.instance()
+//    val requestPermission = PermissionRequester.instance()
 
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
