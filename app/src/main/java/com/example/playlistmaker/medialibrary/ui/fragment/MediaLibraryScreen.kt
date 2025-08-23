@@ -119,7 +119,7 @@ fun MediaLibraryScreen(navController: NavController) {
                         val viewModel: FavouriteTrackViewModel = koinViewModel()
 
                         val currentState =
-                            viewModel.getFavouriteLiveData.observeAsState(FavouriteData.Empty).value
+                            viewModel.getFavouriteLiveData().observeAsState(FavouriteData.Empty).value
 
                         FavouriteTrackScreen(
                             state = currentState,
