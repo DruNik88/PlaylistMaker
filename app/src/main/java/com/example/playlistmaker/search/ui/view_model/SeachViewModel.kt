@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -58,7 +57,6 @@ class SearchViewModel(
     }
 
     fun addTrackListHistory(track: TrackSearchDomain) {
-        Log.d("History_clean","add")
         getUserHistory.addTrackListHistory(track)
     }
 
@@ -67,7 +65,6 @@ class SearchViewModel(
     }
 
     fun getHistoryList() {
-        Log.d("History_get","get")
         viewModelScope.launch {
             getUserHistory.getListHistory().collect { trackList ->
                 showHistoryList(trackList)
@@ -85,7 +82,6 @@ class SearchViewModel(
     }
 
     fun clearHistoryList() {
-        Log.d("History_clean","clean")
         getUserHistory.clearHistory()
         trackListHistory = listOf()
         if (trackListHistory.isEmpty()) {

@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,6 +58,13 @@ fun SearchScreen(
     var query by remember { mutableStateOf(TextFieldValue("")) }
     var isSearchFocused by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
+
+
+    LaunchedEffect(isSearchFocused, query.text) {
+        if (isSearchFocused && query.text.isEmpty()) {
+            onGetHistory()
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -108,9 +116,6 @@ fun SearchScreen(
                             .focusRequester(focusRequester)
                             .onFocusChanged { focusState ->
                                 isSearchFocused = focusState.isFocused
-                                if (focusState.isFocused) {
-                                    onGetHistory()
-                                }
                             }
                     ) { innerTextField ->
                         if (query.text.isEmpty()) {
